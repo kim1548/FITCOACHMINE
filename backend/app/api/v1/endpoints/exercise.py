@@ -112,13 +112,61 @@ CATEGORY_HINTS = {
     "Core": "복압을 더 강하게 잡고 호흡 타이밍을 의식적으로 맞춰보세요.",
 }
 
+# --- 운동-종류 검증(몸통 방향 기반) ----------------------------------------
+# 방향이 '명확한' 운동만 게이팅한다. 인클라인 벤치/바벨 로우처럼 몸통이 대각선이라
+# 애매한 운동은 오판(정상 영상을 거절)을 막기 위해 검증에서 제외(=항상 통과)한다.
+UPRIGHT_EXERCISES = {  # 몸통 수직(서거나 앉은 자세)
+    "스쿼트", "데드리프트", "런지", "스모 데드리프트", "오버헤드 프레스",
+    "사이드 레터럴 레이즈", "프론트 레이즈", "바벨 컬", "랫풀다운", "머신플라이",
+}
+LYING_EXERCISES = {  # 몸통 수평(누운 자세)
+    "벤치프레스", "클로즈 그립 벤치프레스", "라잉 트라이셉스 익스텐션",
+    "레그 레이즈", "크런치", "플랭크",
+}
+
+# 검증용 전역 상태 (메모리)
+orient_clear = 0       # 방향이 뚜렷하게 잡힌 프레임 수
+orient_contradict = 0  # 그 중 기대 방향과 반대로 나온 프레임 수
+
+
+def _torso_orientation(landmarks):
+    """어깨(11,12)·엉덩이(23,24) 중점을 잇는 몸통선의 방향.
+    반환: 'vertical' | 'horizontal' | None(신뢰도 낮거나 대각선이라 애매)."""
+    try:
+        sx = (landmarks[11 * 4] + landmarks[12 * 4]) / 2
+        sy = (landmarks[11 * 4 + 1] + landmarks[12 * 4 + 1]) / 2
+        hx = (landmarks[23 * 4] + landmarks[24 * 4]) / 2
+        hy = (landmarks[23 * 4 + 1] + landmarks[24 * 4 + 1]) / 2
+        sv = min(landmarks[11 * 4 + 3], landmarks[12 * 4 + 3])
+        hv = min(landmarks[23 * 4 + 3], landmarks[24 * 4 + 3])
+    except IndexError:
+        return None
+    if sv < 0.4 or hv < 0.4:  # 어깨/엉덩이가 충분히 안 보이면 판단 보류
+        return None
+    dx = abs(sx - hx)
+    dy = abs(sy - hy)
+    if dy > dx * 1.3:
+        return "vertical"
+    if dx > dy * 1.3:
+        return "horizontal"
+    return None  # 대각선 ~45° → 카운트하지 않음
+
+
 class ExerciseData(BaseModel):
     landmarks: List[float]
     exercise_type: str = "스쿼트"
 
+def _exercise_match_verdict():
+    """누적된 방향 통계로 '선택 운동 일치 여부' 판정. 증거가 충분하고
+    모순 비율이 높을 때만 False(불일치). 그 전에는 항상 True(무죄추정)."""
+    if orient_clear >= 8 and (orient_contradict / orient_clear) > 0.6:
+        return False
+    return True
+
+
 @router.post("/analyze")
 async def analyze_exercise(data: ExerciseData):
-    global counter, stage, error_counts, total_frames
+    global counter, stage, error_counts, total_frames, orient_clear, orient_contradict
     landmarks = data.landmarks
     total_frames += 1
 
@@ -126,7 +174,18 @@ async def analyze_exercise(data: ExerciseData):
     guide_text = CAMERA_GUIDE.get(data.exercise_type, "카메라를 고정하고 전신이 나오게 해주세요.")
 
     if not landmarks or len(landmarks) < 33:
-        return {"counter": counter, "guide": guide_text, "angle": 0}
+        return {"counter": counter, "guide": guide_text, "angle": 0, "exercise_match": True}
+
+    # 운동-종류 검증: 방향이 명확한 운동만, 강한 모순이 누적될 때 불일치로 판정
+    expected = "vertical" if data.exercise_type in UPRIGHT_EXERCISES else (
+        "horizontal" if data.exercise_type in LYING_EXERCISES else None)
+    if expected is not None:
+        ori = _torso_orientation(landmarks)
+        if ori is not None:
+            orient_clear += 1
+            if ori != expected:
+                orient_contradict += 1
+    exercise_match = _exercise_match_verdict()
 
     try:
         step = 4
@@ -149,10 +208,12 @@ async def analyze_exercise(data: ExerciseData):
         # 에러 판정 및 좌표 추출 로직 강화
         current_error = None
         feedback_points = [] # 프론트엔드에 전달할 좌표 리스트
+        error_severity = 0.0  # 0이면 정상, 클수록 심함 — 프론트가 '가장 심한 프레임' 선택에 사용
 
         # 예시: 무릎 꺾임 에러 발생 시
         if angle < 130 and abs(knee[0] - ankle[0]) > 0.05:
             current_error = "caved_in_knees"
+            error_severity = round(abs(knee[0] - ankle[0]), 4)  # 무릎-발목 수평 이격 → 클수록 더 안쪽으로 꺾임
             error_counts[current_error] = error_counts.get(current_error, 0) + 1
             
             # 모델 담당자가 정의한 ERROR_BODY_PARTS에 따라 좌표 추출 (무릎: 25, 26)
@@ -172,7 +233,10 @@ async def analyze_exercise(data: ExerciseData):
             "counter": counter,
             "angle": round(angle, 1),
             "score": total_score,
+            "exercise_match": exercise_match,  # False면 프론트가 점수 대신 '운동 불일치' 화면 표시
             "error_key": current_error,
+            "error_severity": error_severity,  # 가장 심한 프레임 선별용
+            "error_category": ERROR_CATEGORY_MAP.get(current_error) if current_error else None,  # 어느 진단 섹터의 스크린샷인지
             "feedback_points": feedback_points, # 이 좌표를 리액트가 사용함
             "guide": guide_text,
             "overlay_message": OVERLAY_MESSAGES.get(current_error, ""), # 화면 상단 노출용
@@ -193,10 +257,11 @@ async def analyze_exercise(data: ExerciseData):
             }
         }
     except Exception:
-        return {"counter": counter, "guide": guide_text}
+        return {"counter": counter, "guide": guide_text, "exercise_match": exercise_match}
 
 @router.post("/reset")
 async def reset_counter():
-    global counter, stage, error_counts, total_frames
+    global counter, stage, error_counts, total_frames, orient_clear, orient_contradict
     counter, stage, total_frames, error_counts = 0, "ready", 0, {}
+    orient_clear, orient_contradict = 0, 0
     return {"status": "success"}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis } from 'recharts';
 import { Loader2 } from 'lucide-react';
 
@@ -26,11 +26,46 @@ const verdictOf = (score) => {
 };
 
 const FeedbackDetail = ({ result, exerciseName, onReset, onSaveToJournal }) => {
+  const [openCat, setOpenCat] = useState(null);
+
   if (!result) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-taupe gap-3">
         <Loader2 className="animate-spin" size={20} />
         <p className="font-mono text-[11px] tracking-meta uppercase">Loading report…</p>
+      </div>
+    );
+  }
+
+  // 운동-종류 불일치 — 점수를 주지 않고 명확히 거절
+  if (result.exercise_match === false) {
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <header className="pb-6">
+          <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+            — Mismatch detected
+          </div>
+          <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
+            이 영상은 <em className="italic text-accent-gold">{exerciseName}</em><br />
+            동작으로 보이지 않습니다.
+          </h1>
+          <p className="font-display italic text-[15px] text-body leading-relaxed border-l-2 border-accent-red pl-3 mt-5 m-0">
+            "선택한 운동과 영상 속 자세가 일치하지 않아 정확한 분석을 진행하지 않았습니다.
+            올바른 운동을 선택했는지, 전신이 화면에 들어오는지 확인해 주세요."
+          </p>
+        </header>
+        <section className="border-t border-ink/15 pt-6 mt-2">
+          <button
+            onClick={onReset}
+            className="font-mono text-[11px] tracking-label uppercase px-5 py-3 border border-accent-red text-accent-red hover:bg-accent-red hover:text-ink transition-colors"
+          >
+            ↻ 다시 분석하기
+          </button>
+        </section>
+        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[11px] text-hint tracking-meta">
+          <span className="uppercase">— FITCOACH —</span>
+          <span className="uppercase text-taupe">Form analysis · {exerciseName}</span>
+        </div>
       </div>
     );
   }
@@ -143,32 +178,6 @@ const FeedbackDetail = ({ result, exerciseName, onReset, onSaveToJournal }) => {
         </div>
       </section>
 
-      {/* Captured frame */}
-      {result.capture_url && (
-        <section className="border-t border-ink/15 py-6">
-          <div className="flex items-baseline justify-between mb-3">
-            <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
-              — Captured frame
-            </div>
-            <div className="font-mono text-[9px] text-hint tracking-meta uppercase">
-              Most representative pose
-            </div>
-          </div>
-          <figure className="m-0">
-            <div className="border border-accent-red/30 bg-black overflow-hidden">
-              <img
-                src={result.capture_url}
-                alt="Captured pose"
-                className="w-full h-auto object-cover"
-              />
-            </div>
-            <figcaption className="font-display italic text-sm text-taupe mt-2 leading-relaxed">
-              분석 알고리즘이 잡아낸 가장 중요한 순간 — 위 진단은 이 프레임을 기준으로 합니다.
-            </figcaption>
-          </figure>
-        </section>
-      )}
-
       {/* Diagnosis details */}
       {result.cat_details && Object.keys(result.cat_details).length > 0 && (
         <section className="border-t border-ink/15 py-6">
@@ -186,25 +195,54 @@ const FeedbackDetail = ({ result, exerciseName, onReset, onSaveToJournal }) => {
               const catScore = result.cat_scores?.[cat];
               const tag = catScore != null ? verdictOf(catScore).tag : '—';
               const tagCls = catScore != null ? verdictOf(catScore).cls : 'text-hint';
+              const frame = result.error_frames?.[cat];
+              const hasFrame = !!frame?.image;
+              const open = openCat === cat;
               return (
-                <article
-                  key={cat}
-                  className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-3 md:gap-6 py-4 border-b border-ink/8 last:border-b-0"
-                >
-                  <div>
-                    <div className="font-mono text-[10px] text-taupe tracking-label uppercase">
-                      {cat}
+                <article key={cat} className="border-b border-ink/8 last:border-b-0">
+                  <div
+                    className={`grid grid-cols-1 md:grid-cols-[180px_1fr] gap-3 md:gap-6 py-4 ${
+                      hasFrame ? 'cursor-pointer group' : ''
+                    }`}
+                    onClick={hasFrame ? () => setOpenCat(open ? null : cat) : undefined}
+                  >
+                    <div>
+                      <div className="font-mono text-[10px] text-taupe tracking-label uppercase">
+                        {cat}
+                      </div>
+                      <div className={`font-mono text-[9px] tracking-meta uppercase mt-1 ${tagCls}`}>
+                        · {tag}
+                        {catScore != null && (
+                          <span className="text-hint normal-case tracking-normal"> ({catScore})</span>
+                        )}
+                      </div>
                     </div>
-                    <div className={`font-mono text-[9px] tracking-meta uppercase mt-1 ${tagCls}`}>
-                      · {tag}
-                      {catScore != null && (
-                        <span className="text-hint normal-case tracking-normal"> ({catScore})</span>
+                    <div>
+                      <p className="font-display italic text-[15px] text-body leading-relaxed m-0">
+                        "{msg}"
+                      </p>
+                      {hasFrame && (
+                        <div className="font-mono text-[9px] text-accent-red tracking-meta uppercase mt-2 group-hover:text-ink transition-colors">
+                          {open ? '▾ Hide captured frame' : '▸ View captured frame'}
+                        </div>
                       )}
                     </div>
                   </div>
-                  <p className="font-display italic text-[15px] text-body leading-relaxed m-0">
-                    "{msg}"
-                  </p>
+
+                  {hasFrame && open && (
+                    <figure className="m-0 pb-5 md:pl-[204px] animate-in fade-in slide-in-from-top-1 duration-300">
+                      <div className="border border-accent-red/30 bg-black overflow-hidden">
+                        <img
+                          src={frame.image}
+                          alt={`${cat} — 문제 순간`}
+                          className="w-full h-auto object-cover"
+                        />
+                      </div>
+                      <figcaption className="font-display italic text-xs text-taupe mt-2 leading-relaxed">
+                        이 운동에서 해당 문제가 가장 두드러진 순간을 포착한 프레임입니다.
+                      </figcaption>
+                    </figure>
+                  )}
                 </article>
               );
             })}
