@@ -78,8 +78,26 @@ def _ensure_inbody_ai_columns():
         conn.commit()
 
 
+def _ensure_users_profile_columns():
+    """create_all 은 기존 테이블에 새 컬럼을 추가하지 않으므로, users 에
+    nickname / avatar 가 빠져있으면 한 번만 ALTER TABLE 로 채워준다."""
+    inspector = inspect(engine)
+    if "users" not in inspector.get_table_names():
+        return
+    cols = {c["name"] for c in inspector.get_columns("users")}
+    with engine.connect() as conn:
+        if "nickname" not in cols:
+            conn.execute(text("ALTER TABLE users ADD COLUMN nickname VARCHAR"))
+            print("✅ users.nickname 컬럼 추가됨 (기존 유저는 NULL)")
+        if "avatar" not in cols:
+            conn.execute(text("ALTER TABLE users ADD COLUMN avatar VARCHAR"))
+            print("✅ users.avatar 컬럼 추가됨 (기존 유저는 NULL)")
+        conn.commit()
+
+
 _ensure_users_age_column()
 _ensure_inbody_ai_columns()
+_ensure_users_profile_columns()
 
 # 1. 현재 main.py 파일의 위치를 기준으로 경로 설정
 # main.py가 backend/app/main.py에 있다면:

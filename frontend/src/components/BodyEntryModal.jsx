@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import axios from 'axios';
 import { Loader2 } from 'lucide-react';
 import { API_BASE_URL } from '../api/config';
@@ -77,7 +78,7 @@ const BodyEntryModal = ({ isOpen, onClose, onSaved }) => {
     if (serverError) setServerError('');
   };
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[200] bg-black/75 backdrop-blur-md flex items-end md:items-center justify-center p-0 md:p-6 animate-in fade-in duration-200"
       onClick={onClose}
@@ -88,9 +89,9 @@ const BodyEntryModal = ({ isOpen, onClose, onSaved }) => {
         className="w-full md:max-w-md max-h-[92vh] flex flex-col bg-paper text-ink border border-ink/20 shadow-2xl animate-in slide-in-from-bottom-4 md:zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <header className="flex-shrink-0 flex items-baseline justify-between px-6 py-4 border-b border-ink/15">
-          <div>
+        {/* Header — 모바일은 타이틀 숨겨 공간 확보(폼이 위로 올라감), 데스크탑은 유지 */}
+        <header className="flex-shrink-0 flex items-baseline justify-between px-6 py-3 md:py-4 border-b border-ink/15">
+          <div className="hidden md:block">
             <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-1">
               — New entry
             </div>
@@ -109,7 +110,7 @@ const BodyEntryModal = ({ isOpen, onClose, onSaved }) => {
 
         {/* Body */}
         <div
-          className="overflow-y-auto px-6 py-5 space-y-5 [&::-webkit-scrollbar]:hidden"
+          className="flex-1 min-h-0 overflow-y-auto px-6 py-5 space-y-5 [&::-webkit-scrollbar]:hidden"
           style={{ scrollbarWidth: 'none' }}
         >
           {/* Date */}
@@ -191,7 +192,8 @@ const BodyEntryModal = ({ isOpen, onClose, onSaved }) => {
           </button>
         </footer>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

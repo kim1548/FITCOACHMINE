@@ -1,4 +1,5 @@
 # backend/app/api/v1/endpoints/auth.py
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
@@ -25,6 +26,7 @@ def get_db():
 class UserCreate(BaseModel):
     username: str
     password: str
+    nickname: Optional[str] = None   # 커뮤니티 표시명 (선택). 비우면 username 마스킹으로 폴백.
     gender: str
     age: int
     height: float
@@ -59,6 +61,7 @@ def signup(user_data: UserCreate, db: Session = Depends(get_db)):
     new_user = User(
         username=user_data.username,
         password=hashed_pwd,
+        nickname=(user_data.nickname or "").strip() or None,
         gender=user_data.gender,
         age=user_data.age,
         height=user_data.height,

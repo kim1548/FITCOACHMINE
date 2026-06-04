@@ -44,6 +44,7 @@ const Signup = () => {
   const [form, setForm] = useState({
     username: '',
     password: '',
+    nickname: '',
     gender: GENDER_OPTIONS[0],
     age: 25,
     height: 170,
@@ -136,6 +137,16 @@ const Signup = () => {
                   autoComplete="username"
                   aria-invalid={!!credError}
                   aria-describedby={credError ? 'cred-error' : undefined}
+                />
+              </div>
+              <div>
+                <label className={labelCls}>Nickname · 닉네임</label>
+                <input
+                  className={inputCls}
+                  placeholder="커뮤니티에 표시될 이름 (선택)"
+                  value={form.nickname}
+                  onChange={set('nickname')}
+                  maxLength={20}
                 />
               </div>
               <div>

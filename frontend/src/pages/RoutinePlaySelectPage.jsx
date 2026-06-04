@@ -34,7 +34,7 @@ const ExerciseCover = ({ name, size = 'sm' }) => {
   const [broken, setBroken] = useState(false);
   const src = getGuideImage(name);
   const dims = size === 'featured'
-    ? 'w-full md:w-[260px] aspect-[4/5] md:aspect-[3/4]'
+    ? 'w-full aspect-[4/5] md:aspect-[3/4]'
     : 'w-[76px] h-[106px]';
   const fs = size === 'featured' ? '22px' : '11px';
 
@@ -148,15 +148,15 @@ const RoutinePlaySelectPage = () => {
               — Featured · {selectedCat}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-[260px_1fr] gap-6 md:gap-8 p-6 md:p-7 border border-accent-gold/30 bg-accent-gold/[0.05]">
+            <div className="grid grid-cols-[96px_1fr] md:grid-cols-[260px_1fr] gap-4 md:gap-8 p-5 md:p-7 border border-accent-gold/30 bg-accent-gold/[0.05]">
               <ExerciseCover name={featured} size="featured" />
 
               <div className="min-w-0 flex flex-col">
                 <div className="flex items-baseline gap-3 flex-wrap mb-1">
-                  <span className="font-display italic text-3xl leading-none text-hint">
+                  <span className="font-display italic text-2xl md:text-3xl leading-none text-hint">
                     {featuredVol}
                   </span>
-                  <span className="font-display text-3xl md:text-4xl text-ink leading-tight">
+                  <span className="font-display text-2xl md:text-4xl text-ink leading-tight">
                     {featured}
                   </span>
                 </div>
@@ -179,17 +179,17 @@ const RoutinePlaySelectPage = () => {
                   </div>
                 )}
 
-                <div className="font-mono text-[10px] text-accent-gold tracking-label uppercase mb-2">
+                <div className="hidden md:block font-mono text-[10px] text-accent-gold tracking-label uppercase mb-2">
                   — Recommended setup
                 </div>
-                <blockquote className="font-display italic text-[15px] text-body leading-relaxed border-l-2 border-accent-red pl-3 mb-6 m-0">
+                <blockquote className="font-display italic text-[13px] md:text-[15px] text-body leading-relaxed border-l-2 border-accent-red pl-3 mb-4 md:mb-6 m-0 line-clamp-2 md:line-clamp-none">
                   "{CAMERA_GUIDE[featured] || '상세 가이드를 준비 중입니다.'}"
                 </blockquote>
 
                 <div className="mt-auto">
                   <button
                     onClick={handleStart}
-                    className="font-mono text-[11px] tracking-label uppercase px-5 py-3 border border-accent-red text-accent-red hover:bg-accent-red hover:text-ink transition-colors"
+                    className="w-full md:w-auto whitespace-nowrap font-mono text-[11px] tracking-normal md:tracking-label uppercase px-3 md:px-5 py-3 border border-accent-red text-accent-red hover:bg-accent-red hover:text-ink transition-colors"
                   >
                     → Start AI analysis
                   </button>

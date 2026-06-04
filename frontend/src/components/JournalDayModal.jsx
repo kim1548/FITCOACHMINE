@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import axios from 'axios';
 import { API_BASE_URL } from '../api/config';
 import { Loader2 } from 'lucide-react';
@@ -88,7 +89,7 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
 
   const entryNo = String(dayOfYearOf(date)).padStart(3, '0');
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[200] bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-6"
       onClick={onClose}
@@ -348,7 +349,8 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
           })()}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 };
 

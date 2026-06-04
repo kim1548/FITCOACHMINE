@@ -7,8 +7,11 @@
 DELETE /me 는 회원 탈퇴 — 자신과 관련된 모든 로그를 함께 삭제한다.
 """
 
+from typing import Optional
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 
 from app.database import get_db
 from app.models.user import User
@@ -38,8 +41,44 @@ def get_me(
         "workout_frequency": current_user.workout_frequency,
         "fitness_level": current_user.fitness_level,
         "goal": current_user.goal,
+        "nickname": current_user.nickname,
+        "avatar": current_user.avatar,
         "nutrition": nutrition,
     }
+
+
+class ProfileUpdate(BaseModel):
+    nickname: Optional[str] = None
+    avatar: Optional[str] = None
+
+
+@router.patch("/me")
+def update_me(
+    payload: ProfileUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """프로필(닉네임·아바타) 수정. 닉네임은 중복 허용 표시명, avatar 는 프리셋 id.
+    값이 빈 문자열이면 NULL 로 비워(마스킹 폴백). 전달 안 된 필드는 그대로 둔다.
+
+    current_user 는 다른 세션에서 로드되므로, 주입된 db 세션에서 다시 조회해
+    수정한다(기존 delete_me 패턴)."""
+    user = db.query(User).filter(User.id == current_user.id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다.")
+    if payload.nickname is not None:
+        nn = payload.nickname.strip()
+        if len(nn) > 20:
+            raise HTTPException(status_code=400, detail="닉네임은 20자 이하여야 합니다.")
+        user.nickname = nn or None
+    if payload.avatar is not None:
+        av = payload.avatar.strip()
+        if len(av) > 40:
+            raise HTTPException(status_code=400, detail="아바타 값이 올바르지 않습니다.")
+        user.avatar = av or None
+    db.commit()
+    db.refresh(user)
+    return {"nickname": user.nickname, "avatar": user.avatar}
 
 
 @router.delete("/me")

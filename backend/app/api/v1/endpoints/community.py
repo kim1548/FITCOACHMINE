@@ -43,10 +43,15 @@ def _mask_nickname(username: Optional[str]) -> str:
 
 
 def _author_view(user: Optional[User]) -> dict:
+    if not user:
+        return {"user_id": None, "nickname": "익명", "age": None, "avatar": None}
+    # 닉네임을 설정했으면 그대로, 아니면 username 마스킹으로 폴백.
+    nick = user.nickname.strip() if user.nickname and user.nickname.strip() else _mask_nickname(user.username)
     return {
-        "user_id": user.id if user else None,
-        "nickname": _mask_nickname(user.username if user else None),
-        "age": user.age if user else None,
+        "user_id": user.id,
+        "nickname": nick,
+        "age": user.age,
+        "avatar": user.avatar,
     }
 
 

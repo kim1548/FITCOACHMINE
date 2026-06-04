@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 /**
  * 가이드 촬영 — 카메라를 띄우고 상단에 촬영 가이드 문구를 보여준다.
@@ -86,14 +87,18 @@ export default function GuidedCapture({ exercise, guide, onRecorded, onCancel })
     setRecording(false);
   }
 
-  return (
-    <div className="relative w-full aspect-video bg-black border border-ink/15 overflow-hidden flex items-center justify-center">
-      <video ref={videoRef} className="h-full w-auto object-contain" style={{ maxHeight: '100%', maxWidth: '100%' }} muted playsInline />
+  return createPortal(
+    <div className="fixed inset-0 z-[300] bg-black overflow-hidden">
+      {/* 휴대폰 카메라 앱처럼 화면 전체를 카메라로 채운다 */}
+      <video ref={videoRef} className="absolute inset-0 w-full h-full object-cover" muted playsInline />
 
       {/* 상단 가이드 문구 */}
       {!fatal && (
-        <div className="absolute top-0 left-0 right-0 z-20 px-4 pt-4 flex justify-center pointer-events-none">
-          <div className="font-display italic text-sm text-ink leading-relaxed bg-surface/85 px-4 py-2.5 rounded-sm max-w-[90%] text-center">
+        <div
+          className="absolute top-0 left-0 right-0 z-20 px-4 flex justify-center pointer-events-none"
+          style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1rem)' }}
+        >
+          <div className="font-display italic text-sm text-white leading-relaxed bg-black/55 backdrop-blur-sm px-4 py-2.5 rounded-sm max-w-[90%] text-center">
             {recording
               ? `● REC  ${String(Math.floor(elapsed / 60)).padStart(2, '0')}:${String(elapsed % 60).padStart(2, '0')}`
               : (guide || `${exercise} 자세가 잘 보이게 촬영해 주세요.`)}
@@ -108,7 +113,7 @@ export default function GuidedCapture({ exercise, guide, onRecorded, onCancel })
             <p className="font-display italic text-sm text-taupe leading-relaxed mb-5">{fatal}</p>
             <button
               onClick={onCancel}
-              className="font-mono text-[11px] tracking-label uppercase px-5 py-3 border border-ink/30 text-taupe hover:text-ink transition-colors"
+              className="font-mono text-[11px] tracking-label uppercase px-5 py-3 border border-white/30 text-white hover:bg-white/10 transition-colors"
             >
               ← 돌아가기
             </button>
@@ -118,12 +123,15 @@ export default function GuidedCapture({ exercise, guide, onRecorded, onCancel })
 
       {/* 하단 컨트롤 */}
       {!fatal && (
-        <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-center gap-4 pb-5">
+        <div
+          className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-center gap-4"
+          style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 1.5rem)' }}
+        >
           {!recording ? (
             <>
               <button
                 onClick={onCancel}
-                className="font-mono text-[10px] tracking-label uppercase px-4 py-2.5 border border-ink/30 text-taupe hover:text-ink transition-colors bg-surface/70"
+                className="font-mono text-[10px] tracking-label uppercase px-4 py-2.5 border border-white/40 text-white hover:bg-white/10 transition-colors bg-black/40"
               >
                 취소
               </button>
@@ -144,6 +152,7 @@ export default function GuidedCapture({ exercise, guide, onRecorded, onCancel })
           )}
         </div>
       )}
-    </div>
+    </div>,
+    document.body,
   );
 }

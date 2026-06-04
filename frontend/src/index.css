@@ -86,6 +86,14 @@ body {
   overflow: hidden;
   background: #14110d;
 }
+/* 모바일: 100vh 풀스크린의 빈 여백이 너무 커서 높이를 줄인다(콘텐츠는 JSX 에서 가운데 정렬).
+   85vh — 첫 화면은 표지만, 다음 섹션은 헤드라인 없이 경계선만 살짝 걸친다. */
+@media (max-width: 767px) {
+  .landing-hero {
+    height: auto;
+    min-height: 85vh;
+  }
+}
 .landing-hero::before {
   content: "";
   position: absolute;

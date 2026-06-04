@@ -184,7 +184,7 @@ const Landing = () => {
 
         {/* 히어로 — flex-1 로 남은 공간 차지, justify-end 로 콘텐츠 좌하단 정렬.
             min-h-0 가 없으면 작은 뷰포트에서 flex item 이 안 줄어들어 위로 흘러넘침. */}
-        <div className="relative z-10 flex-1 min-h-0 flex flex-col justify-end px-6 md:px-12 pt-12 pb-20 md:pb-28">
+        <div className="relative z-10 flex-1 min-h-0 flex flex-col justify-center md:justify-end px-6 md:px-12 pt-8 md:pt-12 pb-12 md:pb-28">
           <div className="max-w-[640px]">
             <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3 md:mb-4">
               — Premiere issue · Welcome
@@ -229,7 +229,7 @@ const Landing = () => {
         <div className="w-full">
 
           {/* What's inside */}
-          <section className="px-6 md:px-12 py-10 border-b border-ink/15">
+          <section className="px-6 md:px-12 py-8 md:py-10 border-b border-ink/15">
             <div className="max-w-[640px] pb-6 landing-reveal">
               <div className="flex items-baseline justify-between mb-3">
                 <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
@@ -276,7 +276,7 @@ const Landing = () => {
           </section>
 
           {/* How it works */}
-          <section className="px-6 md:px-12 py-10 border-b border-ink/15">
+          <section className="px-6 md:px-12 py-8 md:py-10 border-b border-ink/15">
             <div className="max-w-[640px] pb-6 landing-reveal">
               <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
                 — How it works
@@ -308,7 +308,7 @@ const Landing = () => {
           </section>
 
           {/* Closing CTA */}
-          <section className="px-6 md:px-12 py-12 border-b border-ink/15 bg-accent-red/[0.04]">
+          <section className="px-6 md:px-12 py-10 md:py-12 border-b border-ink/15 bg-accent-red/[0.04]">
             <div className="max-w-[640px] landing-reveal">
               <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
                 — Begin

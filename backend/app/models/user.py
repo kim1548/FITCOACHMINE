@@ -10,6 +10,11 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     password = Column(String)
 
+    # 프로필 (커뮤니티 표시용) — nickname 없으면 username 마스킹으로 폴백,
+    # avatar 는 프론트 프리셋 id (예: "avatar1"). 둘 다 선택 항목.
+    nickname = Column(String, nullable=True)
+    avatar = Column(String, nullable=True)
+
     # 상세 가입 정보
     gender = Column(String)              # 남, 여
     age = Column(Integer, nullable=True) # 나이 — BMR 계산에 필요. 기존 유저는 null 허용.

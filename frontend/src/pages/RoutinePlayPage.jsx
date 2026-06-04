@@ -160,31 +160,19 @@ const RoutinePlayPage = () => {
                     onCancel={() => setMode('choose')}
                   />
                 ) : (
-                  /* 선택: 촬영 / 업로드 */
+                  /* 가이드 촬영 / 영상 올리기 — 대사 제거, 버튼만 */
                   <div className="relative w-full aspect-video bg-black border border-ink/15 overflow-hidden flex items-center justify-center">
-                    <div className="text-center px-6 max-w-[460px]">
-                      <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-4">
-                        — Upload your evidence
-                      </div>
-                      <h2 className="font-display text-3xl md:text-4xl text-ink leading-[1.05] tracking-tight mb-3">
-                        {exId},<br />
-                        <em className="italic text-accent-gold">on record.</em>
-                      </h2>
-                      <p className="font-display italic text-sm text-taupe leading-relaxed mb-8">
-                        가이드 촬영으로 정확한 각도를 잡거나, 가지고 있는 영상을 업로드하세요.
-                      </p>
-                      <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                        <button
-                          onClick={() => setMode('record')}
-                          className="font-mono text-[11px] tracking-label uppercase px-6 py-3 border border-accent-red text-ink bg-accent-red hover:bg-accent-red/90 transition-colors"
-                        >
-                          ● 가이드 촬영
-                        </button>
-                        <label className="font-mono text-[11px] tracking-label uppercase px-6 py-3 border border-ink/25 text-taupe hover:text-ink hover:border-ink/45 transition-colors cursor-pointer">
-                          → 영상 올리기
-                          <input type="file" className="hidden" accept="video/*" onChange={handleFileSelected} />
-                        </label>
-                      </div>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3 px-6">
+                      <button
+                        onClick={() => setMode('record')}
+                        className="font-mono text-[11px] tracking-label uppercase px-6 py-3 border border-accent-red text-ink bg-accent-red hover:bg-accent-red/90 transition-colors"
+                      >
+                        ● 가이드 촬영
+                      </button>
+                      <label className="font-mono text-[11px] tracking-label uppercase px-6 py-3 border border-ink/25 text-taupe hover:text-ink hover:border-ink/45 transition-colors cursor-pointer">
+                        → 영상 올리기
+                        <input type="file" className="hidden" accept="video/*" onChange={handleFileSelected} />
+                      </label>
                     </div>
                   </div>
                 )}

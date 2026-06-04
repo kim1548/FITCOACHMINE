@@ -6,6 +6,7 @@ import PageSurface from "../components/PageSurface";
 import { useToast } from "../components/ui/Toast";
 import { useConfirm } from "../components/ui/ConfirmProvider";
 import usePageTitle from "../hooks/usePageTitle";
+import { avatarSrc } from "../constants/avatars";
 
 /**
  * Personals — 운동 메이트 매거진 컬럼 (Editorial Magazine 톤).
@@ -283,10 +284,14 @@ const PostCard = ({
   const noLabel = String(post.id).padStart(3, "0");
 
   return (
-    <article className="grid grid-cols-[72px_1fr_auto] gap-5 py-7 border-t border-ink/10 first:border-t-0 items-start">
-      {/* Avatar — 닉네임 첫 글자 */}
-      <div className="w-[72px] h-[72px] rounded-full bg-paper-soft border border-ink/15 flex items-center justify-center font-display italic text-2xl text-taupe">
-        {post.author.nickname?.[0]?.toUpperCase() || "?"}
+    <article className="grid grid-cols-[44px_1fr] md:grid-cols-[72px_1fr_auto] gap-4 md:gap-5 py-6 md:py-7 border-t border-ink/10 first:border-t-0 items-start">
+      {/* Avatar — 설정한 아바타 이미지, 없으면 닉네임 첫 글자 */}
+      <div className="w-11 h-11 md:w-[72px] md:h-[72px] rounded-full overflow-hidden bg-paper-soft border border-ink/15 flex items-center justify-center font-display italic text-lg md:text-2xl text-taupe">
+        {avatarSrc(post.author.avatar) ? (
+          <img src={avatarSrc(post.author.avatar)} alt="" className="w-full h-full object-cover" />
+        ) : (
+          post.author.nickname?.[0]?.toUpperCase() || "?"
+        )}
       </div>
 
       {/* 본문 컬럼 */}
@@ -294,12 +299,16 @@ const PostCard = ({
         {/* 헤더 라인 */}
         <div className="flex items-baseline gap-2.5 flex-wrap mb-1">
           <span className="font-display italic text-[11px] text-hint">No. {noLabel}</span>
-          <span className="font-display text-xl text-ink leading-tight">
+          <span className="font-display text-lg md:text-xl text-ink leading-tight">
             {post.author.nickname}
           </span>
           <span className="font-mono text-[11px] text-taupe">
             {post.author.age != null && <>· {post.author.age}</>}
             {post.address && <> · {post.address}</>}
+          </span>
+          {/* Active — 모바일은 헤더 줄 우측에 inline (데스크탑은 우측 컬럼에 별도 표시) */}
+          <span className="md:hidden ml-auto font-mono text-[9px] text-hint tracking-meta uppercase whitespace-nowrap">
+            ● {timeAgo(post.created_at)}
           </span>
         </div>
 
@@ -363,14 +372,14 @@ const PostCard = ({
         )}
       </div>
 
-      {/* Active status (우측 상단) */}
-      <div className="font-mono text-[9px] text-hint tracking-meta uppercase whitespace-nowrap pt-1">
+      {/* Active status (우측 상단) — 데스크탑 전용, 모바일은 헤더 라인에 inline */}
+      <div className="hidden md:block font-mono text-[9px] text-hint tracking-meta uppercase whitespace-nowrap pt-1">
         ● Active {timeAgo(post.created_at)}
       </div>
 
       {/* 댓글 영역 (펼침 시 full width) */}
       {expanded && (
-        <div className="col-span-3 ml-[92px] mt-4 pt-4 border-t border-ink/12">
+        <div className="col-span-2 md:col-span-3 ml-0 md:ml-[92px] mt-4 pt-4 border-t border-ink/12">
           <div className="font-mono text-[10px] text-accent-gold tracking-label uppercase mb-3">
             — Notes ({post.comment_count})
           </div>

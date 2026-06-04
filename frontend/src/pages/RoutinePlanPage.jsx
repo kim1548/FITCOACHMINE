@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { programInitialState, getProgram, resolveSession } from '../programs';
@@ -303,15 +304,15 @@ const RoutinePlanPage = ({ theme }) => {
                 <div className="flex gap-3 mt-5">
                   <button
                     onClick={handleReset}
-                    className="font-mono text-[11px] tracking-label uppercase px-5 py-3 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
+                    className="font-mono text-[11px] tracking-label uppercase px-5 py-2.5 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
                   >
                     ↻ Reset
                   </button>
                   <button
                     onClick={handleResume}
-                    className="flex-1 font-mono text-[11px] tracking-label uppercase px-5 py-3 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
+                    className="flex-1 font-mono text-[11px] tracking-label uppercase px-5 py-2.5 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
                   >
-                    Continue session →
+                    Continue session<span className="hidden md:inline"> →</span>
                   </button>
                 </div>
               </div>
@@ -458,7 +459,7 @@ const RoutinePlanPage = ({ theme }) => {
       {/* ====================================================
           Program select modal (variant + weight input)
           ==================================================== */}
-      {selectedId && PROGRAM_LIFTS[selectedId] && (
+      {selectedId && PROGRAM_LIFTS[selectedId] && createPortal(
         <div
           className="fixed inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in duration-200"
           onClick={() => setSelectedId(null)}
@@ -586,13 +587,14 @@ const RoutinePlanPage = ({ theme }) => {
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
 
       {/* ====================================================
           1RM calculator modal
           ==================================================== */}
-      {showCalc && (
+      {showCalc && createPortal(
         <div
           className="fixed inset-0 z-[300] flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-in fade-in duration-200"
           onClick={() => setShowCalc(false)}
@@ -733,7 +735,8 @@ const RoutinePlanPage = ({ theme }) => {
               </p>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

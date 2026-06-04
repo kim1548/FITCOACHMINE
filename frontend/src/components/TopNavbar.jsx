@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AuthPromptModal from "./ui/AuthPromptModal";
+import AvatarMenu from "./AvatarMenu";
 
 /**
  * Editorial Magazine 톤의 상단 마스트헤드.
@@ -75,9 +76,7 @@ const TopNavbar = ({ onOpenSettings }) => {
           </span>
           {user ? (
             <>
-              <span className="text-hint hidden md:inline normal-case tracking-normal">
-                {user.username}
-              </span>
+              <AvatarMenu />
               <button
                 onClick={onOpenSettings}
                 className="text-taupe hover:text-ink transition-colors"
@@ -106,8 +105,8 @@ const TopNavbar = ({ onOpenSettings }) => {
         </div>
       </div>
 
-      {/* Line 2 — Section tabs */}
-      <div className="flex gap-6 px-6 py-2 font-mono text-[11px] tracking-meta uppercase overflow-x-auto [&::-webkit-scrollbar]:hidden">
+      {/* Line 2 — Section tabs (데스크탑 전용 · 모바일은 하단 탭바 BottomNav 가 대체) */}
+      <div className="hidden md:flex gap-6 px-6 py-2 font-mono text-[11px] tracking-meta uppercase overflow-x-auto [&::-webkit-scrollbar]:hidden">
         {TABS.map((tab) => {
           const active = tab.match(location.pathname);
           return (

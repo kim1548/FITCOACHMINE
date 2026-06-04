@@ -2,7 +2,9 @@
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import TopNavbar from "./components/TopNavbar";
+import BottomNav from "./components/BottomNav";
 import SettingsDrawer from "./components/SettingsDrawer";
+import ReminderScheduler from "./components/ReminderScheduler";
 import DietPage from "./pages/DietPage";
 import JournalPage from "./pages/JournalPage";
 import BodyPage from "./pages/BodyPage";
@@ -43,6 +45,7 @@ const AppContent = () => {
         path="*"
         element={
           <div className="fixed inset-0 bg-surface text-ink flex flex-col overflow-hidden">
+            <ReminderScheduler />
             <TopNavbar onOpenSettings={() => setSettingsOpen(true)} />
             <main className="flex-1 relative overflow-hidden flex justify-center">
               <Routes>
@@ -62,6 +65,7 @@ const AppContent = () => {
                 <Route path="/community" element={<CommunityPage theme={theme} />} />
               </Routes>
             </main>
+            <BottomNav />
             <SettingsDrawer
               isOpen={settingsOpen}
               onClose={() => setSettingsOpen(false)}

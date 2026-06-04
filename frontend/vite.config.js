@@ -1,8 +1,47 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      devOptions: { enabled: true, type: 'module' },
+      includeAssets: [
+        'favicon.svg',
+        'favicon-32.png',
+        'apple-touch-icon-180.png',
+        'pwa-192x192.png',
+        'pwa-512x512.png',
+        'pwa-maskable-512x512.png',
+      ],
+      manifest: {
+        name: 'FitCoach — 매일의 strength 저널',
+        short_name: 'FitCoach',
+        description:
+          'FitCoach — 운동·식단·체성분 기록이 한 권의 매거진처럼 쌓이는 헬스 코칭 트래커.',
+        lang: 'ko',
+        theme_color: '#14110d',
+        background_color: '#14110d',
+        display: 'standalone',
+        orientation: 'portrait',
+        start_url: '/',
+        scope: '/',
+        icons: [
+          { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: 'pwa-maskable-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,svg,woff2}'],
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api/],
+        cleanupOutdatedCaches: true,
+      },
+    }),
+  ],
   optimizeDeps: {
     // Mediapipe가 Vite의 의존성 분석 시스템을 통과하지 못하게 아예 제외시킵니다.
     exclude: ['@mediapipe/pose', '@mediapipe/camera_utils'],
