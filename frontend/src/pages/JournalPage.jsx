@@ -30,6 +30,9 @@ const JournalPage = ({ theme }) => {
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(null);
   const [nutrition, setNutrition] = useState(null);
+  const [weekly, setWeekly] = useState(null);
+  const [weeklySummary, setWeeklySummary] = useState(null);
+  const [weeklyGenerating, setWeeklyGenerating] = useState(false);
 
   const fetchCalendar = useCallback(() => {
     setLoading(true);
@@ -43,6 +46,27 @@ const JournalPage = ({ theme }) => {
   }, [year, month]);
 
   useEffect(() => { fetchCalendar(); }, [fetchCalendar]);
+
+  // 주간 리포트 통계는 진입 시 즉시 로드 (AI 총평은 버튼으로 별도 생성)
+  useEffect(() => {
+    axios
+      .get(`${API_BASE_URL}/report/weekly`, { headers: authHeaders() })
+      .then((res) => setWeekly(res.data))
+      .catch(() => setWeekly(null));
+  }, []);
+
+  const generateWeekly = async () => {
+    setWeeklyGenerating(true);
+    try {
+      const res = await axios.post(`${API_BASE_URL}/report/weekly/ai`, {}, { headers: authHeaders() });
+      setWeeklySummary(res.data.summary);
+      setWeekly(res.data);
+    } catch (err) {
+      setWeeklySummary('AI 총평 생성에 실패했습니다. (Ollama 서버가 켜져 있는지 확인하세요)');
+    } finally {
+      setWeeklyGenerating(false);
+    }
+  };
 
   useEffect(() => {
     axios.get(`${API_BASE_URL}/user/me`, { headers: authHeaders() })
@@ -119,6 +143,75 @@ const JournalPage = ({ theme }) => {
             날짜를 누르면 그 날의 entry — 운동, 식단, 체성분, coach's note 가 펼쳐집니다.
           </p>
         </div>
+
+        {/* 이번 주 리포트 카드 */}
+        {weekly && (
+          <section className="border border-ink/12 p-5 mb-6">
+            <div className="flex items-baseline justify-between mb-4">
+              <div className="font-mono text-[11px] text-accent-gold tracking-label uppercase">
+                — 이번 주 리포트{' '}
+                <span className="text-hint normal-case tracking-normal">{weekly.period}</span>
+              </div>
+              <button
+                onClick={generateWeekly}
+                disabled={weeklyGenerating}
+                className="font-mono text-[10px] tracking-meta uppercase text-hint hover:text-ink transition-colors disabled:opacity-50"
+              >
+                {weeklyGenerating ? '생성 중…' : weeklySummary ? '↻ 다시 생성' : '✦ AI 총평'}
+              </button>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mb-1">운동</div>
+                <div className="font-display text-2xl text-ink tabular-nums leading-none">
+                  {weekly.workout_count}<span className="font-display italic text-base text-taupe ml-1">회</span>
+                </div>
+              </div>
+              <div>
+                <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mb-1">식단 기록</div>
+                <div className="font-display text-2xl text-ink tabular-nums leading-none">
+                  {weekly.diet_days}<span className="font-display italic text-base text-taupe ml-1">일</span>
+                </div>
+              </div>
+              <div>
+                <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mb-1">체중 변화</div>
+                <div className="font-display text-2xl text-ink tabular-nums leading-none">
+                  {weekly.weight_change != null
+                    ? `${weekly.weight_change > 0 ? '+' : ''}${weekly.weight_change}`
+                    : '—'}
+                  {weekly.weight_change != null && (
+                    <span className="font-display italic text-base text-taupe ml-1">kg</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {weekly.avg_calories ? (
+              <div className="font-mono text-[10px] text-hint tracking-meta mt-3">
+                일 평균 {weekly.avg_calories}kcal · 단백질 {weekly.avg_protein}g
+                {weekly.total_volume ? ` · 총 볼륨 ${weekly.total_volume}kg` : ''}
+              </div>
+            ) : null}
+
+            {weeklyGenerating ? (
+              <div className="flex items-center gap-2 text-taupe mt-4 pt-4 border-t border-ink/8">
+                <Loader2 className="animate-spin" size={15} />
+                <span className="font-display italic text-sm leading-relaxed">
+                  AI가 이번 주 기록을 요약 중입니다… (수십 초 걸릴 수 있어요)
+                </span>
+              </div>
+            ) : weeklySummary ? (
+              <blockquote className="font-display italic text-[14px] text-body leading-relaxed border-l-2 border-accent-gold pl-3 mt-4 m-0">
+                "{weeklySummary}"
+              </blockquote>
+            ) : (
+              <p className="font-display italic text-[12px] text-hint mt-4 leading-relaxed">
+                "✦ AI 총평"을 누르면 이번 주 기록을 바탕으로 코치 코멘트를 생성합니다.
+              </p>
+            )}
+          </section>
+        )}
 
         {/* 월 네비게이션 — 전체 폭 */}
         <div className="flex items-baseline justify-between border-t border-b border-ink/12 py-3">

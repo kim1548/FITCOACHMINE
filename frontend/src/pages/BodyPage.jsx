@@ -69,6 +69,7 @@ const BodyPage = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [regenId, setRegenId] = useState(null); // AI 총평 생성 중인 측정 id
 
   const fetchLogs = useCallback(() => {
     setLoading(true);
@@ -110,6 +111,19 @@ const BodyPage = () => {
       fetchLogs();
     } catch (err) {
       toast.error('삭제에 실패했습니다.');
+    }
+  };
+
+  // AI 총평을 동기로 생성/재생성 (직전 측정과 비교, 첫 측정이면 baseline). 수십 초 소요.
+  const handleRegenerate = async (id) => {
+    setRegenId(id);
+    try {
+      const res = await axios.post(`${API_BASE_URL}/body/${id}/regenerate`, {}, { headers: authHeaders() });
+      setLogs((prev) => prev.map((l) => (l.id === id ? res.data : l)));
+    } catch (err) {
+      toast.error('AI 총평 생성에 실패했습니다. (Ollama 서버가 켜져 있는지 확인하세요)');
+    } finally {
+      setRegenId(null);
     }
   };
 
@@ -207,6 +221,39 @@ const BodyPage = () => {
                     );
                   })}
                 </div>
+              </section>
+
+              {/* AI 총평 — 직전 측정 대비 변화 평가 (Ollama gemma3:4b) */}
+              <section className="border-b border-ink/12 py-6 mb-2">
+                <div className="flex items-baseline justify-between mb-3">
+                  <div className="font-mono text-[11px] text-accent-gold tracking-label uppercase">
+                    — AI 총평
+                  </div>
+                  <button
+                    onClick={() => handleRegenerate(latest.id)}
+                    disabled={regenId === latest.id}
+                    className="font-mono text-[10px] tracking-meta uppercase text-hint hover:text-ink transition-colors disabled:opacity-50"
+                  >
+                    {regenId === latest.id ? '생성 중…' : latest.ai_comment ? '↻ 다시 생성' : '✦ 총평 생성'}
+                  </button>
+                </div>
+
+                {regenId === latest.id ? (
+                  <div className="flex items-center gap-2 text-taupe">
+                    <Loader2 className="animate-spin" size={16} />
+                    <span className="font-display italic text-sm leading-relaxed">
+                      AI가 직전 측정과 비교해 총평을 작성 중입니다… (수십 초 걸릴 수 있어요)
+                    </span>
+                  </div>
+                ) : latest.ai_comment ? (
+                  <blockquote className="font-display italic text-[15px] text-body leading-relaxed border-l-2 border-accent-gold pl-3 m-0">
+                    "{latest.ai_comment}"
+                  </blockquote>
+                ) : (
+                  <p className="font-display italic text-sm text-taupe leading-relaxed">
+                    아직 총평이 없습니다. "총평 생성"을 누르면 직전 측정과 비교해 AI가 작성합니다.
+                  </p>
+                )}
               </section>
 
               {/* Chart 1: Weight / Muscle / Fat (kg) */}

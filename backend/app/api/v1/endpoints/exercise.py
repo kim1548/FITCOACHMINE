@@ -1,18 +1,26 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 import numpy as np
-from fastapi import APIRouter
 import os
+import tempfile
 from app.core.constants import EXERCISE_CATEGORIES, CAMERA_GUIDE, FEEDBACK_MESSAGES, GUIDE_IMAGES
+import httpx
 
 router = APIRouter()
 
+# 운동 분류 사이드카(3.10 venv / sklearn 1.3.2)의 주소. 메인은 sklearn 1.8이라
+# 모델을 직접 못 돌리므로 이 서비스에 프레임 분류를 위임한다.
+MODEL_SERVICE_URL = os.environ.get("MODEL_SERVICE_URL", "http://127.0.0.1:8002")
+_model_client = httpx.AsyncClient(timeout=2.0)
+
+# 영상 분석 사이드카(YOLO+MediaPipe+모델/룰, 3.10 venv). 업로드 영상을 통째로 위임.
+VIDEO_SERVICE_URL = os.environ.get("VIDEO_SERVICE_URL", "http://127.0.0.1:8003")
+
 # 전역 상태 (메모리 관리)
-counter = 0
-stage = "ready"
 error_counts = {}
 total_frames = 0
+model_frames = 0         # 모델이 실제로 판정한 프레임 수 (점수 계산 분모)
 
 YOLO_WEIGHTS_PATH = "./models/exercise/best_big_bounding.pt"
 EXERCISE_MODEL_PATHS = {
@@ -166,7 +174,7 @@ def _exercise_match_verdict():
 
 @router.post("/analyze")
 async def analyze_exercise(data: ExerciseData):
-    global counter, stage, error_counts, total_frames, orient_clear, orient_contradict
+    global error_counts, total_frames, model_frames, orient_clear, orient_contradict
     landmarks = data.landmarks
     total_frames += 1
 
@@ -174,7 +182,7 @@ async def analyze_exercise(data: ExerciseData):
     guide_text = CAMERA_GUIDE.get(data.exercise_type, "카메라를 고정하고 전신이 나오게 해주세요.")
 
     if not landmarks or len(landmarks) < 33:
-        return {"counter": counter, "guide": guide_text, "angle": 0, "exercise_match": True}
+        return {"guide": guide_text, "exercise_match": True, "exercise_supported": True}
 
     # 운동-종류 검증: 방향이 명확한 운동만, 강한 모순이 누적될 때 불일치로 판정
     expected = "vertical" if data.exercise_type in UPRIGHT_EXERCISES else (
@@ -187,81 +195,132 @@ async def analyze_exercise(data: ExerciseData):
                 orient_contradict += 1
     exercise_match = _exercise_match_verdict()
 
+    # 모델 사이드카(3.10 venv)에 프레임 분류 요청
     try:
-        step = 4
-        hip = [landmarks[24*step], landmarks[24*step+1]]
-        knee = [landmarks[26*step], landmarks[26*step+1]]
-        ankle = [landmarks[28*step], landmarks[28*step+1]]
-        
-        # 각도 계산 (numpy)
-        a, b, c = np.array(hip), np.array(knee), np.array(ankle)
-        radians = np.arctan2(c[1]-b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
-        angle = np.abs(radians * 180.0 / np.pi)
-        if angle > 180.0: angle = 360 - angle
-
-        # 카운팅
-        if angle < 120: stage = "down"
-        elif angle > 160 and stage == "down":
-            stage = "up"
-            counter += 1
-
-        # 에러 판정 및 좌표 추출 로직 강화
-        current_error = None
-        feedback_points = [] # 프론트엔드에 전달할 좌표 리스트
-        error_severity = 0.0  # 0이면 정상, 클수록 심함 — 프론트가 '가장 심한 프레임' 선택에 사용
-
-        # 예시: 무릎 꺾임 에러 발생 시
-        if angle < 130 and abs(knee[0] - ankle[0]) > 0.05:
-            current_error = "caved_in_knees"
-            error_severity = round(abs(knee[0] - ankle[0]), 4)  # 무릎-발목 수평 이격 → 클수록 더 안쪽으로 꺾임
-            error_counts[current_error] = error_counts.get(current_error, 0) + 1
-            
-            # 모델 담당자가 정의한 ERROR_BODY_PARTS에 따라 좌표 추출 (무릎: 25, 26)
-            # landmarks는 [x, y, z, v, x, y, z, v...] 형태이므로 4씩 곱해서 접근
-            indices = ERROR_BODY_PARTS.get("caved_in_knees", [])
-            for idx in indices:
-                feedback_points.append({
-                    "x": landmarks[idx * 4],
-                    "y": landmarks[idx * 4 + 1]
-                })
-
-        # 관대한 점수 (최하 65점 보장)
-        penalty = (len(error_counts) * 5) + ( (sum(error_counts.values())/total_frames)*30 if total_frames > 0 else 0 )
-        total_score = max(65, int(100 - penalty))
-
-        return {
-            "counter": counter,
-            "angle": round(angle, 1),
-            "score": total_score,
-            "exercise_match": exercise_match,  # False면 프론트가 점수 대신 '운동 불일치' 화면 표시
-            "error_key": current_error,
-            "error_severity": error_severity,  # 가장 심한 프레임 선별용
-            "error_category": ERROR_CATEGORY_MAP.get(current_error) if current_error else None,  # 어느 진단 섹터의 스크린샷인지
-            "feedback_points": feedback_points, # 이 좌표를 리액트가 사용함
-            "guide": guide_text,
-            "overlay_message": OVERLAY_MESSAGES.get(current_error, ""), # 화면 상단 노출용
-            "overall": f"{counter}회 완료! {total_score}점.",
-            "cat_scores": {
-                "Stability": max(70, 100 - (error_counts.get("caved_in_knees", 0) * 2)),
-                "Posture": 95, 
-                "ROM": 100 if angle < 100 else 85,
-                "Movement Quality": 90,
-                "Core": 88
-            },
-            "cat_details": {
-                "Stability": FEEDBACK_MESSAGES["caved_in_knees"] if "caved_in_knees" in error_counts else "하체 중심이 견고합니다.",
-                "Posture": "상체 각도가 아주 안정적입니다.",
-                "ROM": "가동 범위가 충분합니다.",
-                "Movement Quality": "하강 속도가 일정하여 근육의 긴장이 잘 유지됩니다.",
-                "Core": "복압 유지가 잘 되어 허리 부담이 적습니다."
-            }
-        }
+        resp = await _model_client.post(
+            f"{MODEL_SERVICE_URL}/predict",
+            json={"landmarks": landmarks, "exercise_type": data.exercise_type},
+        )
+        pred = resp.json()
     except Exception:
-        return {"counter": counter, "guide": guide_text, "exercise_match": exercise_match}
+        pred = None
+
+    # 사이드카 연결 실패 → 일시 오류 안내(점수 없음)
+    if pred is None:
+        return {"guide": guide_text, "exercise_match": exercise_match,
+                "exercise_supported": True, "analysis_error": True,
+                "overall": "분석 서비스에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요."}
+
+    # 모델 없는 운동(15종) → '정밀 분석 준비 중'으로 프론트가 처리
+    if not pred.get("available"):
+        return {"guide": guide_text, "exercise_match": exercise_match,
+                "exercise_supported": False}
+
+    # --- 모델 예측 기반 집계 ---
+    error = pred.get("error") or "correct"   # 사이드카가 그룹 확률로 판정한 verdict
+    model_errors = pred.get("errors", [])
+    approx = bool(pred.get("approx"))
+    model_frames += 1
+
+    current_error = None
+    feedback_points = []
+    error_severity = 0.0
+    if error and error != "correct":
+        current_error = error
+        error_counts[error] = error_counts.get(error, 0) + 1
+        error_severity = round(float(pred.get("proba", 0.0)), 4)  # 예측 신뢰도 = 심각도 proxy
+        for idx in ERROR_BODY_PARTS.get(error, []):
+            feedback_points.append({"x": landmarks[idx * 4], "y": landmarks[idx * 4 + 1]})
+
+    # 이 운동이 '평가하는' 카테고리 = 모델이 보는 에러들의 카테고리만 (측정 안 하는 항목은 노출 X)
+    evaluated_cats = []
+    for e in model_errors:
+        c = ERROR_CATEGORY_MAP.get(e)
+        if c and c not in evaluated_cats:
+            evaluated_cats.append(c)
+
+    # 점수: 에러가 '지속적'일 때만 감점. 소수 프레임의 일시적 오탐은 정상으로 본다.
+    PROBLEM_RATIO = 0.30  # 전체 프레임의 30% 이상 잡혀야 실제 문제로 인정
+    denom = max(model_frames, 1)
+    cat_scores = {}
+    cat_details = {}
+    for cat in evaluated_cats:
+        cat_err_keys = [e for e in model_errors if ERROR_CATEGORY_MAP.get(e) == cat]
+        cat_err_total = sum(error_counts.get(e, 0) for e in cat_err_keys)
+        ratio = cat_err_total / denom
+        worst = max(cat_err_keys, key=lambda e: error_counts.get(e, 0), default=None)
+        if ratio >= PROBLEM_RATIO and worst:
+            cat_scores[cat] = max(45, int(round(100 - (ratio - PROBLEM_RATIO) * 90 - 15)))
+            cat_details[cat] = FEEDBACK_MESSAGES.get(worst, "자세를 점검해 보세요.")
+        else:
+            cat_scores[cat] = max(88, int(round(100 - ratio * 20)))  # 사실상 정상 → 거의 만점
+            cat_details[cat] = CATEGORY_PRAISE.get(cat, "좋습니다.")
+
+    total_score = int(round(sum(cat_scores.values()) / len(cat_scores))) if cat_scores else 100
+
+    overall = f"{total_score}점 — 자세 분석 완료."
+    if approx:
+        overall += " (근사 분석)"
+
+    return {
+        "score": total_score,
+        "exercise_match": exercise_match,   # False면 프론트가 '운동 불일치' 화면 표시
+        "exercise_supported": True,
+        "approx": approx,                   # 변형 매핑(근사 분석) 여부
+        "error_key": current_error,
+        "error_severity": error_severity,   # 가장 심한 프레임 선별용
+        "error_category": ERROR_CATEGORY_MAP.get(current_error) if current_error else None,
+        "feedback_points": feedback_points,
+        "guide": guide_text,
+        "overlay_message": OVERLAY_MESSAGES.get(current_error, ""),
+        "overall": overall,
+        "cat_scores": cat_scores,
+        "cat_details": cat_details,
+    }
 
 @router.post("/reset")
 async def reset_counter():
-    global counter, stage, error_counts, total_frames, orient_clear, orient_contradict
-    counter, stage, total_frames, error_counts = 0, "ready", 0, {}
+    global error_counts, total_frames, model_frames, orient_clear, orient_contradict
+    total_frames, model_frames, error_counts = 0, 0, {}
     orient_clear, orient_contradict = 0, 0
     return {"status": "success"}
+
+
+@router.get("/analyze_progress")
+async def analyze_progress(job_id: str):
+    """분석 진행률(%)을 사이드카에서 받아 중계. 프론트가 폴링한다."""
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.get(f"{VIDEO_SERVICE_URL}/progress", params={"job_id": job_id})
+        return resp.json()
+    except Exception:
+        return {"percent": 0}
+
+
+@router.post("/analyze_video")
+async def analyze_video_proxy(
+    exercise_type: str = Form(...),
+    file: UploadFile = File(...),
+    job_id: str = Form(""),
+):
+    """업로드된 운동 영상을 임시 저장 후, 영상 분석 사이드카(8003)에 위임하고 결과를 중계.
+    사이드카가 YOLO 크롭 + MediaPipe + 모델/룰 + 이벤트 점수까지 수행한다."""
+    suffix = os.path.splitext(file.filename or "")[1] or ".mp4"
+    fd, path = tempfile.mkstemp(suffix=suffix)
+    with os.fdopen(fd, "wb") as f:
+        f.write(await file.read())
+    try:
+        async with httpx.AsyncClient(timeout=600.0) as client:
+            resp = await client.post(
+                f"{VIDEO_SERVICE_URL}/analyze_video",
+                json={"video_path": path, "exercise_type": exercise_type, "job_id": job_id},
+            )
+        return resp.json()
+    except Exception as e:
+        return {"analysis_error": True, "exercise_supported": True,
+                "overall": f"분석 서비스에 연결하지 못했습니다: {e}"}
+    finally:
+        try:
+            os.remove(path)
+        except OSError:
+            pass

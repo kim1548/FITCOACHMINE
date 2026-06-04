@@ -70,12 +70,69 @@ const FeedbackDetail = ({ result, exerciseName, onReset, onSaveToJournal }) => {
     );
   }
 
+  // 분석 서비스 일시 오류 (사이드카 연결 실패 등)
+  if (result.analysis_error) {
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <header className="pb-6">
+          <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+            — Analysis unavailable
+          </div>
+          <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
+            분석을 <em className="italic text-accent-gold">완료하지 못했습니다.</em>
+          </h1>
+          <p className="font-display italic text-[15px] text-body leading-relaxed border-l-2 border-accent-red pl-3 mt-5 m-0">
+            "{result.overall || '분석 서비스에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.'}"
+          </p>
+        </header>
+        <section className="border-t border-ink/15 pt-6 mt-2">
+          <button onClick={onReset} className="font-mono text-[11px] tracking-label uppercase px-5 py-3 border border-accent-red text-accent-red hover:bg-accent-red hover:text-ink transition-colors">
+            ↻ 다시 시도
+          </button>
+        </section>
+      </div>
+    );
+  }
+
+  // 모델 미지원 운동 — 정밀 분석 준비 중 (가짜 점수 대신 정직하게 안내)
+  if (result.exercise_supported === false) {
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <header className="pb-6">
+          <div className="font-mono text-[11px] text-accent-gold tracking-label uppercase mb-3">
+            — Coming soon
+          </div>
+          <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
+            <em className="italic text-accent-gold">{exerciseName}</em> 정밀 분석은<br />
+            준비 중입니다.
+          </h1>
+          <p className="font-display italic text-[15px] text-body leading-relaxed border-l-2 border-accent-gold pl-3 mt-5 m-0">
+            "현재 스쿼트·벤치프레스·데드리프트(및 그 변형)에 대해 AI 자세 분석을 제공합니다.
+            이 운동은 곧 추가될 예정입니다."
+          </p>
+        </header>
+        <section className="border-t border-ink/15 pt-6 mt-2">
+          <button onClick={onReset} className="font-mono text-[11px] tracking-label uppercase px-5 py-3 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors">
+            ↻ 다른 운동 분석
+          </button>
+        </section>
+        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[11px] text-hint tracking-meta">
+          <span className="uppercase">— FITCOACH —</span>
+          <span className="uppercase text-taupe">Form analysis · {exerciseName}</span>
+        </div>
+      </div>
+    );
+  }
+
   const score = result.score || 0;
   const verdict = verdictOf(score);
 
-  const radarData = CATEGORIES.map((c) => ({
+  // 모델이 실제로 평가한 카테고리만 표시 (측정 안 한 항목을 0점으로 보여주지 않음)
+  const shownCats = CATEGORIES.filter((c) => result.cat_scores?.[c.key] != null);
+  const showRadar = shownCats.length >= 3; // 2개 이하면 레이더가 선처럼 찌그러지므로 막대만
+  const radarData = shownCats.map((c) => ({
     subject: c.label,
-    A: result.cat_scores?.[c.key] || 0,
+    A: result.cat_scores[c.key],
   }));
 
   return (
@@ -86,6 +143,7 @@ const FeedbackDetail = ({ result, exerciseName, onReset, onSaveToJournal }) => {
         <div className="flex items-baseline justify-between mb-3">
           <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
             — Entry · Form analysis
+            {result.approx && <span className="text-taupe normal-case tracking-normal"> · 근사 분석</span>}
           </div>
           <div className={`font-mono text-[10px] tracking-label uppercase ${verdict.cls}`}>
             {verdict.tag}
@@ -104,7 +162,7 @@ const FeedbackDetail = ({ result, exerciseName, onReset, onSaveToJournal }) => {
       </header>
 
       {/* Score + Radar */}
-      <section className="border-t border-ink/15 grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-6 md:gap-8 py-6">
+      <section className={`border-t border-ink/15 py-6 ${showRadar ? 'grid grid-cols-1 md:grid-cols-[1fr_1.2fr] gap-6 md:gap-8' : ''}`}>
 
         {/* Score */}
         <div>
@@ -128,9 +186,9 @@ const FeedbackDetail = ({ result, exerciseName, onReset, onSaveToJournal }) => {
             />
           </div>
 
-          {/* Per-category mini rows */}
+          {/* Per-category mini rows — 모델이 평가한 항목만 */}
           <div className="border-t border-ink/12 mt-5 pt-1">
-            {CATEGORIES.map((c, i, arr) => {
+            {shownCats.map((c, i, arr) => {
               const v = result.cat_scores?.[c.key];
               return (
                 <div
@@ -151,7 +209,8 @@ const FeedbackDetail = ({ result, exerciseName, onReset, onSaveToJournal }) => {
           </div>
         </div>
 
-        {/* Radar */}
+        {/* Radar — 평가 카테고리가 3개 이상일 때만 (2개 이하면 찌그러져서 생략) */}
+        {showRadar && (
         <div className="md:border-l md:border-ink/12 md:pl-8">
           <div className="font-mono text-[10px] text-accent-gold tracking-label uppercase mb-3">
             — Performance chart
@@ -176,6 +235,7 @@ const FeedbackDetail = ({ result, exerciseName, onReset, onSaveToJournal }) => {
             </ResponsiveContainer>
           </div>
         </div>
+        )}
       </section>
 
       {/* Diagnosis details */}

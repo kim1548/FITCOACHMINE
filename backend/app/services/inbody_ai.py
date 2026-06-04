@@ -9,11 +9,25 @@ journal_ai 와 구조는 비슷하지만 저장 위치(InBodyLog)와 프롬프�
 외부 호출 진입점은 `generate_and_save_body_comment(log_id)` 하나.
 """
 
+import re
 from datetime import datetime
 from typing import Optional
 
 import httpx
 from sqlalchemy.orm import Session
+
+# 이모지/그림문자 제거용 (프롬프트에 '이모지 금지'라 적어도 모델이 종종 넣음)
+_EMOJI = re.compile(
+    "["
+    "\U0001F300-\U0001FAFF"   # 그림문자·이모티콘·교통·보조기호
+    "\U00002600-\U000027BF"   # 기타기호 + 딩뱃
+    "\U0001F1E6-\U0001F1FF"   # 국기
+    "\U0000FE00-\U0000FE0F"   # 변형 선택자
+    "\U00002190-\U000021FF"   # 화살표류
+    "\U00002B00-\U00002BFF"   # 별·도형 등
+    "]+",
+    flags=re.UNICODE,
+)
 
 from app.database import SessionLocal
 from app.models.user import User
@@ -111,17 +125,21 @@ def _call_gemma(prompt: str) -> Optional[str]:
                 "model": OLLAMA_MODEL,
                 "prompt": prompt,
                 "stream": False,
+                "keep_alive": "10m",   # 모델을 메모리에 유지 → 다음 호출의 재로딩 지연 제거
                 "options": {
                     "temperature": 0.7,
-                    "num_predict": 200,
+                    "num_predict": 150,  # 코멘트는 100자 이내라 토큰을 줄여 생성시간 단축
                     "stop": ["\n\n"],
                 },
             },
-            timeout=60.0,
+            timeout=90.0,
         )
         response.raise_for_status()
         raw = (response.json().get("response") or "").strip()
-        return raw.replace("**", "").replace("*", "").strip(' "\'') or None
+        raw = raw.replace("**", "").replace("*", "")
+        raw = _EMOJI.sub("", raw)
+        raw = re.sub(r"\s{2,}", " ", raw).strip(' "\'')
+        return raw or None
     except Exception as exc:
         print(f"[inbody_ai] Gemma 호출 실패: {exc}")
         return None

@@ -21,7 +21,7 @@ import httpx
 from fastapi.staticfiles import StaticFiles
 from app.api.v1.endpoints import (
     routine, journal, user as user_endpoint, body as body_endpoint,
-    community as community_endpoint,
+    community as community_endpoint, report as report_endpoint,
 )
 from sqlalchemy import inspect, text
 
@@ -132,6 +132,7 @@ app.include_router(journal.router, prefix="/api/v1/journal", tags=["journal"])
 app.include_router(user_endpoint.router, prefix="/api/v1/user", tags=["user"])
 app.include_router(body_endpoint.router, prefix="/api/v1/body", tags=["body"])
 app.include_router(community_endpoint.router, prefix="/api/v1/community", tags=["community"])
+app.include_router(report_endpoint.router, prefix="/api/v1/report", tags=["report"])
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
