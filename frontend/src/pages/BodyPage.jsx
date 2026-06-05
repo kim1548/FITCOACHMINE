@@ -141,9 +141,6 @@ const BodyPage = () => {
               <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Body · Composition
               </div>
-              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
-                {logs.length.toString().padStart(2, '0')} entries
-              </div>
             </div>
 
             <div className="flex items-end justify-between gap-4 flex-wrap">
@@ -331,9 +328,6 @@ const BodyPage = () => {
                 <div className="flex items-baseline justify-between mb-3">
                   <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                     — History
-                  </div>
-                  <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
-                    {logs.length.toString().padStart(2, '0')} entries
                   </div>
                 </div>
 

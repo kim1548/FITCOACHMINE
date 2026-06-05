@@ -238,9 +238,6 @@ const DietPage = () => {
               <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Meals · Today
               </div>
-              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
-                {totalEntries.toString().padStart(2, '0')} entries
-              </div>
             </div>
             <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
               Macros, <em className="italic text-accent-gold">accounted for.</em>
@@ -337,9 +334,6 @@ const DietPage = () => {
             <div className="flex items-baseline justify-between mt-10 mb-3">
               <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Snacks
-              </div>
-              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
-                {snackGroups.length.toString().padStart(2, '0')} entries
               </div>
             </div>
 

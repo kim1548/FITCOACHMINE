@@ -107,9 +107,6 @@ const RoutinePlaySelectPage = () => {
               <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Form Check · Library
               </div>
-              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
-                {totalCount.toString().padStart(2, '0')} exercises
-              </div>
             </div>
             <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
               Choose your <em className="italic text-accent-gold">form,<br />perfected.</em>

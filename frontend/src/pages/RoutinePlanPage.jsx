@@ -329,9 +329,6 @@ const RoutinePlanPage = ({ theme }) => {
               <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Start here
               </div>
-              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
-                {PROGRAMS.length.toString().padStart(2, '0')} entries
-              </div>
             </div>
             <h2 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
               Choose your <em className="italic text-accent-gold">next chapter.</em>

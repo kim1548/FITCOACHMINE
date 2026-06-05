@@ -235,9 +235,6 @@ const Landing = () => {
                 <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                   — What's inside
                 </div>
-                <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
-                  {SECTIONS.length.toString().padStart(2, '0')} sections
-                </div>
               </div>
               <h2 className="font-display text-3xl md:text-4xl leading-[1.0] tracking-tight font-normal">
                 여섯 개의 챕터, <em className="italic text-accent-gold">하나의 페이지.</em>
