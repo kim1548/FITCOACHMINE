@@ -98,6 +98,8 @@ const JournalPage = ({ theme }) => {
     const iso = toISO(year, month, d);
     cells.push({ kind: 'day', key: iso, day: d, iso, info: dayMap[iso] });
   }
+  // 마지막 주의 빈 칸을 채워(7의 배수) 그리드 배경이 회색 블록으로 비치지 않게 한다.
+  while (cells.length % 7 !== 0) cells.push({ kind: 'pad', key: `padend-${cells.length}` });
 
   // 월간 요약 통계 — 보고 있는 달 기준.
   const stats = useMemo(() => {
@@ -253,11 +255,11 @@ const JournalPage = ({ theme }) => {
               ))}
             </div>
 
-            {/* Days grid */}
-            <div className="grid grid-cols-7 gap-px bg-ink/25 border border-ink/20">
+            {/* Days grid — gap-px 대신 셀 테두리로(모니터 서브픽셀에서 선이 사라지지 않게) */}
+            <div className="grid grid-cols-7 border-t border-l border-ink/20">
               {cells.map(cell => {
                 if (cell.kind === 'pad') {
-                  return <div key={cell.key} className="bg-paper min-h-[3.125rem] md:min-h-[5rem]" />;
+                  return <div key={cell.key} className="bg-paper min-h-[3.125rem] md:min-h-[5rem] border-r border-b border-ink/20" />;
                 }
                 const isToday = cell.iso === todayISO;
                 const isFuture = cell.iso > todayISO;
@@ -268,7 +270,7 @@ const JournalPage = ({ theme }) => {
                   <button
                     key={cell.key}
                     onClick={() => setSelectedDate(cell.iso)}
-                    className={`relative min-h-[3.125rem] md:min-h-[5rem] p-2 text-left transition-colors group ${
+                    className={`relative min-h-[3.125rem] md:min-h-[5rem] p-2 text-left transition-colors group border-r border-b border-ink/20 ${
                       isToday
                         ? 'bg-accent-gold/10 outline outline-1 outline-accent-gold -outline-offset-1'
                         : 'bg-paper hover:bg-ink/5'
