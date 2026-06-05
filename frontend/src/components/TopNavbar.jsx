@@ -70,7 +70,7 @@ const TopNavbar = ({ onOpenSettings }) => {
         >
           FITCOACH
         </Link>
-        <div className="flex items-baseline gap-5 font-mono text-[11px] tracking-meta uppercase">
+        <div className="flex items-baseline gap-5 font-mono text-[0.6875rem] tracking-meta uppercase">
           <span className="text-taupe hidden sm:inline">
             No. {issueNo} — {monthLabel} {yearLabel}
           </span>
@@ -106,7 +106,7 @@ const TopNavbar = ({ onOpenSettings }) => {
       </div>
 
       {/* Line 2 — Section tabs (데스크탑 전용 · 모바일은 하단 탭바 BottomNav 가 대체) */}
-      <div className="hidden md:flex gap-6 px-6 py-2 font-mono text-[11px] tracking-meta uppercase overflow-x-auto [&::-webkit-scrollbar]:hidden">
+      <div className="hidden md:flex gap-6 px-6 py-2 font-mono text-[0.6875rem] tracking-meta uppercase overflow-x-auto [&::-webkit-scrollbar]:hidden">
         {TABS.map((tab) => {
           const active = tab.match(location.pathname);
           return (

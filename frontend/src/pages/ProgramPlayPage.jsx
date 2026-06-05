@@ -139,13 +139,13 @@ const ProgramPlayPage = ({ theme }) => {
           <div className="w-full px-6 md:px-12 py-8">
             <button
               onClick={() => navigate('/program')}
-              className="font-mono text-[11px] text-taupe hover:text-ink tracking-meta uppercase mb-8 transition-colors"
+              className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase mb-8 transition-colors"
             >
               ← Program library
             </button>
 
             <div className="border-y border-ink/15 py-12 text-center">
-              <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
                 {programState.selectedId}
               </div>
               <h1 className="font-display text-3xl md:text-4xl text-ink mb-2 tracking-tight">
@@ -326,7 +326,7 @@ const ProgramPlayPage = ({ theme }) => {
         {/* Back link */}
         <button
           onClick={() => navigate('/program')}
-          className="font-mono text-[11px] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
+          className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
         >
           ← Program library
         </button>
@@ -334,10 +334,10 @@ const ProgramPlayPage = ({ theme }) => {
         {/* Headline */}
         <header className="pb-6">
           <div className="flex items-baseline justify-between mb-3">
-            <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+            <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
               — Session · {session.id}
             </div>
-            <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+            <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
               {program.label}{program.variantLabel ? ` · ${program.variantLabel}` : ''}
             </div>
           </div>
@@ -370,12 +370,12 @@ const ProgramPlayPage = ({ theme }) => {
         {/* Progress */}
         <div className="border-t border-ink/15 pt-4 pb-2">
           <div className="flex items-baseline justify-between mb-2">
-            <div className="font-mono text-[10px] text-taupe tracking-meta uppercase">
+            <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
               Progress
             </div>
             <button
               onClick={completeAllAutoSets}
-              className="font-mono text-[11px] text-accent-gold hover:text-ink tracking-meta uppercase transition-colors"
+              className="font-mono text-[0.6875rem] text-accent-gold hover:text-ink tracking-meta uppercase transition-colors"
             >
               → Complete autos
             </button>
@@ -386,7 +386,7 @@ const ProgramPlayPage = ({ theme }) => {
               style={{ width: `${progress}%` }}
             />
           </div>
-          <div className="font-mono text-[10px] text-hint tracking-meta uppercase mt-2 tabular-nums">
+          <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase mt-2 tabular-nums">
             {doneSets} / {totalSets} sets · {progress}%
           </div>
         </div>
@@ -411,7 +411,7 @@ const ProgramPlayPage = ({ theme }) => {
                       {LIFT_NAMES_KO[ex.liftId]}
                     </h2>
                     {ex.role && (
-                      <span className={`font-mono text-[9px] tracking-label uppercase border px-1.5 py-0.5 flex-shrink-0 ${
+                      <span className={`font-mono text-[0.5625rem] tracking-label uppercase border px-1.5 py-0.5 flex-shrink-0 ${
                         ex.role === 'T1'
                           ? 'text-accent-gold border-accent-gold/40'
                           : 'text-taupe border-ink/15'
@@ -421,7 +421,7 @@ const ProgramPlayPage = ({ theme }) => {
                     )}
                   </div>
                   <div className="flex items-baseline gap-4 flex-shrink-0">
-                    <span className="font-mono text-[11px] text-taupe tracking-meta uppercase tabular-nums whitespace-nowrap">
+                    <span className="font-mono text-[0.6875rem] text-taupe tracking-meta uppercase tabular-nums whitespace-nowrap">
                       {schemeText}
                     </span>
                     <button
@@ -429,7 +429,7 @@ const ProgramPlayPage = ({ theme }) => {
                       onClick={() =>
                         window.open(`/formcheck/${encodeURIComponent(LIFT_NAMES_KO[ex.liftId])}`, '_blank', 'noopener')
                       }
-                      className="font-mono text-[10px] text-accent-gold hover:text-ink tracking-meta uppercase transition-colors"
+                      className="font-mono text-[0.625rem] text-accent-gold hover:text-ink tracking-meta uppercase transition-colors"
                       title="자세 분석 (새 탭)"
                     >
                       → Form
@@ -481,15 +481,15 @@ const ProgramPlayPage = ({ theme }) => {
                         } transition-colors`}
                       >
                         {/* Set number */}
-                        <span className={`w-6 h-6 flex items-center justify-center border font-mono text-[10px] tabular-nums flex-shrink-0 ${circleCls}`}>
+                        <span className={`w-6 h-6 flex items-center justify-center border font-mono text-[0.625rem] tabular-nums flex-shrink-0 ${circleCls}`}>
                           {i + 1}
                         </span>
 
                         {/* Weight × Reps */}
                         <div className="flex-1 flex items-baseline gap-2 text-sm min-w-0 flex-wrap">
                           <span className="font-display text-lg text-ink tabular-nums">{w}</span>
-                          <span className="font-mono text-[10px] text-taupe tracking-meta">kg</span>
-                          <span className="font-mono text-[11px] text-hint mx-1">×</span>
+                          <span className="font-mono text-[0.625rem] text-taupe tracking-meta">kg</span>
+                          <span className="font-mono text-[0.6875rem] text-hint mx-1">×</span>
                           <input
                             type="number"
                             min="0"
@@ -502,22 +502,22 @@ const ProgramPlayPage = ({ theme }) => {
                             style={{ MozAppearance: 'textfield' }}
                             className={`w-12 px-1 py-0.5 text-center font-display text-base tabular-nums bg-paper border border-ink/15 focus:border-accent-red outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${repsTextCls}`}
                           />
-                          <span className="font-mono text-[10px] text-taupe tracking-meta">reps</span>
+                          <span className="font-mono text-[0.625rem] text-taupe tracking-meta">reps</span>
 
                           {isAmrap && (
-                            <span className="font-mono text-[9px] text-accent-gold tracking-meta uppercase ml-1">
+                            <span className="font-mono text-[0.5625rem] text-accent-gold tracking-meta uppercase ml-1">
                               · AMRAP
                             </span>
                           )}
                           {isTop && (
-                            <span className="font-mono text-[9px] text-accent-gold tracking-meta uppercase ml-1">
+                            <span className="font-mono text-[0.5625rem] text-accent-gold tracking-meta uppercase ml-1">
                               · PR
                             </span>
                           )}
                         </div>
 
                         {/* Target */}
-                        <span className="font-mono text-[9px] text-hint tracking-meta uppercase whitespace-nowrap">
+                        <span className="font-mono text-[0.5625rem] text-hint tracking-meta uppercase whitespace-nowrap">
                           target {spec.reps}{allowsExtra ? '+' : ''}
                         </span>
 
@@ -546,7 +546,7 @@ const ProgramPlayPage = ({ theme }) => {
               : 'border-accent-red/40 bg-accent-red/[0.06]'
           }`}>
             <div className="flex items-baseline justify-between mb-4">
-              <div className={`font-mono text-[10px] tracking-label uppercase ${
+              <div className={`font-mono text-[0.625rem] tracking-label uppercase ${
                 restRemaining > 0 ? 'text-accent-gold' : 'text-accent-red'
               }`}>
                 — Rest · {LIFT_NAMES_KO[rest.liftId] || rest.liftId}
@@ -557,7 +557,7 @@ const ProgramPlayPage = ({ theme }) => {
                 {formatRest(restRemaining)}
               </div>
             </div>
-            <div className="flex gap-5 flex-wrap font-mono text-[11px] tracking-meta uppercase">
+            <div className="flex gap-5 flex-wrap font-mono text-[0.6875rem] tracking-meta uppercase">
               <button
                 onClick={() => adjustRest(-30)}
                 className="text-taupe hover:text-ink transition-colors"
@@ -595,7 +595,7 @@ const ProgramPlayPage = ({ theme }) => {
         </button>
 
         {/* Footer */}
-        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[11px] text-hint tracking-meta">
+        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
           <span className="uppercase">— FITCOACH —</span>
           <span className="uppercase text-taupe">
             {program.label} · {session.label}

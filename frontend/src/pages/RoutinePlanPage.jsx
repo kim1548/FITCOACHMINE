@@ -81,10 +81,10 @@ const PROGRAM_VISUAL = {
 // 공통 포스터 (cover image) — 매거진 시리즈의 핵심 비주얼.
 // size 별 스케일만 다름. 폰트·번호·프레임 시스템은 동일 — "시스템은 하나, 스케일만 변주".
 const POSTER_DIMS = {
-  compact:  { cls: 'w-[76px] h-[106px]',   fs: '11px' },
-  sm:       { cls: 'w-[100px] h-[140px]',  fs: '13px' },
-  featured: { cls: 'w-[142px] h-[198px]',  fs: '18px' },
-  lg:       { cls: 'w-[150px] h-[210px]',  fs: '22px' },
+  compact:  { cls: 'w-[4.75rem] h-[6.625rem]',   fs: '11px' },
+  sm:       { cls: 'w-[6.25rem] h-[8.75rem]',  fs: '13px' },
+  featured: { cls: 'w-[8.875rem] h-[12.375rem]',  fs: '18px' },
+  lg:       { cls: 'w-[9.375rem] h-[13.125rem]',  fs: '22px' },
 };
 const Poster = ({ programId, size = 'sm' }) => {
   const p = PROGRAMS.find(x => x.id === programId);
@@ -105,7 +105,7 @@ const Poster = ({ programId, size = 'sm' }) => {
           <span className="font-poster text-ink uppercase tracking-tight leading-[0.92]" style={{ fontSize: fs }}>
             {p?.name || ''}
           </span>
-          <span className="font-mono text-[8px] text-ink/45 tracking-meta uppercase mt-3">
+          <span className="font-mono text-[0.5rem] text-ink/45 tracking-meta uppercase mt-3">
             Vol. {v?.vol || '—'}
           </span>
         </div>
@@ -258,10 +258,10 @@ const RoutinePlanPage = ({ theme }) => {
         {existingProgram && currentProg && (
           <section className="pb-8">
             <div className="flex items-baseline justify-between mb-4">
-              <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Currently training
               </div>
-              <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                 Last · {nextLabel}
               </div>
             </div>
@@ -285,10 +285,10 @@ const RoutinePlanPage = ({ theme }) => {
 
                 {nextLiftRows.length > 0 && (
                   <>
-                    <div className="font-mono text-[10px] text-ink tracking-label uppercase mb-2">
+                    <div className="font-mono text-[0.625rem] text-ink tracking-label uppercase mb-2">
                       ▸ Up next
                     </div>
-                    <div className="font-mono text-[13px] border-t border-ink/15 pt-2">
+                    <div className="font-mono text-[0.8125rem] border-t border-ink/15 pt-2">
                       {nextLiftRows.map(row => (
                         <div key={row.id} className="flex justify-between py-1 border-b border-ink/8 last:border-b-0">
                           <span className="text-body">{row.name}</span>
@@ -304,13 +304,13 @@ const RoutinePlanPage = ({ theme }) => {
                 <div className="flex gap-3 mt-5">
                   <button
                     onClick={handleReset}
-                    className="font-mono text-[11px] tracking-label uppercase px-5 py-2.5 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
+                    className="font-mono text-[0.6875rem] tracking-label uppercase px-5 py-2.5 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
                   >
                     ↻ Reset
                   </button>
                   <button
                     onClick={handleResume}
-                    className="flex-1 font-mono text-[11px] tracking-label uppercase px-5 py-2.5 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
+                    className="flex-1 font-mono text-[0.6875rem] tracking-label uppercase px-5 py-2.5 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
                   >
                     Continue session<span className="hidden md:inline"> →</span>
                   </button>
@@ -324,12 +324,12 @@ const RoutinePlanPage = ({ theme }) => {
             Program library — START HERE (featured) + THE FULL LIBRARY (compact)
             ==================================================== */}
         <section className={existingProgram ? 'pt-2 border-t border-ink/15' : ''}>
-          <div className="max-w-[640px] py-8">
+          <div className="max-w-[40rem] py-8">
             <div className="flex items-baseline justify-between mb-3">
-              <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Start here
               </div>
-              <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                 {PROGRAMS.length.toString().padStart(2, '0')} entries
               </div>
             </div>
@@ -362,12 +362,12 @@ const RoutinePlanPage = ({ theme }) => {
                       {featuredProgram.name}
                     </span>
                     {isCurrent && (
-                      <span className="font-mono text-[9px] tracking-label uppercase text-accent-gold border border-accent-gold px-2 py-1">
+                      <span className="font-mono text-[0.5625rem] tracking-label uppercase text-accent-gold border border-accent-gold px-2 py-1">
                         In progress
                       </span>
                     )}
                   </div>
-                  <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mb-3">
+                  <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-3">
                     {v.author} · {v.year} · {v.level}
                   </div>
                   {v.tags && (
@@ -375,14 +375,14 @@ const RoutinePlanPage = ({ theme }) => {
                       {v.tags.map(t => (
                         <span
                           key={t}
-                          className="font-mono text-[9px] text-taupe tracking-meta uppercase border border-ink/15 px-2 py-1"
+                          className="font-mono text-[0.5625rem] text-taupe tracking-meta uppercase border border-ink/15 px-2 py-1"
                         >
                           {t}
                         </span>
                       ))}
                     </div>
                   )}
-                  <p className="font-display italic text-[15px] text-body leading-relaxed mb-3">
+                  <p className="font-display italic text-[0.9375rem] text-body leading-relaxed mb-3">
                     {featuredProgram.desc}
                   </p>
                   {v.quote && (
@@ -390,7 +390,7 @@ const RoutinePlanPage = ({ theme }) => {
                       "{v.quote}"
                     </blockquote>
                   )}
-                  <span className="inline-block font-mono text-[11px] tracking-label uppercase text-accent-red border border-accent-red px-4 py-2">
+                  <span className="inline-block font-mono text-[0.6875rem] tracking-label uppercase text-accent-red border border-accent-red px-4 py-2">
                     → Start {featuredProgram.name}
                   </span>
                 </div>
@@ -399,7 +399,7 @@ const RoutinePlanPage = ({ theme }) => {
           })()}
 
           {/* THE FULL LIBRARY — compact rows */}
-          <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3 pt-2">
+          <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3 pt-2">
             — The full library
           </div>
           <div className="border-t border-ink/15">
@@ -424,18 +424,18 @@ const RoutinePlanPage = ({ theme }) => {
                       <span className="font-display text-lg text-ink leading-tight">
                         {p.name}
                       </span>
-                      <span className="font-mono text-[10px] text-taupe tracking-meta uppercase">
+                      <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
                         · {v.level}
                       </span>
                     </div>
-                    <p className="font-display italic text-[13px] text-body leading-snug line-clamp-1">
+                    <p className="font-display italic text-[0.8125rem] text-body leading-snug line-clamp-1">
                       {p.desc}
                     </p>
                   </div>
 
                   <div className="self-center flex-shrink-0">
                     {isCurrent ? (
-                      <span className="font-mono text-[9px] tracking-label uppercase text-accent-gold border border-accent-gold px-2 py-1 inline-block">
+                      <span className="font-mono text-[0.5625rem] tracking-label uppercase text-accent-gold border border-accent-gold px-2 py-1 inline-block">
                         In progress
                       </span>
                     ) : (
@@ -449,7 +449,7 @@ const RoutinePlanPage = ({ theme }) => {
         </section>
 
         {/* Footer */}
-        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[11px] text-hint tracking-meta">
+        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
           <span className="uppercase">— FITCOACH —</span>
           <span className="uppercase text-taupe">Program library · {PROGRAMS.length}</span>
         </div>
@@ -474,7 +474,7 @@ const RoutinePlanPage = ({ theme }) => {
                   {PROGRAM_META[selectedId].label}
                 </div>
                 {programVariant && (
-                  <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mt-1">
+                  <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mt-1">
                     · {PROGRAM_VARIANTS[selectedId].find(v => v.id === programVariant)?.label}
                   </div>
                 )}
@@ -483,14 +483,14 @@ const RoutinePlanPage = ({ theme }) => {
                 {!needsVariantPick && (
                   <button
                     onClick={() => setShowCalc(true)}
-                    className="font-mono text-[10px] tracking-meta uppercase text-accent-gold hover:text-ink transition-colors"
+                    className="font-mono text-[0.625rem] tracking-meta uppercase text-accent-gold hover:text-ink transition-colors"
                   >
                     1RM calc
                   </button>
                 )}
                 <button
                   onClick={() => setSelectedId(null)}
-                  className="font-mono text-[11px] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
+                  className="font-mono text-[0.6875rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
                 >
                   Close ×
                 </button>
@@ -503,7 +503,7 @@ const RoutinePlanPage = ({ theme }) => {
             >
               {needsVariantPick ? (
                 <>
-                  <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-4">
+                  <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-4">
                     — Pick a variant
                   </div>
                   <div className="space-y-3">
@@ -515,7 +515,7 @@ const RoutinePlanPage = ({ theme }) => {
                       >
                         <div className="flex items-baseline justify-between mb-1">
                           <span className="font-display text-xl text-ink">{v.label}</span>
-                          <span className="font-mono text-[10px] text-accent-gold tracking-meta uppercase">
+                          <span className="font-mono text-[0.625rem] text-accent-gold tracking-meta uppercase">
                             {v.tag}
                           </span>
                         </div>
@@ -528,7 +528,7 @@ const RoutinePlanPage = ({ theme }) => {
                 </>
               ) : (
                 <>
-                  <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-3">
+                  <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-3">
                     — 1RM entry
                   </div>
                   <p className="font-display italic text-sm text-taupe mb-5 leading-relaxed">
@@ -543,7 +543,7 @@ const RoutinePlanPage = ({ theme }) => {
                           i < arr.length - 1 ? 'border-b border-ink/8' : ''
                         }`}
                       >
-                        <span className="font-display text-[15px] text-ink">{lift.name}</span>
+                        <span className="font-display text-[0.9375rem] text-ink">{lift.name}</span>
                         <div className="flex items-center gap-1.5">
                           <button
                             type="button"
@@ -571,7 +571,7 @@ const RoutinePlanPage = ({ theme }) => {
                           >
                             +
                           </button>
-                          <span className="font-mono text-[10px] text-taupe tracking-meta ml-1">kg</span>
+                          <span className="font-mono text-[0.625rem] text-taupe tracking-meta ml-1">kg</span>
                         </div>
                       </div>
                     ))}
@@ -579,7 +579,7 @@ const RoutinePlanPage = ({ theme }) => {
 
                   <button
                     onClick={handleStartProgram}
-                    className="w-full mt-6 font-mono text-[11px] tracking-label uppercase py-3.5 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
+                    className="w-full mt-6 font-mono text-[0.6875rem] tracking-label uppercase py-3.5 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
                   >
                     {existingProgram?.selectedId === selectedId ? 'Continue session →' : 'Start program →'}
                   </button>
@@ -606,13 +606,13 @@ const RoutinePlanPage = ({ theme }) => {
             <header className="flex-shrink-0 flex items-baseline justify-between px-6 py-4 border-b border-ink/15">
               <div>
                 <div className="font-display italic text-base text-ink leading-none">1RM Calculator</div>
-                <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mt-1">
+                <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mt-1">
                   · Epley formula
                 </div>
               </div>
               <button
                 onClick={() => setShowCalc(false)}
-                className="font-mono text-[11px] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
+                className="font-mono text-[0.6875rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
               >
                 Close ×
               </button>
@@ -628,7 +628,7 @@ const RoutinePlanPage = ({ theme }) => {
 
               <div className="border border-ink/15 mb-5">
                 <div className="flex items-center justify-between gap-4 px-4 py-3 border-b border-ink/8">
-                  <span className="font-display text-[15px] text-ink">Weight</span>
+                  <span className="font-display text-[0.9375rem] text-ink">Weight</span>
                   <div className="flex items-center gap-1.5">
                     <button
                       type="button"
@@ -656,12 +656,12 @@ const RoutinePlanPage = ({ theme }) => {
                     >
                       +
                     </button>
-                    <span className="font-mono text-[10px] text-taupe tracking-meta ml-1">kg</span>
+                    <span className="font-mono text-[0.625rem] text-taupe tracking-meta ml-1">kg</span>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between gap-4 px-4 py-3">
-                  <span className="font-display text-[15px] text-ink">Reps</span>
+                  <span className="font-display text-[0.9375rem] text-ink">Reps</span>
                   <div className="flex items-center gap-1.5">
                     <button
                       type="button"
@@ -689,25 +689,25 @@ const RoutinePlanPage = ({ theme }) => {
                     >
                       +
                     </button>
-                    <span className="font-mono text-[10px] text-taupe tracking-meta ml-1">reps</span>
+                    <span className="font-mono text-[0.625rem] text-taupe tracking-meta ml-1">reps</span>
                   </div>
                 </div>
               </div>
 
               <div className="border-y border-accent-gold/40 py-5 my-5 text-center bg-accent-gold/[0.04]">
-                <div className="font-mono text-[10px] text-accent-gold tracking-label uppercase mb-2">
+                <div className="font-mono text-[0.625rem] text-accent-gold tracking-label uppercase mb-2">
                   — Estimated 1RM
                 </div>
                 <div className="font-display text-5xl text-ink leading-none tabular-nums">
                   {estimated1RM.toFixed(1)}
                   <span className="font-display italic text-base text-taupe ml-1">kg</span>
                 </div>
-                <p className="font-display italic text-[11px] text-hint mt-3">
+                <p className="font-display italic text-[0.6875rem] text-hint mt-3">
                   Weight × (1 + reps / 30)
                 </p>
               </div>
 
-              <div className="font-mono text-[10px] text-taupe tracking-label uppercase mb-2">
+              <div className="font-mono text-[0.625rem] text-taupe tracking-label uppercase mb-2">
                 — Apply to
               </div>
               <div className="flex items-center gap-2">
@@ -725,12 +725,12 @@ const RoutinePlanPage = ({ theme }) => {
                 <button
                   onClick={applyEstimate}
                   disabled={estimated1RM <= 0}
-                  className="font-mono text-[11px] tracking-label uppercase px-4 py-2.5 bg-accent-red text-ink hover:bg-accent-red/90 disabled:bg-ink/10 disabled:text-hint transition-colors"
+                  className="font-mono text-[0.6875rem] tracking-label uppercase px-4 py-2.5 bg-accent-red text-ink hover:bg-accent-red/90 disabled:bg-ink/10 disabled:text-hint transition-colors"
                 >
                   Apply
                 </button>
               </div>
-              <p className="font-display italic text-[11px] text-hint mt-2 leading-relaxed">
+              <p className="font-display italic text-[0.6875rem] text-hint mt-2 leading-relaxed">
                 적용 시 2.5kg 단위로 반올림되어 1RM 입력란에 반영됩니다.
               </p>
             </div>

@@ -73,14 +73,14 @@ const FoodCalculator = () => {
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-slate-700">
             <Utensils size={32} className="mb-2 opacity-20" />
-            <p className="text-[10px] font-black uppercase tracking-widest">Ready to scan</p>
+            <p className="text-[0.625rem] font-black uppercase tracking-widest">Ready to scan</p>
           </div>
         )}
         
         {loading && (
           <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center z-50">
             <Loader2 className="animate-spin text-blue-500 mb-2" size={32} />
-            <p className="text-[10px] font-black tracking-widest">ANALYZING...</p>
+            <p className="text-[0.625rem] font-black tracking-widest">ANALYZING...</p>
           </div>
         )}
 
@@ -94,7 +94,7 @@ const FoodCalculator = () => {
       <div className="mb-6">
         {foods.length > 0 ? (
           <div className="bg-[#16161a] rounded-3xl border border-white/5 overflow-hidden">
-            <div className="flex px-5 py-3 bg-white/5 text-[9px] font-black text-slate-500 border-b border-white/5">
+            <div className="flex px-5 py-3 bg-white/5 text-[0.5625rem] font-black text-slate-500 border-b border-white/5">
               <span className="flex-1">FOOD NAME</span>
               <span className="w-12 text-center mr-2">GRAM</span>
               <span className="w-12 text-right mr-8">KCAL</span>
@@ -124,7 +124,7 @@ const FoodCalculator = () => {
             </div>
           </div>
         ) : (
-          !loading && <div className="py-10 text-center border-2 border-dashed border-white/5 rounded-3xl text-slate-700 text-[10px] font-black uppercase">List is empty</div>
+          !loading && <div className="py-10 text-center border-2 border-dashed border-white/5 rounded-3xl text-slate-700 text-[0.625rem] font-black uppercase">List is empty</div>
         )}
       </div>
 
@@ -134,7 +134,7 @@ const FoodCalculator = () => {
           {/* 총 칼로리 카드 */}
           <div className="bg-gradient-to-br from-blue-600 to-blue-700 p-6 rounded-[2rem] shadow-2xl relative overflow-hidden">
             <div className="relative z-10">
-              <p className="text-[10px] font-black text-blue-100 uppercase opacity-70 mb-1">Total Intake</p>
+              <p className="text-[0.625rem] font-black text-blue-100 uppercase opacity-70 mb-1">Total Intake</p>
               <div className="flex items-baseline gap-1">
                 <span className="text-5xl font-black italic tracking-tighter">{Math.round(totalKcal)}</span>
                 <span className="text-lg font-bold opacity-80">kcal</span>
@@ -150,18 +150,18 @@ const FoodCalculator = () => {
                 <CheckCircle size={24} className="text-blue-500" />
               </div>
               <div className="flex-1">
-                <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">Workout Strategy</p>
-                <h4 className="text-[16px] font-bold text-white mb-2">
+                <p className="text-[0.625rem] font-black text-blue-500 uppercase tracking-widest mb-1">Workout Strategy</p>
+                <h4 className="text-[1rem] font-bold text-white mb-2">
                   {foods[0]?.name} 식단 분석
                 </h4>
-                <p className="text-[14px] text-slate-300 leading-relaxed font-medium break-keep">
+                <p className="text-[0.875rem] text-slate-300 leading-relaxed font-medium break-keep">
                   {/* 1. 개별 음식 피드백 노출 */}
                   {foods[0]?.feedback}
                 </p>
                 
                 {/* 2. 전체 칼로리 기반 운동 조언 추가 */}
                 <div className="mt-4 pt-4 border-t border-white/5">
-                  <p className="text-[13px] text-slate-400 italic">
+                  <p className="text-[0.8125rem] text-slate-400 italic">
                     {totalKcal > 1000 
                       ? "⚠️ 칼로리가 높습니다! 오늘 '스쿼트' 자세 교정 모드로 평소보다 2세트 더 진행하는 것을 추천합니다." 
                       : "✅ 적정 칼로리입니다. 지금의 식단을 유지하며 근력 운동 자세에 집중해보세요!"}

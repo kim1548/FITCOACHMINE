@@ -4,7 +4,7 @@ import Settings from "../pages/Settings";
 /**
  * 우측 슬라이드 Settings drawer — Editorial Magazine 톤.
  *
- * - 데스크탑 폭 w-[420px], 모바일 전체 폭
+ * - 데스크탑 폭 w-[26.25rem], 모바일 전체 폭
  * - 백드롭 클릭 / Close × / ESC 닫힘
  * - 닫혀있어도 DOM 유지, translate-x 로 슬라이드
  */
@@ -38,7 +38,7 @@ const SettingsDrawer = ({ isOpen, onClose, theme, setTheme }) => {
 
       {/* Drawer 본체 */}
       <aside
-        className={`fixed right-0 top-0 bottom-0 z-[201] w-full md:w-[420px] bg-paper text-ink border-l border-ink/15 transform transition-transform duration-300 ${
+        className={`fixed right-0 top-0 bottom-0 z-[201] w-full md:w-[26.25rem] bg-paper text-ink border-l border-ink/15 transform transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
         role="dialog"
@@ -48,13 +48,13 @@ const SettingsDrawer = ({ isOpen, onClose, theme, setTheme }) => {
         <header className="sticky top-0 z-10 flex items-baseline justify-between px-6 py-4 border-b border-ink/15 bg-paper">
           <div>
             <div className="font-display italic text-lg text-ink leading-none">Settings</div>
-            <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mt-1.5">
+            <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mt-1.5">
               — Preferences · Account
             </div>
           </div>
           <button
             onClick={onClose}
-            className="font-mono text-[11px] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
+            className="font-mono text-[0.6875rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
             aria-label="닫기"
           >
             Close ×

@@ -49,12 +49,12 @@ const AuthPromptModal = ({
       >
         {/* Header */}
         <header className="flex items-baseline justify-between px-6 pt-5 pb-2 border-b border-ink/12">
-          <div className="font-mono text-[10px] text-accent-red tracking-label uppercase">
+          <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase">
             — Welcome
           </div>
           <button
             onClick={onClose}
-            className="font-mono text-[11px] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
+            className="font-mono text-[0.6875rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
             aria-label="닫기"
           >
             Close ×
@@ -82,13 +82,13 @@ const AuthPromptModal = ({
         <footer className="flex flex-col sm:flex-row gap-px bg-ink/10 border-t border-ink/12">
           <button
             onClick={() => go('/login')}
-            className="flex-1 py-4 font-mono text-[11px] tracking-label uppercase bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
+            className="flex-1 py-4 font-mono text-[0.6875rem] tracking-label uppercase bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
           >
             → Sign in
           </button>
           <button
             onClick={() => go('/signup')}
-            className="flex-1 py-4 font-mono text-[11px] tracking-label uppercase bg-paper text-taupe hover:text-ink transition-colors"
+            className="flex-1 py-4 font-mono text-[0.6875rem] tracking-label uppercase bg-paper text-taupe hover:text-ink transition-colors"
           >
             → Register
           </button>

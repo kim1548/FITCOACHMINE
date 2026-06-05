@@ -78,7 +78,7 @@ const BodyDiagram = ({ activation }) => {
   };
 
   return (
-    <div className="relative w-full max-w-[260px] mx-auto" style={{ aspectRatio: '408 / 612' }}>
+    <div className="relative w-full max-w-[16.25rem] mx-auto" style={{ aspectRatio: '408 / 612' }}>
       {!imgError ? (
         <img
           src={ANATOMY_IMG_SRC}
@@ -89,7 +89,7 @@ const BodyDiagram = ({ activation }) => {
           style={{ filter: 'invert(1)', opacity: 0.85 }}
         />
       ) : (
-        <div className="absolute inset-0 flex items-center justify-center text-center font-mono text-[10px] tracking-meta uppercase text-hint px-4 leading-relaxed">
+        <div className="absolute inset-0 flex items-center justify-center text-center font-mono text-[0.625rem] tracking-meta uppercase text-hint px-4 leading-relaxed">
           Anatomy image missing
         </div>
       )}
@@ -168,7 +168,7 @@ const WeightTrendChart = ({ chartKey, history }) => {
 
   if (data.length === 0) {
     return (
-      <div className="h-32 flex items-center justify-center font-mono text-[10px] text-hint tracking-meta uppercase">
+      <div className="h-32 flex items-center justify-center font-mono text-[0.625rem] text-hint tracking-meta uppercase">
         No history
       </div>
     );
@@ -247,7 +247,7 @@ const WorkoutSummary = ({ theme }) => {
           <div className="w-full px-6 md:px-12 py-8">
             <button
               onClick={() => navigate('/program')}
-              className="font-mono text-[11px] text-taupe hover:text-ink tracking-meta uppercase mb-8 transition-colors"
+              className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase mb-8 transition-colors"
             >
               ← Program library
             </button>
@@ -276,20 +276,20 @@ const WorkoutSummary = ({ theme }) => {
         {/* Back */}
         <button
           onClick={() => navigate('/program')}
-          className="font-mono text-[11px] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
+          className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
         >
           ← Program library
         </button>
 
         {/* Headline */}
         <header className="pb-8">
-          <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+          <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
             — Session report
           </div>
           <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
             {workoutLabel}, <em className="italic text-accent-gold">complete.</em>
           </h1>
-          <div className="font-mono text-[11px] text-taupe tracking-meta uppercase mt-4 flex flex-wrap gap-x-5 gap-y-1">
+          <div className="font-mono text-[0.6875rem] text-taupe tracking-meta uppercase mt-4 flex flex-wrap gap-x-5 gap-y-1">
             <span>· Duration {formatDuration(durationSec)}</span>
             <span>· {liftResults.length} lifts</span>
           </div>
@@ -300,11 +300,11 @@ const WorkoutSummary = ({ theme }) => {
 
           {/* Left: muscle activation */}
           <section className="md:border-r border-ink/8 py-6 md:pr-6">
-            <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-4">
+            <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-4">
               — Muscle activation
             </div>
             <BodyDiagram activation={activation} />
-            <div className="mt-4 flex gap-5 justify-center font-mono text-[9px] text-hint tracking-meta uppercase">
+            <div className="mt-4 flex gap-5 justify-center font-mono text-[0.5625rem] text-hint tracking-meta uppercase">
               <span className="inline-flex items-center gap-1.5">
                 <span className="w-2 h-2" style={{ background: MUSCLE_PRIMARY }} />
                 Primary
@@ -318,7 +318,7 @@ const WorkoutSummary = ({ theme }) => {
 
           {/* Right: progression results */}
           <section className="border-t md:border-t-0 border-ink/15 py-6 md:pl-6">
-            <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-2">
+            <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-2">
               — Progression
             </div>
             <p className="font-display italic text-sm text-taupe mb-4 leading-relaxed">
@@ -350,12 +350,12 @@ const WorkoutSummary = ({ theme }) => {
                       <div className="flex items-baseline gap-2 mb-1">
                         <span className="font-display text-lg text-ink">{ko}</span>
                         {r.role && (
-                          <span className="font-mono text-[9px] text-taupe tracking-meta uppercase">
+                          <span className="font-mono text-[0.5625rem] text-taupe tracking-meta uppercase">
                             · {r.role}
                           </span>
                         )}
                       </div>
-                      <div className="font-mono text-[11px] text-taupe tabular-nums">
+                      <div className="font-mono text-[0.6875rem] text-taupe tabular-nums">
                         <span>{r.prevWeight}</span>
                         <span className="mx-1.5 text-hint">→</span>
                         <span className="text-ink font-display text-base">{r.nextWeight}</span>
@@ -364,12 +364,12 @@ const WorkoutSummary = ({ theme }) => {
                       <button
                         type="button"
                         onClick={() => navigate(`/formcheck/${encodeURIComponent(ko)}`)}
-                        className="mt-1.5 font-mono text-[10px] text-accent-gold hover:text-ink tracking-meta uppercase transition-colors"
+                        className="mt-1.5 font-mono text-[0.625rem] text-accent-gold hover:text-ink tracking-meta uppercase transition-colors"
                       >
                         → Form check
                       </button>
                     </div>
-                    <span className={`font-mono text-[10px] tracking-label uppercase tabular-nums whitespace-nowrap border px-2 py-1 ${tagCls}`}>
+                    <span className={`font-mono text-[0.625rem] tracking-label uppercase tabular-nums whitespace-nowrap border px-2 py-1 ${tagCls}`}>
                       {glyph} {tagText}
                     </span>
                   </div>
@@ -381,7 +381,7 @@ const WorkoutSummary = ({ theme }) => {
 
         {/* Weight trend charts */}
         <section className="border-t border-ink/15 py-6 mt-6">
-          <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-2">
+          <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-2">
             — Weight trend
           </div>
           <p className="font-display italic text-sm text-taupe mb-5 leading-relaxed">
@@ -398,7 +398,7 @@ const WorkoutSummary = ({ theme }) => {
                     {LIFT_NAMES_KO[r.liftId] || r.liftId}
                   </span>
                   {r.role && (
-                    <span className="font-mono text-[9px] text-taupe tracking-meta uppercase">
+                    <span className="font-mono text-[0.5625rem] text-taupe tracking-meta uppercase">
                       · {r.role}
                     </span>
                   )}
@@ -413,20 +413,20 @@ const WorkoutSummary = ({ theme }) => {
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-3">
           <button
             onClick={() => navigate('/journal')}
-            className="py-4 font-mono text-[11px] tracking-label uppercase border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
+            className="py-4 font-mono text-[0.6875rem] tracking-label uppercase border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
           >
             → Log
           </button>
           <button
             onClick={() => navigate('/program')}
-            className="py-4 font-mono text-[11px] tracking-label uppercase bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
+            className="py-4 font-mono text-[0.6875rem] tracking-label uppercase bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
           >
             → Program library
           </button>
         </div>
 
         {/* Footer */}
-        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[11px] text-hint tracking-meta">
+        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
           <span className="uppercase">— FITCOACH —</span>
           <span className="uppercase text-taupe">{workoutLabel} · Complete</span>
         </div>

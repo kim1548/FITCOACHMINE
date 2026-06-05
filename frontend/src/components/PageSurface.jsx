@@ -18,7 +18,7 @@ import React from 'react';
  * @param {string} className - 패널에 추가할 클래스
  */
 const PageSurface = ({ children, className = '' }) => (
-  <div className="pt-[64px] md:pt-[88px] pb-[84px] md:pb-8">
+  <div className="pt-[4rem] md:pt-[5.5rem] pb-[5.25rem] md:pb-8">
     <div
       className={`mx-auto w-full md:w-[min(88vw,1700px)] bg-paper border border-page-border ${className}`}
       style={{

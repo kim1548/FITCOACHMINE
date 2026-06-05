@@ -19,10 +19,10 @@ const NutritionProgressRow = ({ label, consumed, target, unit }) => {
   return (
     <div className="space-y-1.5">
       <div className="flex items-baseline justify-between">
-        <span className="font-mono text-[10px] text-taupe tracking-meta uppercase">
+        <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
           {label}
         </span>
-        <span className="font-mono text-[11px] tabular-nums text-ink">
+        <span className="font-mono text-[0.6875rem] tabular-nums text-ink">
           {Math.round(consumed || 0)}
           <span className="text-hint"> / {target}{unit}</span>
           <span className="ml-2 text-hint">{pct}%</span>

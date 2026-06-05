@@ -30,9 +30,9 @@ const dayOfYear = () => {
 };
 
 const inputCls =
-  'w-full px-3 py-2.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[15px] text-ink placeholder:text-hint placeholder:italic tabular-nums transition-colors';
+  'w-full px-3 py-2.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[0.9375rem] text-ink placeholder:text-hint placeholder:italic tabular-nums transition-colors';
 const selectCls = inputCls + ' appearance-none cursor-pointer';
-const labelCls = 'block font-mono text-[10px] text-taupe tracking-meta uppercase mb-1.5';
+const labelCls = 'block font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1.5';
 
 const Signup = () => {
   usePageTitle('Register · FitCoach');
@@ -94,21 +94,21 @@ const Signup = () => {
       className="fixed inset-0 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden"
       style={{ scrollbarWidth: 'none' }}
     >
-      <div className="w-full max-w-[560px] mx-auto min-h-full flex flex-col px-6 md:px-8 py-10">
+      <div className="w-full max-w-[35rem] mx-auto min-h-full flex flex-col px-6 md:px-8 py-10">
 
         {/* Masthead */}
         <header className="flex items-baseline justify-between border-b border-ink/15 pb-4 mb-10">
           <Link to="/login" className="font-display italic text-lg text-ink tracking-tight">
             FITCOACH
           </Link>
-          <span className="font-mono text-[10px] text-taupe tracking-meta uppercase">
+          <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
             No. {issueNo} — {monthLabel}
           </span>
         </header>
 
         {/* Headline */}
         <div className="mb-8">
-          <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+          <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
             — Register · Begin your journey
           </div>
           <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
@@ -123,7 +123,7 @@ const Signup = () => {
 
           {/* 1) Credentials */}
           <section>
-            <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+            <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
               — Account
             </div>
             <div className="space-y-3 border-t border-ink/12 pt-4">
@@ -168,7 +168,7 @@ const Signup = () => {
 
           {/* 2) Body */}
           <section>
-            <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+            <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
               — Body
             </div>
             <div className="grid grid-cols-4 gap-3 border-t border-ink/12 pt-4">
@@ -206,14 +206,14 @@ const Signup = () => {
                 />
               </div>
             </div>
-            <p className="font-mono text-[9px] text-hint tracking-meta uppercase mt-2">
+            <p className="font-mono text-[0.5625rem] text-hint tracking-meta uppercase mt-2">
               · age · cm · kg
             </p>
           </section>
 
           {/* 3) Lifestyle */}
           <section>
-            <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+            <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
               — Lifestyle
             </div>
             <div className="border-t border-ink/12 pt-4">
@@ -226,7 +226,7 @@ const Signup = () => {
 
           {/* 4) Training */}
           <section>
-            <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+            <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
               — Training
             </div>
             <div className="space-y-3 border-t border-ink/12 pt-4">
@@ -255,7 +255,7 @@ const Signup = () => {
 
           {/* 5) Goal */}
           <section>
-            <div className="font-mono text-[11px] text-accent-gold tracking-label uppercase mb-3">
+            <div className="font-mono text-[0.6875rem] text-accent-gold tracking-label uppercase mb-3">
               — Goal
             </div>
             <div className="border-t border-ink/12 pt-4">
@@ -270,7 +270,7 @@ const Signup = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-3.5 mt-2 font-mono text-[11px] tracking-label uppercase bg-accent-red text-ink hover:bg-accent-red/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3.5 mt-2 font-mono text-[0.6875rem] tracking-label uppercase bg-accent-red text-ink hover:bg-accent-red/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
           >
             {submitting && <Loader2 size={12} className="animate-spin" />}
             {submitting ? 'Creating account…' : '→ Create account'}
@@ -284,14 +284,14 @@ const Signup = () => {
           </p>
           <Link
             to="/login"
-            className="inline-block font-mono text-[11px] tracking-label uppercase px-5 py-3 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
+            className="inline-block font-mono text-[0.6875rem] tracking-label uppercase px-5 py-3 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
           >
             → Sign in instead
           </Link>
         </div>
 
         {/* Footer */}
-        <div className="mt-auto pt-10 border-t border-ink/15 mt-10 flex justify-between items-center font-mono text-[10px] text-hint tracking-meta uppercase">
+        <div className="mt-auto pt-10 border-t border-ink/15 mt-10 flex justify-between items-center font-mono text-[0.625rem] text-hint tracking-meta uppercase">
           <span>— FITCOACH —</span>
           <span className="text-taupe">Register</span>
         </div>

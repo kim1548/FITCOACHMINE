@@ -112,7 +112,7 @@ const ExercisePage = ({ theme }) => {
               <div className="absolute inset-0 z-[100] bg-black/80 backdrop-blur-md flex items-center justify-center p-6 text-center">
                 <div className="max-w-xl w-full">
                   <h2 className="text-white text-3xl font-black mb-6 italic">{selectedExercise} 가이드</h2>
-                  <div className="bg-white/10 p-8 rounded-[30px] border border-white/20 mb-8">
+                  <div className="bg-white/10 p-8 rounded-[1.875rem] border border-white/20 mb-8">
                     <p className="text-white/80 text-lg leading-relaxed">{CAMERA_GUIDE[selectedExercise]}</p>
                   </div>
                   <div className="grid grid-cols-2 gap-4">

@@ -132,8 +132,8 @@ const JournalPage = ({ theme }) => {
       <div className="w-full px-6 md:px-12 py-8">
 
         {/* 텍스트 영역만 좁게 — 가독성 measure */}
-        <div className="max-w-[640px] pb-6">
-          <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+        <div className="max-w-[40rem] pb-6">
+          <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
             — Log · Calendar
           </div>
           <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
@@ -148,14 +148,14 @@ const JournalPage = ({ theme }) => {
         {weekly && (
           <section className="border border-ink/12 p-5 mb-6">
             <div className="flex items-baseline justify-between mb-4">
-              <div className="font-mono text-[11px] text-accent-gold tracking-label uppercase">
+              <div className="font-mono text-[0.6875rem] text-accent-gold tracking-label uppercase">
                 — 이번 주 리포트{' '}
                 <span className="text-hint normal-case tracking-normal">{weekly.period}</span>
               </div>
               <button
                 onClick={generateWeekly}
                 disabled={weeklyGenerating}
-                className="font-mono text-[10px] tracking-meta uppercase text-hint hover:text-ink transition-colors disabled:opacity-50"
+                className="font-mono text-[0.625rem] tracking-meta uppercase text-hint hover:text-ink transition-colors disabled:opacity-50"
               >
                 {weeklyGenerating ? '생성 중…' : weeklySummary ? '↻ 다시 생성' : '✦ AI 총평'}
               </button>
@@ -163,19 +163,19 @@ const JournalPage = ({ theme }) => {
 
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mb-1">운동</div>
+                <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1">운동</div>
                 <div className="font-display text-2xl text-ink tabular-nums leading-none">
                   {weekly.workout_count}<span className="font-display italic text-base text-taupe ml-1">회</span>
                 </div>
               </div>
               <div>
-                <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mb-1">식단 기록</div>
+                <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1">식단 기록</div>
                 <div className="font-display text-2xl text-ink tabular-nums leading-none">
                   {weekly.diet_days}<span className="font-display italic text-base text-taupe ml-1">일</span>
                 </div>
               </div>
               <div>
-                <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mb-1">체중 변화</div>
+                <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1">체중 변화</div>
                 <div className="font-display text-2xl text-ink tabular-nums leading-none">
                   {weekly.weight_change != null
                     ? `${weekly.weight_change > 0 ? '+' : ''}${weekly.weight_change}`
@@ -188,7 +188,7 @@ const JournalPage = ({ theme }) => {
             </div>
 
             {weekly.avg_calories ? (
-              <div className="font-mono text-[10px] text-hint tracking-meta mt-3">
+              <div className="font-mono text-[0.625rem] text-hint tracking-meta mt-3">
                 일 평균 {weekly.avg_calories}kcal · 단백질 {weekly.avg_protein}g
                 {weekly.total_volume ? ` · 총 볼륨 ${weekly.total_volume}kg` : ''}
               </div>
@@ -202,11 +202,11 @@ const JournalPage = ({ theme }) => {
                 </span>
               </div>
             ) : weeklySummary ? (
-              <blockquote className="font-display italic text-[14px] text-body leading-relaxed border-l-2 border-accent-gold pl-3 mt-4 m-0">
+              <blockquote className="font-display italic text-[0.875rem] text-body leading-relaxed border-l-2 border-accent-gold pl-3 mt-4 m-0">
                 "{weeklySummary}"
               </blockquote>
             ) : (
-              <p className="font-display italic text-[12px] text-hint mt-4 leading-relaxed">
+              <p className="font-display italic text-[0.75rem] text-hint mt-4 leading-relaxed">
                 "✦ AI 총평"을 누르면 이번 주 기록을 바탕으로 코치 코멘트를 생성합니다.
               </p>
             )}
@@ -217,7 +217,7 @@ const JournalPage = ({ theme }) => {
         <div className="flex items-baseline justify-between border-t border-b border-ink/12 py-3">
           <button
             onClick={goPrevMonth}
-            className="font-mono text-[11px] text-taupe hover:text-ink tracking-meta uppercase transition-colors"
+            className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase transition-colors"
             aria-label="이전 달"
           >
             ← Prev
@@ -227,7 +227,7 @@ const JournalPage = ({ theme }) => {
           </div>
           <button
             onClick={goNextMonth}
-            className="font-mono text-[11px] text-taupe hover:text-ink tracking-meta uppercase transition-colors"
+            className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase transition-colors"
             aria-label="다음 달"
           >
             Next →
@@ -244,7 +244,7 @@ const JournalPage = ({ theme }) => {
               {WEEK_LABELS.map((w, i) => (
                 <div
                   key={`${w}-${i}`}
-                  className={`text-center font-mono text-[9px] tracking-meta py-1 ${
+                  className={`text-center font-mono text-[0.5625rem] tracking-meta py-1 ${
                     i === 0 ? 'text-accent-red' : 'text-taupe'
                   }`}
                 >
@@ -254,10 +254,10 @@ const JournalPage = ({ theme }) => {
             </div>
 
             {/* Days grid */}
-            <div className="grid grid-cols-7 gap-px bg-ink/10 border border-ink/10">
+            <div className="grid grid-cols-7 gap-px bg-ink/25 border border-ink/20">
               {cells.map(cell => {
                 if (cell.kind === 'pad') {
-                  return <div key={cell.key} className="bg-paper min-h-[50px] md:min-h-[80px]" />;
+                  return <div key={cell.key} className="bg-paper min-h-[3.125rem] md:min-h-[5rem]" />;
                 }
                 const isToday = cell.iso === todayISO;
                 const isFuture = cell.iso > todayISO;
@@ -268,14 +268,14 @@ const JournalPage = ({ theme }) => {
                   <button
                     key={cell.key}
                     onClick={() => setSelectedDate(cell.iso)}
-                    className={`relative min-h-[50px] md:min-h-[80px] p-2 text-left transition-colors group ${
+                    className={`relative min-h-[3.125rem] md:min-h-[5rem] p-2 text-left transition-colors group ${
                       isToday
                         ? 'bg-accent-gold/10 outline outline-1 outline-accent-gold -outline-offset-1'
                         : 'bg-paper hover:bg-ink/5'
                     }`}
                   >
                     <span
-                      className={`font-mono text-[10px] tabular-nums ${
+                      className={`font-mono text-[0.625rem] tabular-nums ${
                         isToday
                           ? 'text-accent-gold'
                           : isFuture
@@ -286,13 +286,13 @@ const JournalPage = ({ theme }) => {
                       {String(cell.day).padStart(2, '0')}
                     </span>
                     {isToday && (
-                      <span className="absolute bottom-1.5 left-2 font-mono text-[7px] tracking-meta text-accent-gold">
+                      <span className="absolute bottom-1.5 left-2 font-mono text-[0.4375rem] tracking-meta text-accent-gold">
                         TODAY
                       </span>
                     )}
                     {hasWorkout && !isToday && (
                       <span
-                        className="absolute bottom-1.5 left-2 w-[5px] h-[5px] rounded-full bg-accent-red"
+                        className="absolute bottom-1.5 left-2 w-[0.3125rem] h-[0.3125rem] rounded-full bg-accent-red"
                         aria-label="Session logged"
                       />
                     )}
@@ -302,13 +302,13 @@ const JournalPage = ({ theme }) => {
             </div>
 
             {/* Legend */}
-            <div className="flex gap-5 mt-3 font-mono text-[9px] text-hint tracking-meta uppercase">
+            <div className="flex gap-5 mt-3 font-mono text-[0.5625rem] text-hint tracking-meta uppercase">
               <span className="inline-flex items-center gap-1.5">
-                <span className="w-[5px] h-[5px] rounded-full bg-accent-red" />
+                <span className="w-[0.3125rem] h-[0.3125rem] rounded-full bg-accent-red" />
                 Session logged
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <span className="w-[5px] h-[5px] rounded-full bg-hint" />
+                <span className="w-[0.3125rem] h-[0.3125rem] rounded-full bg-hint" />
                 Rest / upcoming
               </span>
             </div>
@@ -316,14 +316,14 @@ const JournalPage = ({ theme }) => {
             {loading && (
               <div className="mt-4 flex items-center gap-2 text-taupe">
                 <Loader2 className="animate-spin" size={12} />
-                <span className="font-mono text-[10px] tracking-meta uppercase">Loading…</span>
+                <span className="font-mono text-[0.625rem] tracking-meta uppercase">Loading…</span>
               </div>
             )}
           </div>
 
           {/* 월간 요약 사이드바 */}
           <aside className="border-t lg:border-t-0 border-ink/12 lg:pl-6 py-5">
-            <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-4">
+            <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-4">
               — This month
             </div>
 
@@ -348,7 +348,7 @@ const JournalPage = ({ theme }) => {
                     i < arr.length - 1 ? 'border-b border-ink/8' : ''
                   }`}
                 >
-                  <span className="font-mono text-[10px] text-taupe tracking-meta uppercase">
+                  <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
                     {row.label}
                   </span>
                   <span className={`font-display italic text-base tabular-nums ${row.accent}`}>
@@ -360,7 +360,7 @@ const JournalPage = ({ theme }) => {
 
             {/* Current streak */}
             <div className="border-t border-ink/12 mt-4 pt-4">
-              <div className="font-mono text-[10px] text-accent-gold tracking-label uppercase mb-2">
+              <div className="font-mono text-[0.625rem] text-accent-gold tracking-label uppercase mb-2">
                 — Current streak
               </div>
               <div className="font-display text-3xl text-ink leading-none tabular-nums">
@@ -381,7 +381,7 @@ const JournalPage = ({ theme }) => {
         </div>
 
         {/* Footer — page-end mark */}
-        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[11px] text-hint tracking-meta">
+        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
           <span className="uppercase">— FITCOACH —</span>
           <span className="uppercase text-taupe">{MONTH_LABELS[month - 1]} {year}</span>
         </div>

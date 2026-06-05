@@ -35,7 +35,7 @@ const ExerciseCover = ({ name, size = 'sm' }) => {
   const src = getGuideImage(name);
   const dims = size === 'featured'
     ? 'w-full aspect-[4/5] md:aspect-[3/4]'
-    : 'w-[76px] h-[106px]';
+    : 'w-[4.75rem] h-[6.625rem]';
   const fs = size === 'featured' ? '22px' : '11px';
 
   return (
@@ -102,12 +102,12 @@ const RoutinePlaySelectPage = () => {
         <div className="w-full px-6 md:px-12 py-8">
 
           {/* Headline */}
-          <div className="max-w-[640px] pb-6">
+          <div className="max-w-[40rem] pb-6">
             <div className="flex items-baseline justify-between mb-3">
-              <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Form Check · Library
               </div>
-              <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                 {totalCount.toString().padStart(2, '0')} exercises
               </div>
             </div>
@@ -121,7 +121,7 @@ const RoutinePlaySelectPage = () => {
 
           {/* Body part filter */}
           <div className="flex items-center justify-between border-t border-b border-ink/12 py-3 mb-0">
-            <span className="font-mono text-[10px] text-hint tracking-meta uppercase">
+            <span className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
               Target
             </span>
             <div className="flex flex-wrap gap-x-5 gap-y-1.5 justify-end">
@@ -131,7 +131,7 @@ const RoutinePlaySelectPage = () => {
                   <button
                     key={cat}
                     onClick={() => handleCatChange(cat)}
-                    className={`font-mono text-[11px] tracking-meta uppercase transition-colors ${
+                    className={`font-mono text-[0.6875rem] tracking-meta uppercase transition-colors ${
                       active ? 'text-accent-red' : 'text-taupe hover:text-ink'
                     }`}
                   >
@@ -144,7 +144,7 @@ const RoutinePlaySelectPage = () => {
 
           {/* Featured */}
           <section className="pt-8 pb-2">
-            <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-4">
+            <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-4">
               — Featured · {selectedCat}
             </div>
 
@@ -160,36 +160,36 @@ const RoutinePlaySelectPage = () => {
                     {featured}
                   </span>
                 </div>
-                <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mb-3">
+                <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-3">
                   {selectedCat}
                   {featuredAngle && <> · {featuredAngle}</>}
                 </div>
 
                 {featuredAngle && (
                   <div className="flex flex-wrap gap-1.5 mb-4">
-                    <span className="font-mono text-[9px] text-taupe tracking-meta uppercase border border-ink/15 px-2 py-1">
+                    <span className="font-mono text-[0.5625rem] text-taupe tracking-meta uppercase border border-ink/15 px-2 py-1">
                       {featuredAngle}
                     </span>
-                    <span className="font-mono text-[9px] text-taupe tracking-meta uppercase border border-ink/15 px-2 py-1">
+                    <span className="font-mono text-[0.5625rem] text-taupe tracking-meta uppercase border border-ink/15 px-2 py-1">
                       MediaPipe Pose
                     </span>
-                    <span className="font-mono text-[9px] text-taupe tracking-meta uppercase border border-ink/15 px-2 py-1">
+                    <span className="font-mono text-[0.5625rem] text-taupe tracking-meta uppercase border border-ink/15 px-2 py-1">
                       5-axis report
                     </span>
                   </div>
                 )}
 
-                <div className="hidden md:block font-mono text-[10px] text-accent-gold tracking-label uppercase mb-2">
+                <div className="hidden md:block font-mono text-[0.625rem] text-accent-gold tracking-label uppercase mb-2">
                   — Recommended setup
                 </div>
-                <blockquote className="font-display italic text-[13px] md:text-[15px] text-body leading-relaxed border-l-2 border-accent-red pl-3 mb-4 md:mb-6 m-0 line-clamp-2 md:line-clamp-none">
+                <blockquote className="font-display italic text-[0.8125rem] md:text-[0.9375rem] text-body leading-relaxed border-l-2 border-accent-red pl-3 mb-4 md:mb-6 m-0 line-clamp-2 md:line-clamp-none">
                   "{CAMERA_GUIDE[featured] || '상세 가이드를 준비 중입니다.'}"
                 </blockquote>
 
                 <div className="mt-auto">
                   <button
                     onClick={handleStart}
-                    className="w-full md:w-auto whitespace-nowrap font-mono text-[11px] tracking-normal md:tracking-label uppercase px-3 md:px-5 py-3 border border-accent-red text-accent-red hover:bg-accent-red hover:text-ink transition-colors"
+                    className="w-full md:w-auto whitespace-nowrap font-mono text-[0.6875rem] tracking-normal md:tracking-label uppercase px-3 md:px-5 py-3 border border-accent-red text-accent-red hover:bg-accent-red hover:text-ink transition-colors"
                   >
                     → Start AI analysis
                   </button>
@@ -202,10 +202,10 @@ const RoutinePlaySelectPage = () => {
           {others.length > 0 && (
             <section className="pt-8">
               <div className="flex items-baseline justify-between mb-3">
-                <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+                <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                   — Other in {selectedCat}
                 </div>
-                <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+                <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                   {others.length.toString().padStart(2, '0')} more
                 </div>
               </div>
@@ -232,12 +232,12 @@ const RoutinePlaySelectPage = () => {
                             {name}
                           </span>
                           {angle && (
-                            <span className="font-mono text-[10px] text-taupe tracking-meta uppercase">
+                            <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
                               · {angle}
                             </span>
                           )}
                         </div>
-                        <p className="font-display italic text-[13px] text-body leading-snug line-clamp-1">
+                        <p className="font-display italic text-[0.8125rem] text-body leading-snug line-clamp-1">
                           {CAMERA_GUIDE[name] || '상세 가이드를 준비 중입니다.'}
                         </p>
                       </div>
@@ -251,7 +251,7 @@ const RoutinePlaySelectPage = () => {
           )}
 
           {/* Footer */}
-          <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[11px] text-hint tracking-meta">
+          <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
             <span className="uppercase">— FITCOACH —</span>
             <span className="uppercase text-taupe">Form Check · {totalCount} exercises</span>
           </div>

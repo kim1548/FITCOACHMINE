@@ -14,7 +14,7 @@ import usePageTitle from '../hooks/usePageTitle';
  *
  * 전환:
  *   - 스크롤이 표지 높이의 80% 초과하면 TopNavbar 가 위에서 슬라이드 인
- *   - 본문은 PageSurface 안 — pt-[88px] 로 헤더 공간 확보
+ *   - 본문은 PageSurface 안 — pt-[5.5rem] 로 헤더 공간 확보
  *
  * 접근성:
  *   - prefers-reduced-motion 시 모든 모션·슬라이드인 비활성화
@@ -177,7 +177,7 @@ const Landing = () => {
           >
             FITCOACH
           </Link>
-          <div className="font-mono text-[10px] md:text-[11px] text-taupe tracking-meta uppercase">
+          <div className="font-mono text-[0.625rem] md:text-[0.6875rem] text-taupe tracking-meta uppercase">
             No. {dayOfYear} — {monthLabel.toUpperCase()} {year}
           </div>
         </div>
@@ -185,8 +185,8 @@ const Landing = () => {
         {/* 히어로 — flex-1 로 남은 공간 차지, justify-end 로 콘텐츠 좌하단 정렬.
             min-h-0 가 없으면 작은 뷰포트에서 flex item 이 안 줄어들어 위로 흘러넘침. */}
         <div className="relative z-10 flex-1 min-h-0 flex flex-col justify-center md:justify-end px-6 md:px-12 pt-8 md:pt-12 pb-12 md:pb-28">
-          <div className="max-w-[640px]">
-            <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3 md:mb-4">
+          <div className="max-w-[40rem]">
+            <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3 md:mb-4">
               — Premiere issue · Welcome
             </div>
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[0.98] tracking-tight font-normal">
@@ -194,25 +194,25 @@ const Landing = () => {
               your <em className="italic text-accent-gold">active</em>{' '}
               <em className="italic text-accent-gold">self.</em>
             </h1>
-            <p className="font-display italic text-sm md:text-base lg:text-lg text-taupe mt-4 md:mt-5 leading-relaxed max-w-[480px]">
+            <p className="font-display italic text-sm md:text-base lg:text-lg text-taupe mt-4 md:mt-5 leading-relaxed max-w-[30rem]">
               운동 · 식단 · 체성분 — 매일의 기록이 한 권의 매거진처럼 쌓이는 헬스 코칭 트래커.
             </p>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 mt-6 md:mt-8">
               <Link
                 to="/signup"
-                className="font-mono text-[11px] tracking-label uppercase px-6 py-3.5 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
+                className="font-mono text-[0.6875rem] tracking-label uppercase px-6 py-3.5 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
               >
                 → Register
               </Link>
               <Link
                 to="/login"
-                className="font-mono text-[11px] tracking-label uppercase px-6 py-3.5 border border-ink/25 text-taupe hover:text-ink hover:border-ink/45 transition-colors"
+                className="font-mono text-[0.6875rem] tracking-label uppercase px-6 py-3.5 border border-ink/25 text-taupe hover:text-ink hover:border-ink/45 transition-colors"
               >
                 → Sign in
               </Link>
               <Link
                 to="/journal"
-                className="font-mono text-[11px] tracking-meta uppercase px-3 py-3.5 text-hint hover:text-ink transition-colors"
+                className="font-mono text-[0.6875rem] tracking-meta uppercase px-3 py-3.5 text-hint hover:text-ink transition-colors"
               >
                 → Browse as guest
               </Link>
@@ -230,12 +230,12 @@ const Landing = () => {
 
           {/* What's inside */}
           <section className="px-6 md:px-12 py-8 md:py-10 border-b border-ink/15">
-            <div className="max-w-[640px] pb-6 landing-reveal">
+            <div className="max-w-[40rem] pb-6 landing-reveal">
               <div className="flex items-baseline justify-between mb-3">
-                <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+                <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                   — What's inside
                 </div>
-                <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+                <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                   {SECTIONS.length.toString().padStart(2, '0')} sections
                 </div>
               </div>
@@ -259,11 +259,11 @@ const Landing = () => {
                       <span className="font-display text-xl md:text-2xl text-ink leading-tight">
                         {s.label}
                       </span>
-                      <span className="font-mono text-[10px] text-taupe tracking-meta uppercase">
+                      <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
                         · {s.sub}
                       </span>
                     </div>
-                    <p className="font-display italic text-[14px] text-body leading-relaxed">
+                    <p className="font-display italic text-[0.875rem] text-body leading-relaxed">
                       {s.desc}
                     </p>
                   </div>
@@ -277,8 +277,8 @@ const Landing = () => {
 
           {/* How it works */}
           <section className="px-6 md:px-12 py-8 md:py-10 border-b border-ink/15">
-            <div className="max-w-[640px] pb-6 landing-reveal">
-              <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+            <div className="max-w-[40rem] pb-6 landing-reveal">
+              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
                 — How it works
               </div>
               <h2 className="font-display text-3xl md:text-4xl leading-[1.0] tracking-tight font-normal">
@@ -296,10 +296,10 @@ const Landing = () => {
                   <div className="font-display italic text-4xl text-accent-gold leading-none mb-3 tabular-nums">
                     {step.no}
                   </div>
-                  <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-2">
+                  <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-2">
                     — {step.label}
                   </div>
-                  <p className="font-display italic text-[14px] text-body leading-relaxed">
+                  <p className="font-display italic text-[0.875rem] text-body leading-relaxed">
                     {step.desc}
                   </p>
                 </div>
@@ -309,8 +309,8 @@ const Landing = () => {
 
           {/* Closing CTA */}
           <section className="px-6 md:px-12 py-10 md:py-12 border-b border-ink/15 bg-accent-red/[0.04]">
-            <div className="max-w-[640px] landing-reveal">
-              <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+            <div className="max-w-[40rem] landing-reveal">
+              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
                 — Begin
               </div>
               <h2 className="font-display text-3xl md:text-4xl leading-[1.05] tracking-tight font-normal mb-4">
@@ -322,19 +322,19 @@ const Landing = () => {
               <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
                 <Link
                   to="/signup"
-                  className="font-mono text-[11px] tracking-label uppercase px-6 py-3.5 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
+                  className="font-mono text-[0.6875rem] tracking-label uppercase px-6 py-3.5 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
                 >
                   → Create account
                 </Link>
                 <Link
                   to="/login"
-                  className="font-mono text-[11px] tracking-label uppercase px-6 py-3.5 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
+                  className="font-mono text-[0.6875rem] tracking-label uppercase px-6 py-3.5 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
                 >
                   → I already have one
                 </Link>
                 <Link
                   to="/journal"
-                  className="font-mono text-[11px] tracking-meta uppercase px-3 py-3.5 text-hint hover:text-ink transition-colors"
+                  className="font-mono text-[0.6875rem] tracking-meta uppercase px-3 py-3.5 text-hint hover:text-ink transition-colors"
                 >
                   → Just looking
                 </Link>
@@ -343,7 +343,7 @@ const Landing = () => {
           </section>
 
           {/* Footer */}
-          <div className="px-6 md:px-12 py-6 flex justify-between items-center font-mono text-[11px] text-hint tracking-meta">
+          <div className="px-6 md:px-12 py-6 flex justify-between items-center font-mono text-[0.6875rem] text-hint tracking-meta">
             <span className="uppercase">— FITCOACH —</span>
             <span className="uppercase text-taupe">Vol. 01 · {year}</span>
           </div>

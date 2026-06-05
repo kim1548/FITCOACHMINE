@@ -16,7 +16,7 @@ const FieldError = ({ id, children, className = '' }) => {
     <p
       id={id}
       role="alert"
-      className={`font-mono text-[10px] text-accent-red tracking-meta uppercase mt-1.5 ${className}`}
+      className={`font-mono text-[0.625rem] text-accent-red tracking-meta uppercase mt-1.5 ${className}`}
     >
       · {children}
     </p>

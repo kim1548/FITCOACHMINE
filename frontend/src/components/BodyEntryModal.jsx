@@ -92,7 +92,7 @@ const BodyEntryModal = ({ isOpen, onClose, onSaved }) => {
         {/* Header — 모바일은 타이틀 숨겨 공간 확보(폼이 위로 올라감), 데스크탑은 유지 */}
         <header className="flex-shrink-0 flex items-baseline justify-between px-6 py-3 md:py-4 border-b border-ink/15">
           <div className="hidden md:block">
-            <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-1">
+            <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-1">
               — New entry
             </div>
             <h2 className="font-display text-xl text-ink leading-tight font-normal tracking-tight m-0">
@@ -101,7 +101,7 @@ const BodyEntryModal = ({ isOpen, onClose, onSaved }) => {
           </div>
           <button
             onClick={onClose}
-            className="font-mono text-[11px] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
+            className="font-mono text-[0.6875rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
             aria-label="닫기"
           >
             Close ×
@@ -115,14 +115,14 @@ const BodyEntryModal = ({ isOpen, onClose, onSaved }) => {
         >
           {/* Date */}
           <div>
-            <label className="block font-mono text-[10px] text-taupe tracking-meta uppercase mb-1.5">
+            <label className="block font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1.5">
               Measured on
             </label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-3 py-2.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[15px] text-ink tabular-nums transition-colors"
+              className="w-full px-3 py-2.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[0.9375rem] text-ink tabular-nums transition-colors"
             />
           </div>
 
@@ -133,7 +133,7 @@ const BodyEntryModal = ({ isOpen, onClose, onSaved }) => {
             return (
               <div key={f.key}>
                 <label className="flex items-baseline justify-between mb-1.5">
-                  <span className="font-mono text-[10px] text-taupe tracking-meta uppercase">
+                  <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
                     {f.label}
                     {f.required && <span className="text-accent-red ml-1">*</span>}
                     <span className="text-hint normal-case tracking-normal ml-2 font-display italic">
@@ -141,7 +141,7 @@ const BodyEntryModal = ({ isOpen, onClose, onSaved }) => {
                     </span>
                   </span>
                   {!f.required && (
-                    <span className="font-mono text-[9px] text-hint tracking-meta uppercase">
+                    <span className="font-mono text-[0.5625rem] text-hint tracking-meta uppercase">
                       Optional
                     </span>
                   )}
@@ -156,10 +156,10 @@ const BodyEntryModal = ({ isOpen, onClose, onSaved }) => {
                     placeholder={f.required ? '필수' : '—'}
                     aria-invalid={!!showErr}
                     aria-describedby={showErr ? `${f.key}-err` : undefined}
-                    className="w-full px-3 py-2.5 pr-12 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[15px] text-ink tabular-nums placeholder:text-hint placeholder:italic transition-colors [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    className="w-full px-3 py-2.5 pr-12 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[0.9375rem] text-ink tabular-nums placeholder:text-hint placeholder:italic transition-colors [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                     style={{ MozAppearance: 'textfield' }}
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[10px] text-taupe tracking-meta uppercase pointer-events-none">
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[0.625rem] text-taupe tracking-meta uppercase pointer-events-none">
                     {f.unit}
                   </span>
                 </div>
@@ -170,10 +170,10 @@ const BodyEntryModal = ({ isOpen, onClose, onSaved }) => {
 
           {serverError && (
             <div className="border border-accent-red/30 bg-accent-red/[0.05] px-3 py-2.5">
-              <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-1">
+              <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-1">
                 — Failed
               </div>
-              <p className="font-display italic text-[13px] text-body leading-snug m-0">
+              <p className="font-display italic text-[0.8125rem] text-body leading-snug m-0">
                 {serverError}
               </p>
             </div>
@@ -185,7 +185,7 @@ const BodyEntryModal = ({ isOpen, onClose, onSaved }) => {
           <button
             onClick={handleSubmit}
             disabled={submitting}
-            className="w-full py-4 font-mono text-[11px] tracking-label uppercase bg-accent-red text-ink hover:bg-accent-red/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-4 font-mono text-[0.6875rem] tracking-label uppercase bg-accent-red text-ink hover:bg-accent-red/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
           >
             {submitting && <Loader2 className="animate-spin" size={12} />}
             {submitting ? 'Saving…' : '→ Save entry'}

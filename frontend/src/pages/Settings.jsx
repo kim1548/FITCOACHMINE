@@ -24,7 +24,7 @@ const loadNotifTimes = () => {
 };
 
 const timeInputCls =
-  "px-2 py-1.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[13px] text-ink tabular-nums transition-colors";
+  "px-2 py-1.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[0.8125rem] text-ink tabular-nums transition-colors";
 
 const Settings = ({ theme, setTheme }) => {
   const navigate = useNavigate();
@@ -152,7 +152,7 @@ const Settings = ({ theme, setTheme }) => {
 
   const SectionLabel = ({ children, accent = "red" }) => (
     <div
-      className={`font-mono text-[11px] tracking-label uppercase mb-3 ${
+      className={`font-mono text-[0.6875rem] tracking-label uppercase mb-3 ${
         accent === "gold" ? "text-accent-gold" : "text-accent-red"
       }`}
     >
@@ -167,7 +167,7 @@ const Settings = ({ theme, setTheme }) => {
         {!editingNick ? (
           <button
             onClick={() => { setNickname(user?.nickname || ""); setEditingNick(true); }}
-            className="font-mono text-[10px] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
+            className="font-mono text-[0.625rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
           >
             → 닉네임 수정
           </button>
@@ -180,23 +180,23 @@ const Settings = ({ theme, setTheme }) => {
                 onChange={(e) => setNickname(e.target.value)}
                 maxLength={20}
                 placeholder="커뮤니티 표시 이름"
-                className="flex-1 min-w-0 px-2 py-1.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[14px] text-ink placeholder:text-hint placeholder:italic transition-colors"
+                className="flex-1 min-w-0 px-2 py-1.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[0.875rem] text-ink placeholder:text-hint placeholder:italic transition-colors"
               />
               <button
                 onClick={handleSaveNickname}
                 disabled={savingNick}
-                className="shrink-0 font-mono text-[10px] tracking-meta uppercase text-accent-red hover:text-ink transition-colors disabled:opacity-50"
+                className="shrink-0 font-mono text-[0.625rem] tracking-meta uppercase text-accent-red hover:text-ink transition-colors disabled:opacity-50"
               >
                 {savingNick ? "저장중" : "저장"}
               </button>
               <button
                 onClick={() => setEditingNick(false)}
-                className="shrink-0 font-mono text-[10px] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
+                className="shrink-0 font-mono text-[0.625rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
               >
                 취소
               </button>
             </div>
-            <p className="font-display italic text-[10px] text-hint leading-relaxed">
+            <p className="font-display italic text-[0.625rem] text-hint leading-relaxed">
               비워두면 아이디 일부만 표시됩니다.
             </p>
           </div>
@@ -211,8 +211,8 @@ const Settings = ({ theme, setTheme }) => {
           <div className="px-5 py-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex-1">
-                <p className="font-display text-[15px] text-ink leading-tight">운동 루틴 알림</p>
-                <p className="font-display italic text-[11px] text-taupe mt-1 leading-relaxed">
+                <p className="font-display text-[0.9375rem] text-ink leading-tight">운동 루틴 알림</p>
+                <p className="font-display italic text-[0.6875rem] text-taupe mt-1 leading-relaxed">
                   정해진 시간에 운동 시작 알람을 받습니다.
                 </p>
               </div>
@@ -234,7 +234,7 @@ const Settings = ({ theme, setTheme }) => {
             </div>
             {notif.workout && (
               <div className="mt-3 flex items-center gap-2">
-                <span className="font-mono text-[10px] text-taupe tracking-meta uppercase">시간</span>
+                <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">시간</span>
                 <input type="time" value={times.workout} onChange={setTime("workout")} className={timeInputCls} />
               </div>
             )}
@@ -244,8 +244,8 @@ const Settings = ({ theme, setTheme }) => {
           <div className="px-5 py-4">
             <div className="flex items-center justify-between gap-4">
               <div className="flex-1">
-                <p className="font-display text-[15px] text-ink leading-tight">식사 기록 리마인드</p>
-                <p className="font-display italic text-[11px] text-taupe mt-1 leading-relaxed">
+                <p className="font-display text-[0.9375rem] text-ink leading-tight">식사 기록 리마인드</p>
+                <p className="font-display italic text-[0.6875rem] text-taupe mt-1 leading-relaxed">
                   매 끼니 식단 기록을 잊지 않도록 알려줍니다.
                 </p>
               </div>
@@ -269,7 +269,7 @@ const Settings = ({ theme, setTheme }) => {
               <div className="mt-3 grid grid-cols-3 gap-2">
                 {[["breakfast", "아침"], ["lunch", "점심"], ["dinner", "저녁"]].map(([k, lbl]) => (
                   <div key={k}>
-                    <span className="block font-mono text-[9px] text-taupe tracking-meta uppercase mb-1">{lbl}</span>
+                    <span className="block font-mono text-[0.5625rem] text-taupe tracking-meta uppercase mb-1">{lbl}</span>
                     <input type="time" value={times[k]} onChange={setTime(k)} className={`w-full ${timeInputCls}`} />
                   </div>
                 ))}
@@ -281,7 +281,7 @@ const Settings = ({ theme, setTheme }) => {
         <div className="flex justify-end mt-2">
           <button
             onClick={handleTestNotif}
-            className="font-mono text-[10px] tracking-meta uppercase text-accent-red hover:text-ink transition-colors"
+            className="font-mono text-[0.625rem] tracking-meta uppercase text-accent-red hover:text-ink transition-colors"
           >
             테스트 알림
           </button>
@@ -297,13 +297,13 @@ const Settings = ({ theme, setTheme }) => {
               href={appLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 min-w-0 font-mono text-[12px] text-accent-red hover:text-ink underline underline-offset-2 break-all transition-colors"
+              className="flex-1 min-w-0 font-mono text-[0.75rem] text-accent-red hover:text-ink underline underline-offset-2 break-all transition-colors"
             >
               {appLink}
             </a>
             <button
               onClick={copyLink}
-              className="shrink-0 font-mono text-[10px] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
+              className="shrink-0 font-mono text-[0.625rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
             >
               복사
             </button>
@@ -319,8 +319,8 @@ const Settings = ({ theme, setTheme }) => {
                 <path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.114l11.04 10.908zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z" />
               </svg>
               <div className="text-left leading-none">
-                <div className="text-[7px] text-white/70 tracking-wide uppercase">Get it on</div>
-                <div className="text-[13px] text-white leading-tight">Google Play</div>
+                <div className="text-[0.4375rem] text-white/70 tracking-wide uppercase">Get it on</div>
+                <div className="text-[0.8125rem] text-white leading-tight">Google Play</div>
               </div>
             </button>
 
@@ -334,8 +334,8 @@ const Settings = ({ theme, setTheme }) => {
                 <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zm3.378-3.066c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701z" />
               </svg>
               <div className="text-left leading-none">
-                <div className="text-[7px] text-white/70 tracking-wide uppercase">Download on the</div>
-                <div className="text-[13px] text-white leading-tight">App Store</div>
+                <div className="text-[0.4375rem] text-white/70 tracking-wide uppercase">Download on the</div>
+                <div className="text-[0.8125rem] text-white leading-tight">App Store</div>
               </div>
             </button>
           </div>
@@ -350,17 +350,17 @@ const Settings = ({ theme, setTheme }) => {
           disabled={deleting}
           className="w-full text-left px-5 py-5 border border-accent-red/30 hover:bg-accent-red/5 transition-colors group disabled:opacity-50"
         >
-          <p className="font-mono text-[11px] tracking-label uppercase text-accent-red group-hover:text-ink">
+          <p className="font-mono text-[0.6875rem] tracking-label uppercase text-accent-red group-hover:text-ink">
             {deleting ? "→ Processing…" : "→ Delete account"}
           </p>
-          <p className="font-display italic text-[12px] text-hint mt-2 leading-relaxed">
+          <p className="font-display italic text-[0.75rem] text-hint mt-2 leading-relaxed">
             계정과 모든 운동·식단·저널 기록이 영구 삭제됩니다. 복구할 수 없습니다.
           </p>
         </button>
       </section>
 
       {/* 푸터 — 페이지 끝 마크 */}
-      <div className="pt-6 mt-4 border-t border-ink/15 flex justify-between items-center font-mono text-[10px] text-hint tracking-meta uppercase">
+      <div className="pt-6 mt-4 border-t border-ink/15 flex justify-between items-center font-mono text-[0.625rem] text-hint tracking-meta uppercase">
         <span>— FITCOACH —</span>
         <span className="text-taupe">Settings</span>
       </div>

@@ -54,7 +54,7 @@ const Modal = ({
       >
         {/* Header */}
         <header className="px-6 pt-5 pb-4 border-b border-ink/12">
-          <div className={`font-mono text-[10px] tracking-label uppercase mb-2 ${destructive ? 'text-accent-red' : 'text-accent-gold'}`}>
+          <div className={`font-mono text-[0.625rem] tracking-label uppercase mb-2 ${destructive ? 'text-accent-red' : 'text-accent-gold'}`}>
             — {tone}
           </div>
           <h3 className="font-display text-xl text-ink leading-snug m-0 font-normal tracking-tight whitespace-pre-line">
@@ -75,14 +75,14 @@ const Modal = ({
         <footer className="flex">
           <button
             onClick={onCancel}
-            className="flex-1 py-3.5 font-mono text-[11px] tracking-label uppercase text-taupe hover:text-ink hover:bg-ink/5 border-r border-ink/12 transition-colors"
+            className="flex-1 py-3.5 font-mono text-[0.6875rem] tracking-label uppercase text-taupe hover:text-ink hover:bg-ink/5 border-r border-ink/12 transition-colors"
           >
             × {cancelLabel}
           </button>
           <button
             onClick={onConfirm}
             autoFocus
-            className={`flex-1 py-3.5 font-mono text-[11px] tracking-label uppercase transition-colors ${
+            className={`flex-1 py-3.5 font-mono text-[0.6875rem] tracking-label uppercase transition-colors ${
               destructive
                 ? 'text-accent-red hover:bg-accent-red hover:text-ink'
                 : 'text-ink hover:bg-ink hover:text-paper'

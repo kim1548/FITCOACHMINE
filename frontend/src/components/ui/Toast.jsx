@@ -59,7 +59,7 @@ export const useToast = () => {
 // Container + Item
 // ============================================================
 const ToastContainer = ({ toasts, onDismiss }) => (
-  <div className="fixed top-[88px] right-4 md:right-8 z-[500] flex flex-col gap-2 pointer-events-none w-[calc(100%-2rem)] md:w-auto max-w-[420px]">
+  <div className="fixed top-[5.5rem] right-4 md:right-8 z-[500] flex flex-col gap-2 pointer-events-none w-[calc(100%-2rem)] md:w-auto max-w-[26.25rem]">
     {toasts.map((t) => (
       <ToastItem key={t.id} toast={t} onDismiss={onDismiss} />
     ))}
@@ -85,21 +85,21 @@ const ToastItem = ({ toast, onDismiss }) => {
   return (
     <div
       role="status"
-      className={`pointer-events-auto bg-paper border ${meta.ringCls} px-4 py-3 min-w-[260px] shadow-2xl animate-in slide-in-from-right-4 fade-in duration-200`}
+      className={`pointer-events-auto bg-paper border ${meta.ringCls} px-4 py-3 min-w-[16.25rem] shadow-2xl animate-in slide-in-from-right-4 fade-in duration-200`}
     >
       <div className="flex items-baseline justify-between gap-3 mb-1">
-        <div className={`font-mono text-[10px] tracking-label uppercase ${meta.accentCls}`}>
+        <div className={`font-mono text-[0.625rem] tracking-label uppercase ${meta.accentCls}`}>
           {meta.label}
         </div>
         <button
           onClick={() => onDismiss(id)}
-          className="font-mono text-[10px] tracking-meta uppercase text-hint hover:text-ink transition-colors"
+          className="font-mono text-[0.625rem] tracking-meta uppercase text-hint hover:text-ink transition-colors"
           aria-label="닫기"
         >
           ×
         </button>
       </div>
-      <p className="font-display italic text-[14px] text-ink leading-snug m-0 whitespace-pre-line">
+      <p className="font-display italic text-[0.875rem] text-ink leading-snug m-0 whitespace-pre-line">
         {msg}
       </p>
     </div>

@@ -113,7 +113,7 @@ export default function GuidedCapture({ exercise, guide, onRecorded, onCancel })
             <p className="font-display italic text-sm text-taupe leading-relaxed mb-5">{fatal}</p>
             <button
               onClick={onCancel}
-              className="font-mono text-[11px] tracking-label uppercase px-5 py-3 border border-white/30 text-white hover:bg-white/10 transition-colors"
+              className="font-mono text-[0.6875rem] tracking-label uppercase px-5 py-3 border border-white/30 text-white hover:bg-white/10 transition-colors"
             >
               ← 돌아가기
             </button>
@@ -131,13 +131,13 @@ export default function GuidedCapture({ exercise, guide, onRecorded, onCancel })
             <>
               <button
                 onClick={onCancel}
-                className="font-mono text-[10px] tracking-label uppercase px-4 py-2.5 border border-white/40 text-white hover:bg-white/10 transition-colors bg-black/40"
+                className="font-mono text-[0.625rem] tracking-label uppercase px-4 py-2.5 border border-white/40 text-white hover:bg-white/10 transition-colors bg-black/40"
               >
                 취소
               </button>
               <button
                 onClick={startRec}
-                className="font-mono text-[11px] tracking-label uppercase px-6 py-3 border border-accent-red text-ink bg-accent-red hover:bg-accent-red/90 transition-colors cursor-pointer"
+                className="font-mono text-[0.6875rem] tracking-label uppercase px-6 py-3 border border-accent-red text-ink bg-accent-red hover:bg-accent-red/90 transition-colors cursor-pointer"
               >
                 ● 촬영 시작
               </button>
@@ -145,7 +145,7 @@ export default function GuidedCapture({ exercise, guide, onRecorded, onCancel })
           ) : (
             <button
               onClick={stopRec}
-              className="font-mono text-[11px] tracking-label uppercase px-6 py-3 border border-accent-gold text-surface bg-accent-gold hover:bg-accent-gold/90 transition-colors"
+              className="font-mono text-[0.6875rem] tracking-label uppercase px-6 py-3 border border-accent-gold text-surface bg-accent-gold hover:bg-accent-gold/90 transition-colors"
             >
               ■ 촬영 종료 · 분석
             </button>

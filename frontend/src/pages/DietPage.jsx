@@ -48,16 +48,16 @@ const MealRow = ({ no, label, sublabel, items, onEdit, onReset, onDeleteItem }) 
         <span className="font-display text-2xl text-ink leading-tight">
           {label}
         </span>
-        <span className="font-mono text-[10px] text-taupe tracking-meta uppercase">
+        <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
           · {sublabel}
         </span>
-        <span className="ml-auto font-mono text-[10px] text-hint tracking-meta uppercase">
+        <span className="ml-auto font-mono text-[0.625rem] text-hint tracking-meta uppercase">
           {hasData ? `${items.length} item${items.length > 1 ? 's' : ''}` : 'Empty'}
         </span>
         {hasData && onReset && (
           <button
             onClick={onReset}
-            className="font-mono text-[10px] tracking-meta uppercase text-taupe hover:text-accent-red transition-colors"
+            className="font-mono text-[0.625rem] tracking-meta uppercase text-taupe hover:text-accent-red transition-colors"
             aria-label="초기화"
           >
             ↻ Reset
@@ -72,12 +72,12 @@ const MealRow = ({ no, label, sublabel, items, onEdit, onReset, onDeleteItem }) 
               key={m.id}
               className="flex justify-between items-center py-1.5 group"
             >
-              <span className="font-display text-[15px] text-body leading-snug">
+              <span className="font-display text-[0.9375rem] text-body leading-snug">
                 · {m.food_name}
               </span>
               <button
                 onClick={() => onDeleteItem(m.id)}
-                className="font-mono text-[11px] text-hint hover:text-accent-red transition-colors opacity-60 md:opacity-0 md:group-hover:opacity-100"
+                className="font-mono text-[0.6875rem] text-hint hover:text-accent-red transition-colors opacity-60 md:opacity-0 md:group-hover:opacity-100"
                 aria-label="삭제"
               >
                 ✕
@@ -93,7 +93,7 @@ const MealRow = ({ no, label, sublabel, items, onEdit, onReset, onDeleteItem }) 
 
       <button
         onClick={onEdit}
-        className="font-mono text-[11px] tracking-label uppercase text-accent-red hover:text-ink transition-colors"
+        className="font-mono text-[0.6875rem] tracking-label uppercase text-accent-red hover:text-ink transition-colors"
       >
         {hasData ? '→ Edit entry' : '→ Record entry'}
       </button>
@@ -233,12 +233,12 @@ const DietPage = () => {
         <div className="w-full px-6 md:px-12 py-8">
 
           {/* Headline */}
-          <div className="max-w-[640px] pb-6">
+          <div className="max-w-[40rem] pb-6">
             <div className="flex items-baseline justify-between mb-3">
-              <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Meals · Today
               </div>
-              <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                 {totalEntries.toString().padStart(2, '0')} entries
               </div>
             </div>
@@ -253,11 +253,11 @@ const DietPage = () => {
           {/* Daily target */}
           <section className="border-t border-b border-ink/12 py-6 mb-2">
             <div className="flex items-baseline justify-between mb-5">
-              <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Daily target
               </div>
               {me?.goal && (
-                <span className="font-mono text-[10px] text-hint tracking-meta uppercase">
+                <span className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                   Goal · {me.goal}
                 </span>
               )}
@@ -291,13 +291,13 @@ const DietPage = () => {
                     unit="g"
                   />
                 </div>
-                <p className="font-mono text-[9px] text-hint tracking-meta uppercase pt-2">
+                <p className="font-mono text-[0.5625rem] text-hint tracking-meta uppercase pt-2">
                   BMR {me.nutrition.bmr} · TDEE {me.nutrition.tdee} kcal
                 </p>
               </div>
             ) : me ? (
               <p className="font-display italic text-sm text-body leading-relaxed">
-                프로필에 <span className="not-italic text-accent-gold font-mono text-[11px] tracking-meta uppercase">나이</span>가
+                프로필에 <span className="not-italic text-accent-gold font-mono text-[0.6875rem] tracking-meta uppercase">나이</span>가
                 비어있어 목표 계산이 안 돼요. 회원가입 시 나이를 입력하면 자동 계산됩니다.
               </p>
             ) : (
@@ -310,10 +310,10 @@ const DietPage = () => {
           {/* Entries timeline */}
           <section className="pt-8">
             <div className="flex items-baseline justify-between mb-3">
-              <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Entries
               </div>
-              <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                 {todayMeta()}
               </div>
             </div>
@@ -335,10 +335,10 @@ const DietPage = () => {
 
             {/* Snacks subsection */}
             <div className="flex items-baseline justify-between mt-10 mb-3">
-              <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Snacks
               </div>
-              <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                 {snackGroups.length.toString().padStart(2, '0')} entries
               </div>
             </div>
@@ -369,7 +369,7 @@ const DietPage = () => {
                     Add new snack
                   </span>
                 </div>
-                <span className="font-mono text-[10px] text-hint tracking-meta uppercase">
+                <span className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                   → New entry
                 </span>
               </button>
@@ -379,13 +379,13 @@ const DietPage = () => {
           {/* Coach's note (AI feedback) */}
           <section className="-mx-6 md:-mx-12 px-6 md:px-12 py-6 mt-10 border-y border-ink/15 bg-accent-red/[0.04]">
             <div className="flex items-baseline justify-between mb-3 flex-wrap gap-2">
-              <div className="font-mono text-[10px] text-accent-red tracking-label uppercase">
+              <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase">
                 — Coach's note · Today's macros
               </div>
               <button
                 onClick={getAiFeedback}
                 disabled={aiLoading}
-                className="font-mono text-[10px] tracking-label uppercase text-taupe hover:text-ink disabled:opacity-40 transition-colors flex items-center gap-1.5"
+                className="font-mono text-[0.625rem] tracking-label uppercase text-taupe hover:text-ink disabled:opacity-40 transition-colors flex items-center gap-1.5"
               >
                 {aiLoading && <Loader2 size={10} className="animate-spin" />}
                 {aiLoading ? 'Analyzing…' : '↻ Refresh'}
@@ -408,7 +408,7 @@ const DietPage = () => {
           </section>
 
           {/* Footer */}
-          <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[11px] text-hint tracking-meta">
+          <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
             <span className="uppercase">— FITCOACH —</span>
             <span className="uppercase text-taupe">Daily · {todayMeta()}</span>
           </div>

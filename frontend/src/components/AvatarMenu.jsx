@@ -41,7 +41,7 @@ const AvatarMenu = () => {
         onClick={() => setOpen((o) => !o)}
         aria-label="아바타 선택"
         aria-expanded={open}
-        className="w-7 h-7 rounded-full overflow-hidden border border-ink/25 bg-paper-soft flex items-center justify-center font-display italic text-[11px] text-taupe hover:border-accent-red transition-colors"
+        className="w-7 h-7 rounded-full overflow-hidden border border-ink/25 bg-paper-soft flex items-center justify-center font-display italic text-[0.6875rem] text-taupe hover:border-accent-red transition-colors"
       >
         {cur ? <img src={cur} alt="" className="w-full h-full object-cover" /> : initial}
       </button>
@@ -53,7 +53,7 @@ const AvatarMenu = () => {
 
           {/* 아래로 펼쳐지는 패널 */}
           <div className="absolute right-0 top-full mt-2 z-[200] w-60 bg-paper border border-ink/20 shadow-2xl p-3 animate-in fade-in slide-in-from-top-1 duration-150">
-            <div className="font-mono text-[9px] text-accent-red tracking-label uppercase mb-2 px-0.5">
+            <div className="font-mono text-[0.5625rem] text-accent-red tracking-label uppercase mb-2 px-0.5">
               — Avatar
             </div>
             <div className="grid grid-cols-3 gap-2">
@@ -78,7 +78,7 @@ const AvatarMenu = () => {
             <button
               onClick={() => pick(null)}
               disabled={saving}
-              className="w-full mt-2.5 font-mono text-[9px] tracking-meta uppercase py-1.5 text-taupe hover:text-ink transition-colors disabled:opacity-50"
+              className="w-full mt-2.5 font-mono text-[0.5625rem] tracking-meta uppercase py-1.5 text-taupe hover:text-ink transition-colors disabled:opacity-50"
             >
               기본 (선택 해제)
             </button>

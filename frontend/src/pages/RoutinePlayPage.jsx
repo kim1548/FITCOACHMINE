@@ -94,7 +94,7 @@ const RoutinePlayPage = () => {
           {/* Back link */}
           <button
             onClick={() => navigate('/formcheck')}
-            className="font-mono text-[11px] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
+            className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
           >
             ← Form Check library
           </button>
@@ -104,10 +104,10 @@ const RoutinePlayPage = () => {
               {/* Header */}
               <header className="pb-6">
                 <div className="flex items-baseline justify-between mb-3">
-                  <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+                  <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                     — Session · Form Check
                   </div>
-                  <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+                  <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                     {isAnalyzing ? 'Analyzing…' : 'Awaiting upload'}
                   </div>
                 </div>
@@ -124,15 +124,15 @@ const RoutinePlayPage = () => {
 
               {/* Capture frame */}
               <div className="border-t border-ink/15 pt-4">
-                <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mb-2">
+                <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-2">
                   Capture
                 </div>
 
                 {isAnalyzing ? (
                   /* Analyzing overlay — 실시간 진행률 % */
                   <div className="relative w-full aspect-video bg-black border border-ink/15 overflow-hidden flex items-center justify-center">
-                    <div className="text-center px-6 w-full max-w-[440px]">
-                      <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-5">
+                    <div className="text-center px-6 w-full max-w-[27.5rem]">
+                      <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-5">
                         — Analyzing form
                       </div>
                       <div className="font-display text-7xl md:text-8xl text-ink tabular-nums leading-none mb-6">
@@ -165,11 +165,11 @@ const RoutinePlayPage = () => {
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-3 px-6">
                       <button
                         onClick={() => setMode('record')}
-                        className="font-mono text-[11px] tracking-label uppercase px-6 py-3 border border-accent-red text-ink bg-accent-red hover:bg-accent-red/90 transition-colors"
+                        className="font-mono text-[0.6875rem] tracking-label uppercase px-6 py-3 border border-accent-red text-ink bg-accent-red hover:bg-accent-red/90 transition-colors"
                       >
                         ● 가이드 촬영
                       </button>
-                      <label className="font-mono text-[11px] tracking-label uppercase px-6 py-3 border border-ink/25 text-taupe hover:text-ink hover:border-ink/45 transition-colors cursor-pointer">
+                      <label className="font-mono text-[0.6875rem] tracking-label uppercase px-6 py-3 border border-ink/25 text-taupe hover:text-ink hover:border-ink/45 transition-colors cursor-pointer">
                         → 영상 올리기
                         <input type="file" className="hidden" accept="video/*" onChange={handleFileSelected} />
                       </label>
@@ -177,20 +177,20 @@ const RoutinePlayPage = () => {
                   </div>
                 )}
 
-                <div className="flex gap-5 mt-3 font-mono text-[9px] text-hint tracking-meta uppercase">
+                <div className="flex gap-5 mt-3 font-mono text-[0.5625rem] text-hint tracking-meta uppercase">
                   <span className="inline-flex items-center gap-1.5">
-                    <span className="w-[5px] h-[5px] rounded-full bg-accent-red" />
+                    <span className="w-[0.3125rem] h-[0.3125rem] rounded-full bg-accent-red" />
                     Server-side AI analysis
                   </span>
                   <span className="inline-flex items-center gap-1.5">
-                    <span className="w-[5px] h-[5px] rounded-full bg-accent-gold" />
+                    <span className="w-[0.3125rem] h-[0.3125rem] rounded-full bg-accent-gold" />
                     mp4 · mov · avi
                   </span>
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[11px] text-hint tracking-meta">
+              <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
                 <span className="uppercase">— FITCOACH —</span>
                 <span className="uppercase text-taupe">Form Check · {exId}</span>
               </div>

@@ -271,7 +271,7 @@ const DietAddPage = () => {
           {/* Back link */}
           <button
             onClick={() => navigate(-1)}
-            className="font-mono text-[11px] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
+            className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
           >
             ← Back to meals
           </button>
@@ -279,10 +279,10 @@ const DietAddPage = () => {
           {/* Headline */}
           <header className="pb-6">
             <div className="flex items-baseline justify-between mb-3 flex-wrap gap-2">
-              <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Entry · Recording {mealType}
               </div>
-              <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                 {filledCount.toString().padStart(2, '0')} item{filledCount !== 1 ? 's' : ''}
               </div>
             </div>
@@ -297,7 +297,7 @@ const DietAddPage = () => {
 
           {/* Top search */}
           <section className="border-t border-ink/15 pt-5 mb-8 relative">
-            <div className="font-mono text-[10px] text-taupe tracking-label uppercase mb-2">
+            <div className="font-mono text-[0.625rem] text-taupe tracking-label uppercase mb-2">
               — Search by name
             </div>
             <div className="relative">
@@ -311,7 +311,7 @@ const DietAddPage = () => {
               {topQuery && (
                 <button
                   onClick={() => { setTopQuery(''); setTopResults([]); }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[11px] text-taupe hover:text-accent-red tracking-meta uppercase"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[0.6875rem] text-taupe hover:text-accent-red tracking-meta uppercase"
                   aria-label="검색어 지우기"
                 >
                   Clear ×
@@ -327,10 +327,10 @@ const DietAddPage = () => {
                     onClick={() => addFoodFromSearch(item)}
                     className="w-full text-left px-4 py-3 border-b border-ink/8 last:border-b-0 hover:bg-accent-red/[0.06] transition-colors"
                   >
-                    <div className="font-display text-[15px] text-ink leading-snug">
+                    <div className="font-display text-[0.9375rem] text-ink leading-snug">
                       {item.food_name}
                     </div>
-                    <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mt-1 tabular-nums">
+                    <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mt-1 tabular-nums">
                       {Math.round(item.kcal)} kcal · 100 g · C {Math.round(item.carbs)} · P {Math.round(item.protein)} · F {Math.round(item.fat)}
                     </div>
                   </button>
@@ -347,11 +347,11 @@ const DietAddPage = () => {
               {/* Image plate */}
               <div>
                 <div className="flex items-baseline justify-between mb-2">
-                  <div className="font-mono text-[10px] text-accent-red tracking-label uppercase">
+                  <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase">
                     — Plate
                   </div>
                   {loading && (
-                    <span className="font-mono text-[10px] text-accent-gold tracking-meta uppercase flex items-center gap-1.5">
+                    <span className="font-mono text-[0.625rem] text-accent-gold tracking-meta uppercase flex items-center gap-1.5">
                       <Loader2 size={10} className="animate-spin" />
                       Analyzing…
                     </span>
@@ -369,14 +369,14 @@ const DietAddPage = () => {
                   ) : (
                     <div className="h-full flex flex-col items-center justify-center text-hint gap-2">
                       <span className="font-poster text-3xl tracking-tight uppercase">No image</span>
-                      <span className="font-mono text-[10px] tracking-meta uppercase">Capture or upload</span>
+                      <span className="font-mono text-[0.625rem] tracking-meta uppercase">Capture or upload</span>
                     </div>
                   )}
 
                   {loading && (
                     <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center z-20">
                       <Loader2 className="animate-spin text-accent-red mb-3" size={22} />
-                      <p className="font-mono text-[10px] text-accent-red tracking-label uppercase">
+                      <p className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase">
                         Analyzing image
                       </p>
                     </div>
@@ -384,13 +384,13 @@ const DietAddPage = () => {
                 </div>
 
                 <div className="flex gap-3 mt-3">
-                  <label className="font-mono text-[11px] tracking-label uppercase px-4 py-2.5 border border-accent-red text-accent-red hover:bg-accent-red hover:text-ink transition-colors cursor-pointer">
+                  <label className="font-mono text-[0.6875rem] tracking-label uppercase px-4 py-2.5 border border-accent-red text-accent-red hover:bg-accent-red hover:text-ink transition-colors cursor-pointer">
                     → Upload photo
                     <input type="file" className="hidden" accept="image/*" onChange={handleUpload} />
                   </label>
                   <button
                     onClick={() => setIsFavSet(!isFavSet)}
-                    className={`font-mono text-[11px] tracking-label uppercase px-4 py-2.5 border transition-colors ${
+                    className={`font-mono text-[0.6875rem] tracking-label uppercase px-4 py-2.5 border transition-colors ${
                       isFavSet
                         ? 'bg-accent-gold/20 border-accent-gold text-accent-gold'
                         : 'border-ink/20 text-taupe hover:text-ink hover:border-ink/40'
@@ -403,7 +403,7 @@ const DietAddPage = () => {
 
               {/* Totals */}
               <div className="border-t border-ink/15 pt-5">
-                <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-3">
+                <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-3">
                   — Total
                 </div>
 
@@ -426,7 +426,7 @@ const DietAddPage = () => {
                         i < arr.length - 1 ? 'border-b border-ink/8' : ''
                       }`}
                     >
-                      <span className="font-mono text-[10px] text-taupe tracking-meta uppercase">
+                      <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
                         {row.label}
                       </span>
                       <span className="font-display italic text-base tabular-nums text-ink">
@@ -442,17 +442,17 @@ const DietAddPage = () => {
             <div className="space-y-6">
               <div>
                 <div className="flex items-baseline justify-between mb-3">
-                  <div className="font-mono text-[10px] text-accent-red tracking-label uppercase">
+                  <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase">
                     — Items
                   </div>
-                  <div className="font-mono text-[9px] text-hint tracking-meta uppercase">
+                  <div className="font-mono text-[0.5625rem] text-hint tracking-meta uppercase">
                     C · P · F · kcal per 100g × weight
                   </div>
                 </div>
 
                 <div className="border-t border-ink/15">
                   {/* Header row */}
-                  <div className="grid grid-cols-[1fr_auto_64px_24px] gap-3 items-baseline py-2 border-b border-ink/8 font-mono text-[9px] text-hint tracking-meta uppercase">
+                  <div className="grid grid-cols-[1fr_auto_64px_24px] gap-3 items-baseline py-2 border-b border-ink/8 font-mono text-[0.5625rem] text-hint tracking-meta uppercase">
                     <span>Name</span>
                     <span className="text-right">C / P / F / kcal</span>
                     <span className="text-right">Weight</span>
@@ -460,7 +460,7 @@ const DietAddPage = () => {
                   </div>
 
                   {/* Rows */}
-                  <div className="max-h-[440px] overflow-y-auto [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none' }}>
+                  <div className="max-h-[27.5rem] overflow-y-auto [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none' }}>
                     {foods.map((f, i) => (
                       <div
                         key={f.id}
@@ -468,7 +468,7 @@ const DietAddPage = () => {
                       >
                         <div className="relative">
                           <input
-                            className="w-full bg-transparent font-display text-[15px] text-ink placeholder:text-hint outline-none border-b border-transparent focus:border-accent-red/40 transition-colors py-0.5"
+                            className="w-full bg-transparent font-display text-[0.9375rem] text-ink placeholder:text-hint outline-none border-b border-transparent focus:border-accent-red/40 transition-colors py-0.5"
                             value={f.food_name}
                             onChange={(e) => {
                               const n = [...foods];
@@ -487,10 +487,10 @@ const DietAddPage = () => {
                                   className="w-full text-left px-4 py-3 border-b border-ink/8 last:border-b-0 hover:bg-accent-red/[0.06] transition-colors"
                                   onClick={() => selectFood(i, item)}
                                 >
-                                  <div className="font-display text-[14px] text-ink">
+                                  <div className="font-display text-[0.875rem] text-ink">
                                     {item.food_name}
                                   </div>
-                                  <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mt-0.5 tabular-nums">
+                                  <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mt-0.5 tabular-nums">
                                     {Math.round(item.kcal)} kcal · 100 g
                                   </div>
                                 </button>
@@ -499,21 +499,21 @@ const DietAddPage = () => {
                           )}
                         </div>
 
-                        <div className="flex items-baseline gap-2 font-mono text-[11px] tabular-nums whitespace-nowrap">
+                        <div className="flex items-baseline gap-2 font-mono text-[0.6875rem] tabular-nums whitespace-nowrap">
                           <span className="text-taupe">{Math.round((f.carbs * f.weight) / 100)}</span>
                           <span className="text-hint">·</span>
                           <span className="text-taupe">{Math.round((f.protein * f.weight) / 100)}</span>
                           <span className="text-hint">·</span>
                           <span className="text-taupe">{Math.round((f.fat * f.weight) / 100)}</span>
                           <span className="text-hint">·</span>
-                          <span className="text-accent-red font-display italic text-[13px]">
+                          <span className="text-accent-red font-display italic text-[0.8125rem]">
                             {Math.round((f.calories * f.weight) / 100)}
                           </span>
                         </div>
 
                         <input
                           type="number"
-                          className="w-16 bg-transparent text-right font-mono text-[12px] tabular-nums text-ink border-b border-ink/15 focus:border-accent-red outline-none py-0.5 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                          className="w-16 bg-transparent text-right font-mono text-[0.75rem] tabular-nums text-ink border-b border-ink/15 focus:border-accent-red outline-none py-0.5 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                           style={{ MozAppearance: 'textfield' }}
                           value={f.weight}
                           onChange={(e) => {
@@ -525,7 +525,7 @@ const DietAddPage = () => {
 
                         <button
                           onClick={() => setFoods(foods.filter((it) => it.id !== f.id))}
-                          className="font-mono text-[12px] text-hint hover:text-accent-red transition-colors opacity-60 md:opacity-0 md:group-hover:opacity-100"
+                          className="font-mono text-[0.75rem] text-hint hover:text-accent-red transition-colors opacity-60 md:opacity-0 md:group-hover:opacity-100"
                           aria-label="삭제"
                         >
                           ✕
@@ -542,7 +542,7 @@ const DietAddPage = () => {
                   onClick={handleSave}
                   aria-invalid={!!saveError}
                   aria-describedby={saveError ? 'save-error' : undefined}
-                  className="w-full font-mono text-[11px] tracking-label uppercase py-4 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
+                  className="w-full font-mono text-[0.6875rem] tracking-label uppercase py-4 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
                 >
                   → Complete recording
                 </button>
@@ -554,7 +554,7 @@ const DietAddPage = () => {
           {/* Favorites */}
           <section className="border-t border-ink/15 pt-8 mt-10">
             <div className="flex items-baseline justify-between mb-4 flex-wrap gap-2">
-              <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Saved sets
               </div>
               <div className="flex gap-5">
@@ -567,7 +567,7 @@ const DietAddPage = () => {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`font-mono text-[11px] tracking-meta uppercase transition-colors ${
+                      className={`font-mono text-[0.6875rem] tracking-meta uppercase transition-colors ${
                         active ? 'text-accent-red' : 'text-taupe hover:text-ink'
                       }`}
                     >
@@ -593,7 +593,7 @@ const DietAddPage = () => {
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       />
                     </div>
-                    <p className="font-display italic text-[13px] text-body mt-2 leading-snug line-clamp-2 group-hover:text-ink transition-colors">
+                    <p className="font-display italic text-[0.8125rem] text-body mt-2 leading-snug line-clamp-2 group-hover:text-ink transition-colors">
                       {set.items.map((it) => it.food_name).join(', ')}
                     </p>
                   </button>
@@ -604,7 +604,7 @@ const DietAddPage = () => {
                 <p className="font-display italic text-sm text-hint">
                   저장된 세트가 없습니다.
                 </p>
-                <p className="font-mono text-[10px] text-hint tracking-meta uppercase mt-2">
+                <p className="font-mono text-[0.625rem] text-hint tracking-meta uppercase mt-2">
                   · Save current as set 로 만들기
                 </p>
               </div>
@@ -612,7 +612,7 @@ const DietAddPage = () => {
           </section>
 
           {/* Footer */}
-          <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[11px] text-hint tracking-meta">
+          <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
             <span className="uppercase">— FITCOACH —</span>
             <span className="uppercase text-taupe">Entry · {mealType}</span>
           </div>

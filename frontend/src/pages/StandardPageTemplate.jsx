@@ -21,7 +21,7 @@ const StandardPageTemplate = ({ theme, setTheme }) => {
             <button onClick={() => setTheme('light')} className="p-1"><Sun size={16} className={theme === 'light' ? 'text-blue-500' : 'text-slate-400'} /></button>
             <button onClick={() => setTheme('design')} className="p-1"><Palette size={16} className={theme === 'design' ? 'text-blue-500' : 'text-slate-400'} /></button>
           </div>
-          <h2 className="text-[10px] font-black text-blue-500 italic uppercase tracking-[0.3em]">
+          <h2 className="text-[0.625rem] font-black text-blue-500 italic uppercase tracking-[0.3em]">
             {/* 여기에 페이지별 제목이 들어갑니다 */}
             Page Title
           </h2>
@@ -37,7 +37,7 @@ const StandardPageTemplate = ({ theme, setTheme }) => {
 
         {/* [5] 푸터 하단 여백 (Navbar 높이 고려) */}
         <footer className="py-20 text-center">
-          <p className="text-[10px] font-black text-slate-800 uppercase tracking-[0.5em]">
+          <p className="text-[0.625rem] font-black text-slate-800 uppercase tracking-[0.5em]">
             FITCOACH System Standard
           </p>
         </footer>

@@ -10,6 +10,15 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:ital,wght@0,300..800;1,300..800&display=swap');
 
+/* 화면폭에 비례하는 루트 글꼴 — 모든 rem 기반 크기(글자·여백·치수)가 함께 비례해서
+   "노트북에서 본 비율"이 어느 화면에서도 동일하게 재현된다.
+   - 모바일(<768): 기본 16px 그대로 (모바일 디자인 유지)
+   - 노트북(≤1440): 16px 유지(하한 고정) → 지금과 동일
+   - 그 위 모니터: 1440px=16px 기준으로 비례 확대(최대 24px). */
+@media (min-width: 768px) {
+  html { font-size: clamp(16px, 1.111vw, 24px); }
+}
+
 @theme {
   /* --- Page-on-surface 톤 시스템 -------------------------------------
      surface = 바깥 여백 (가장 어두운 다크 월넛)

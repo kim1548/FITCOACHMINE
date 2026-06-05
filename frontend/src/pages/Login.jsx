@@ -71,21 +71,21 @@ const Login = () => {
       className="fixed inset-0 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden"
       style={{ scrollbarWidth: 'none' }}
     >
-      <div className="w-full max-w-[480px] mx-auto min-h-full flex flex-col px-6 md:px-8 py-10">
+      <div className="w-full max-w-[30rem] mx-auto min-h-full flex flex-col px-6 md:px-8 py-10">
 
         {/* Masthead */}
         <header className="flex items-baseline justify-between border-b border-ink/15 pb-4 mb-10">
           <Link to="/login" className="font-display italic text-lg text-ink tracking-tight">
             FITCOACH
           </Link>
-          <span className="font-mono text-[10px] text-taupe tracking-meta uppercase">
+          <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
             No. {issueNo} — {monthLabel}
           </span>
         </header>
 
         {/* Headline */}
         <div className="mb-8">
-          <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+          <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
             — Sign in · Welcome back
           </div>
           <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
@@ -99,7 +99,7 @@ const Login = () => {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5 mb-8">
           <div>
-            <label className="block font-mono text-[10px] text-taupe tracking-meta uppercase mb-1.5">
+            <label className="block font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1.5">
               Username
             </label>
             <input
@@ -109,12 +109,12 @@ const Login = () => {
               autoComplete="username"
               aria-invalid={!!credError}
               aria-describedby={credError ? 'login-err' : undefined}
-              className="w-full px-3 py-2.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[15px] text-ink placeholder:text-hint placeholder:italic transition-colors"
+              className="w-full px-3 py-2.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[0.9375rem] text-ink placeholder:text-hint placeholder:italic transition-colors"
             />
           </div>
 
           <div>
-            <label className="block font-mono text-[10px] text-taupe tracking-meta uppercase mb-1.5">
+            <label className="block font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1.5">
               Password
             </label>
             <input
@@ -125,7 +125,7 @@ const Login = () => {
               autoComplete="current-password"
               aria-invalid={!!credError}
               aria-describedby={credError ? 'login-err' : undefined}
-              className="w-full px-3 py-2.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[15px] text-ink placeholder:text-hint placeholder:italic transition-colors"
+              className="w-full px-3 py-2.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[0.9375rem] text-ink placeholder:text-hint placeholder:italic transition-colors"
             />
             <FieldError id="login-err">{credError}</FieldError>
           </div>
@@ -133,7 +133,7 @@ const Login = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-3.5 mt-2 font-mono text-[11px] tracking-label uppercase bg-accent-red text-ink hover:bg-accent-red/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3.5 mt-2 font-mono text-[0.6875rem] tracking-label uppercase bg-accent-red text-ink hover:bg-accent-red/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
           >
             {submitting && <Loader2 size={12} className="animate-spin" />}
             {submitting ? 'Signing in…' : '→ Sign in'}
@@ -147,14 +147,14 @@ const Login = () => {
           </p>
           <Link
             to="/signup"
-            className="inline-block font-mono text-[11px] tracking-label uppercase px-5 py-3 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
+            className="inline-block font-mono text-[0.6875rem] tracking-label uppercase px-5 py-3 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
           >
             → Register an account
           </Link>
         </div>
 
         {/* Footer */}
-        <div className="mt-auto pt-10 border-t border-ink/15 mt-10 flex justify-between items-center font-mono text-[10px] text-hint tracking-meta uppercase">
+        <div className="mt-auto pt-10 border-t border-ink/15 mt-10 flex justify-between items-center font-mono text-[0.625rem] text-hint tracking-meta uppercase">
           <span>— FITCOACH —</span>
           <span className="text-taupe">Sign in</span>
         </div>

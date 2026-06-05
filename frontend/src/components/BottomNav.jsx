@@ -37,7 +37,7 @@ const BottomNav = () => {
             }`}
           >
             <Icon size={20} strokeWidth={active ? 2.2 : 1.7} />
-            <span className="font-mono text-[9px] tracking-tight leading-none">{label}</span>
+            <span className="font-mono text-[0.5625rem] tracking-tight leading-none">{label}</span>
           </Link>
         );
       })}

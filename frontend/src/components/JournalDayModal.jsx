@@ -104,7 +104,7 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
           <div className="font-display italic text-ink text-sm">FITCOACH</div>
           <button
             onClick={onClose}
-            className="font-mono text-[11px] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
+            className="font-mono text-[0.6875rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
             aria-label="닫기"
           >
             Close ×
@@ -115,7 +115,7 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
           {loading && (
             <div className="flex items-center gap-2 text-taupe">
               <Loader2 className="animate-spin" size={16} />
-              <span className="font-mono text-[11px] tracking-meta uppercase">Loading…</span>
+              <span className="font-mono text-[0.6875rem] tracking-meta uppercase">Loading…</span>
             </div>
           )}
 
@@ -132,10 +132,10 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
               <>
                 {/* Entry meta + headline */}
                 <div className="mb-7">
-                  <div className="font-mono text-[11px] text-accent-red tracking-label uppercase mb-3">
+                  <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
                     Entry {entryNo} / {formatHeaderDate(date)} ({formatDow(date)})
                   </div>
-                  <h1 className="font-display text-[40px] md:text-[52px] leading-[0.98] tracking-tight m-0 font-normal">
+                  <h1 className="font-display text-[2.5rem] md:text-[3.25rem] leading-[0.98] tracking-tight m-0 font-normal">
                     {headline.main}<br />
                     <em className="italic text-accent-gold">{headline.em}</em>
                   </h1>
@@ -146,16 +146,16 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
                   <div className="grid grid-cols-1 md:grid-cols-2 border-t border-ink/15">
                     {/* Workout */}
                     <div className="py-5 md:pr-6 md:border-r border-ink/10">
-                      <div className="font-mono text-[10px] text-taupe tracking-label uppercase mb-3">— Workout</div>
+                      <div className="font-mono text-[0.625rem] text-taupe tracking-label uppercase mb-3">— Workout</div>
                       {data.workout ? (
                         <div className="space-y-4">
                           {data.workout.sessions.map(s => (
                             <div key={s.id}>
                               <div className="font-display text-2xl text-ink leading-tight mb-1">{s.routine_name}</div>
-                              <div className="font-mono text-[11px] text-accent-gold tracking-meta mb-2">
+                              <div className="font-mono text-[0.6875rem] text-accent-gold tracking-meta mb-2">
                                 {s.lifts.length} lifts · session complete
                               </div>
-                              <ul className="font-mono text-[12px] leading-[1.7] text-body">
+                              <ul className="font-mono text-[0.75rem] leading-[1.7] text-body">
                                 {s.lifts.map((lift, i) => {
                                   const sets = Array.isArray(lift.sets) ? lift.sets : [];
                                   const reps = sets.map(x => x.reps);
@@ -187,14 +187,14 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
 
                     {/* Macros */}
                     <div className="py-5 md:pl-6 border-t md:border-t-0 border-ink/15">
-                      <div className="font-mono text-[10px] text-taupe tracking-label uppercase mb-3">— Macros</div>
+                      <div className="font-mono text-[0.625rem] text-taupe tracking-label uppercase mb-3">— Macros</div>
                       {data.diet ? (
                         <>
                           <div className="font-display text-4xl text-ink leading-none mb-3 tabular-nums tracking-tight">
                             {Math.round(data.diet.total.kcal).toLocaleString()}{' '}
                             <span className="text-sm text-taupe italic font-normal">kcal</span>
                           </div>
-                          <div className="font-mono text-[12px] text-taupe space-y-1.5">
+                          <div className="font-mono text-[0.75rem] text-taupe space-y-1.5">
                             <div className="flex justify-between border-t border-ink/10 pt-1.5">
                               <span>Protein</span>
                               <span className="text-ink tabular-nums">
@@ -218,7 +218,7 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
                             </div>
                           </div>
                           {dietPct !== null && (
-                            <div className="mt-3 pt-3 border-t border-ink/10 flex items-baseline justify-between font-mono text-[10px] text-taupe tracking-meta uppercase">
+                            <div className="mt-3 pt-3 border-t border-ink/10 flex items-baseline justify-between font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
                               <span>vs target</span>
                               <span className={`tabular-nums ${dietPct >= 80 && dietPct <= 110 ? 'text-accent-gold' : 'text-ink'}`}>
                                 {dietPct}%
@@ -226,10 +226,10 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
                             </div>
                           )}
                           {Object.keys(data.diet.by_meal).length > 0 && (
-                            <div className="mt-3 pt-3 border-t border-ink/10 font-mono text-[10px] tracking-meta uppercase text-taupe space-y-1">
+                            <div className="mt-3 pt-3 border-t border-ink/10 font-mono text-[0.625rem] tracking-meta uppercase text-taupe space-y-1">
                               {Object.entries(data.diet.by_meal).map(([meal, foods]) => (
                                 <div key={meal} className="flex gap-2">
-                                  <span className="text-hint min-w-[42px]">{meal}</span>
+                                  <span className="text-hint min-w-[2.625rem]">{meal}</span>
                                   <span className="text-body truncate">{foods.map(f => f.food_name).join(', ')}</span>
                                 </div>
                               ))}
@@ -246,7 +246,7 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
                 {/* Composition (InBody) */}
                 {data.body && (
                   <div className="border-t border-ink/15 py-5">
-                    <div className="font-mono text-[10px] text-taupe tracking-label uppercase mb-3">— Composition</div>
+                    <div className="font-mono text-[0.625rem] text-taupe tracking-label uppercase mb-3">— Composition</div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       {[
                         { label: '체중', key: 'weight', unit: 'kg', betterLower: false },
@@ -263,13 +263,13 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
                           : improving ? 'text-accent-gold' : declining ? 'text-accent-red' : 'text-hint';
                         return (
                           <div key={m.key}>
-                            <div className="font-mono text-[9px] text-taupe tracking-label uppercase mb-1">{m.label}</div>
+                            <div className="font-mono text-[0.5625rem] text-taupe tracking-label uppercase mb-1">{m.label}</div>
                             <div className="font-display text-2xl text-ink tabular-nums leading-none">
                               {v != null ? v : <span className="text-hint">—</span>}
-                              {v != null && <span className="text-[10px] text-taupe italic ml-1">{m.unit}</span>}
+                              {v != null && <span className="text-[0.625rem] text-taupe italic ml-1">{m.unit}</span>}
                             </div>
                             {d != null && (
-                              <div className={`font-mono text-[10px] tracking-meta mt-1 ${deltaCls}`}>
+                              <div className={`font-mono text-[0.625rem] tracking-meta mt-1 ${deltaCls}`}>
                                 {d > 0 ? '+' : ''}{d}{m.unit}
                               </div>
                             )}
@@ -283,7 +283,7 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
                 {/* Coach's note (AI 코멘트) */}
                 {data.body?.ai_comment && (
                   <div className="-mx-6 px-6 py-5 border-t border-ink/15 bg-accent-red/5">
-                    <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-3">
+                    <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-3">
                       — Coach's note · {data.body.deltas ? 'Body composition shift' : 'Baseline reading'}
                     </div>
                     <blockquote className="font-display italic text-lg text-ink leading-relaxed m-0 max-w-[92%]">
@@ -294,7 +294,7 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
 
                 {/* Today's line (한 줄 평) */}
                 <div className="border-t border-ink/15 py-5">
-                  <div className="font-mono text-[10px] text-taupe tracking-label uppercase mb-3">— Today's line</div>
+                  <div className="font-mono text-[0.625rem] text-taupe tracking-label uppercase mb-3">— Today's line</div>
                   {noteEditing ? (
                     <div className="space-y-3">
                       <textarea
@@ -308,7 +308,7 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
                         {data.user_note && (
                           <button
                             onClick={() => { setNoteDraft(data.user_note); setNoteEditing(false); }}
-                            className="font-mono text-[11px] tracking-meta uppercase text-taupe hover:text-ink"
+                            className="font-mono text-[0.6875rem] tracking-meta uppercase text-taupe hover:text-ink"
                           >
                             취소
                           </button>
@@ -316,7 +316,7 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
                         <button
                           onClick={handleSaveNote}
                           disabled={savingNote || !noteDraft.trim()}
-                          className="font-mono text-[11px] tracking-meta uppercase text-accent-red hover:text-ink disabled:opacity-40 flex items-center gap-1.5"
+                          className="font-mono text-[0.6875rem] tracking-meta uppercase text-accent-red hover:text-ink disabled:opacity-40 flex items-center gap-1.5"
                         >
                           {savingNote && <Loader2 size={11} className="animate-spin" />}
                           → Save entry
@@ -330,7 +330,7 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
                       </blockquote>
                       <button
                         onClick={() => setNoteEditing(true)}
-                        className="font-mono text-[10px] tracking-meta uppercase text-taupe hover:text-accent-red flex-shrink-0"
+                        className="font-mono text-[0.625rem] tracking-meta uppercase text-taupe hover:text-accent-red flex-shrink-0"
                         aria-label="수정"
                       >
                         Edit
@@ -340,7 +340,7 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
                 </div>
 
                 {/* Footer */}
-                <div className="flex justify-between items-center pt-4 border-t border-ink/15 font-mono text-[11px] text-hint tracking-meta">
+                <div className="flex justify-between items-center pt-4 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
                   <span className="uppercase">— FITCOACH —</span>
                   <span className="uppercase text-taupe">Entry {entryNo}</span>
                 </div>

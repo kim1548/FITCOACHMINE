@@ -32,13 +32,13 @@ const inputCls =
   "w-full px-3 py-2 outline-none text-sm font-display bg-paper border border-ink/15 focus:border-accent-red text-ink transition-colors";
 
 const fieldLabelCls =
-  "block font-mono text-[10px] text-taupe tracking-meta uppercase mb-1";
+  "block font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1";
 
 const monoBtnPrimary =
-  "font-mono text-[11px] tracking-label uppercase px-5 py-2 border border-accent-red text-accent-red hover:bg-accent-red hover:text-ink transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-accent-red";
+  "font-mono text-[0.6875rem] tracking-label uppercase px-5 py-2 border border-accent-red text-accent-red hover:bg-accent-red hover:text-ink transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-accent-red";
 
 const monoBtnGhost =
-  "font-mono text-[11px] tracking-meta uppercase px-3 py-2 text-taupe hover:text-ink transition-colors";
+  "font-mono text-[0.6875rem] tracking-meta uppercase px-3 py-2 text-taupe hover:text-ink transition-colors";
 
 // ============================================================
 // PostForm — 글 작성/수정 폼
@@ -146,14 +146,14 @@ const CommentRow = ({ comment, onUpdate, onDelete }) => {
       <div className="flex items-baseline gap-2 mb-1.5">
         <span className="font-display text-sm text-ink">{comment.author.nickname}</span>
         {comment.author.age != null && (
-          <span className="font-mono text-[10px] text-taupe">· {comment.author.age}</span>
+          <span className="font-mono text-[0.625rem] text-taupe">· {comment.author.age}</span>
         )}
         {comment.is_secret && (
-          <span className="font-mono text-[9px] text-accent-gold tracking-meta uppercase">
+          <span className="font-mono text-[0.5625rem] text-accent-gold tracking-meta uppercase">
             · Secret
           </span>
         )}
-        <span className="ml-auto font-mono text-[9px] text-hint tracking-meta uppercase">
+        <span className="ml-auto font-mono text-[0.5625rem] text-hint tracking-meta uppercase">
           {timeAgo(comment.created_at)}
         </span>
         {comment.is_mine && !editing && (
@@ -164,13 +164,13 @@ const CommentRow = ({ comment, onUpdate, onDelete }) => {
                 setSecret(comment.is_secret);
                 setEditing(true);
               }}
-              className="font-mono text-[9px] tracking-meta uppercase text-taupe hover:text-ink"
+              className="font-mono text-[0.5625rem] tracking-meta uppercase text-taupe hover:text-ink"
             >
               Edit
             </button>
             <button
               onClick={() => onDelete(comment.id)}
-              className="font-mono text-[9px] tracking-meta uppercase text-taupe hover:text-accent-red"
+              className="font-mono text-[0.5625rem] tracking-meta uppercase text-taupe hover:text-accent-red"
             >
               Delete
             </button>
@@ -186,7 +186,7 @@ const CommentRow = ({ comment, onUpdate, onDelete }) => {
             className={inputCls + " resize-none"}
           />
           <div className="flex items-center justify-between">
-            <label className="flex items-center gap-1.5 font-mono text-[10px] tracking-meta uppercase cursor-pointer text-taupe">
+            <label className="flex items-center gap-1.5 font-mono text-[0.625rem] tracking-meta uppercase cursor-pointer text-taupe">
               <input
                 type="checkbox"
                 checked={secret}
@@ -202,7 +202,7 @@ const CommentRow = ({ comment, onUpdate, onDelete }) => {
               <button
                 onClick={saveEdit}
                 disabled={saving || !draft.trim()}
-                className="font-mono text-[10px] tracking-label uppercase text-accent-red hover:text-ink disabled:opacity-40 flex items-center gap-1"
+                className="font-mono text-[0.625rem] tracking-label uppercase text-accent-red hover:text-ink disabled:opacity-40 flex items-center gap-1"
               >
                 {saving && <Loader2 size={10} className="animate-spin" />}
                 → Save
@@ -286,7 +286,7 @@ const PostCard = ({
   return (
     <article className="grid grid-cols-[44px_1fr] md:grid-cols-[72px_1fr_auto] gap-4 md:gap-5 py-6 md:py-7 border-t border-ink/10 first:border-t-0 items-start">
       {/* Avatar — 설정한 아바타 이미지, 없으면 닉네임 첫 글자 */}
-      <div className="w-11 h-11 md:w-[72px] md:h-[72px] rounded-full overflow-hidden bg-paper-soft border border-ink/15 flex items-center justify-center font-display italic text-lg md:text-2xl text-taupe">
+      <div className="w-11 h-11 md:w-[4.5rem] md:h-[4.5rem] rounded-full overflow-hidden bg-paper-soft border border-ink/15 flex items-center justify-center font-display italic text-lg md:text-2xl text-taupe">
         {avatarSrc(post.author.avatar) ? (
           <img src={avatarSrc(post.author.avatar)} alt="" className="w-full h-full object-cover" />
         ) : (
@@ -298,23 +298,23 @@ const PostCard = ({
       <div className="min-w-0">
         {/* 헤더 라인 */}
         <div className="flex items-baseline gap-2.5 flex-wrap mb-1">
-          <span className="font-display italic text-[11px] text-hint">No. {noLabel}</span>
+          <span className="font-display italic text-[0.6875rem] text-hint">No. {noLabel}</span>
           <span className="font-display text-lg md:text-xl text-ink leading-tight">
             {post.author.nickname}
           </span>
-          <span className="font-mono text-[11px] text-taupe">
+          <span className="font-mono text-[0.6875rem] text-taupe">
             {post.author.age != null && <>· {post.author.age}</>}
             {post.address && <> · {post.address}</>}
           </span>
           {/* Active — 모바일은 헤더 줄 우측에 inline (데스크탑은 우측 컬럼에 별도 표시) */}
-          <span className="md:hidden ml-auto font-mono text-[9px] text-hint tracking-meta uppercase whitespace-nowrap">
+          <span className="md:hidden ml-auto font-mono text-[0.5625rem] text-hint tracking-meta uppercase whitespace-nowrap">
             ● {timeAgo(post.created_at)}
           </span>
         </div>
 
         {/* Stats line */}
         {stats.length > 0 && (
-          <div className="font-mono text-[10px] text-taupe tracking-meta uppercase mb-3">
+          <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-3">
             {stats.join(" · ")}
           </div>
         )}
@@ -328,14 +328,14 @@ const PostCard = ({
             submitting={editSubmitting}
           />
         ) : (
-          <blockquote className="font-display italic text-[15px] text-ink leading-relaxed border-l-2 border-accent-red pl-3 mb-4 whitespace-pre-wrap m-0">
+          <blockquote className="font-display italic text-[0.9375rem] text-ink leading-relaxed border-l-2 border-accent-red pl-3 mb-4 whitespace-pre-wrap m-0">
             "{post.body}"
           </blockquote>
         )}
 
         {/* 액션 라인 */}
         {!editing && (
-          <div className="flex flex-wrap gap-4 font-mono text-[11px] tracking-meta uppercase">
+          <div className="flex flex-wrap gap-4 font-mono text-[0.6875rem] tracking-meta uppercase">
             <button
               onClick={toggleExpand}
               className="text-accent-red hover:text-ink transition-colors"
@@ -373,21 +373,21 @@ const PostCard = ({
       </div>
 
       {/* Active status (우측 상단) — 데스크탑 전용, 모바일은 헤더 라인에 inline */}
-      <div className="hidden md:block font-mono text-[9px] text-hint tracking-meta uppercase whitespace-nowrap pt-1">
+      <div className="hidden md:block font-mono text-[0.5625rem] text-hint tracking-meta uppercase whitespace-nowrap pt-1">
         ● Active {timeAgo(post.created_at)}
       </div>
 
       {/* 댓글 영역 (펼침 시 full width) */}
       {expanded && (
-        <div className="col-span-2 md:col-span-3 ml-0 md:ml-[92px] mt-4 pt-4 border-t border-ink/12">
-          <div className="font-mono text-[10px] text-accent-gold tracking-label uppercase mb-3">
+        <div className="col-span-2 md:col-span-3 ml-0 md:ml-[5.75rem] mt-4 pt-4 border-t border-ink/12">
+          <div className="font-mono text-[0.625rem] text-accent-gold tracking-label uppercase mb-3">
             — Notes ({post.comment_count})
           </div>
 
           {commentsLoading ? (
             <div className="flex items-center gap-2 text-taupe py-2">
               <Loader2 className="animate-spin" size={12} />
-              <span className="font-mono text-[10px] tracking-meta uppercase">Loading…</span>
+              <span className="font-mono text-[0.625rem] tracking-meta uppercase">Loading…</span>
             </div>
           ) : (
             <div>
@@ -417,7 +417,7 @@ const PostCard = ({
               className={inputCls + " resize-none italic"}
             />
             <div className="flex items-center justify-between">
-              <label className="flex items-center gap-1.5 font-mono text-[10px] tracking-meta uppercase cursor-pointer text-taupe">
+              <label className="flex items-center gap-1.5 font-mono text-[0.625rem] tracking-meta uppercase cursor-pointer text-taupe">
                 <input
                   type="checkbox"
                   checked={commentSecret}
@@ -429,7 +429,7 @@ const PostCard = ({
               <button
                 onClick={submitComment}
                 disabled={commentSubmitting || !commentDraft.trim()}
-                className="font-mono text-[11px] tracking-label uppercase text-accent-red hover:text-ink disabled:opacity-40 flex items-center gap-1"
+                className="font-mono text-[0.6875rem] tracking-label uppercase text-accent-red hover:text-ink disabled:opacity-40 flex items-center gap-1"
               >
                 {commentSubmitting && <Loader2 size={10} className="animate-spin" />}
                 → Send
@@ -616,12 +616,12 @@ const CommunityPage = ({ theme }) => {
       <div className="w-full px-6 md:px-12 py-8">
 
         {/* 헤드라인 영역 — 텍스트만 좁게 */}
-        <div className="max-w-[640px] pb-8">
+        <div className="max-w-[40rem] pb-8">
           <div className="flex items-baseline justify-between mb-3">
-            <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+            <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
               — Personals
             </div>
-            <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+            <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
               {activeCount} active
             </div>
           </div>
@@ -635,12 +635,12 @@ const CommunityPage = ({ theme }) => {
 
         {/* 글쓰기 액션 라인 (Filter 위치 활용) */}
         <div className="flex items-center justify-between border-t border-b border-ink/12 py-3 mb-0">
-          <span className="font-mono text-[10px] text-hint tracking-meta uppercase">
+          <span className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
             Latest entries
           </span>
           <button
             onClick={() => setWriteOpen((v) => !v)}
-            className="font-mono text-[11px] tracking-label uppercase text-accent-red hover:text-ink transition-colors"
+            className="font-mono text-[0.6875rem] tracking-label uppercase text-accent-red hover:text-ink transition-colors"
           >
             {writeOpen ? "× Close form" : "→ Write an entry"}
           </button>
@@ -649,7 +649,7 @@ const CommunityPage = ({ theme }) => {
         {/* 글쓰기 폼 */}
         {writeOpen && (
           <section className="border-b border-ink/12 py-6 bg-accent-red/[0.03]">
-            <div className="font-mono text-[10px] text-accent-red tracking-label uppercase mb-4">
+            <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-4">
               — Post your own
             </div>
             <PostForm
@@ -664,7 +664,7 @@ const CommunityPage = ({ theme }) => {
         {loading && (
           <div className="py-16 text-center text-taupe">
             <Loader2 className="animate-spin mx-auto mb-3" size={18} />
-            <p className="font-mono text-[10px] tracking-meta uppercase">Loading entries…</p>
+            <p className="font-mono text-[0.625rem] tracking-meta uppercase">Loading entries…</p>
           </div>
         )}
 
@@ -700,15 +700,15 @@ const CommunityPage = ({ theme }) => {
         {/* Post your own CTA (하단) */}
         {!loading && posts.length > 0 && !writeOpen && (
           <div className="mt-10 py-8 border-t border-ink/15 bg-accent-gold/[0.04] -mx-6 md:-mx-12 px-6 md:px-12">
-            <div className="font-mono text-[10px] text-accent-gold tracking-label uppercase mb-3">
+            <div className="font-mono text-[0.625rem] text-accent-gold tracking-label uppercase mb-3">
               — Post your own
             </div>
-            <p className="font-display italic text-[17px] text-ink leading-relaxed mb-4 max-w-[640px]">
+            <p className="font-display italic text-[1.0625rem] text-ink leading-relaxed mb-4 max-w-[40rem]">
               운동 메이트를 찾고 있나요? 당신의 광고를 게재하세요.
             </p>
             <button
               onClick={() => setWriteOpen(true)}
-              className="font-mono text-[11px] tracking-label uppercase px-5 py-3 bg-accent-gold text-paper hover:bg-accent-red hover:text-ink transition-colors"
+              className="font-mono text-[0.6875rem] tracking-label uppercase px-5 py-3 bg-accent-gold text-paper hover:bg-accent-red hover:text-ink transition-colors"
             >
               → Write an entry
             </button>
@@ -716,7 +716,7 @@ const CommunityPage = ({ theme }) => {
         )}
 
         {/* Footer */}
-        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[11px] text-hint tracking-meta">
+        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
           <span className="uppercase">— FITCOACH —</span>
           <span className="uppercase text-taupe">Personals · {activeCount}</span>
         </div>

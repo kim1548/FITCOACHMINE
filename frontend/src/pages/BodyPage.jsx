@@ -138,16 +138,16 @@ const BodyPage = () => {
           {/* Headline */}
           <div className="pb-6">
             <div className="flex items-baseline justify-between mb-3 flex-wrap gap-2">
-              <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                 — Body · Composition
               </div>
-              <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                 {logs.length.toString().padStart(2, '0')} entries
               </div>
             </div>
 
             <div className="flex items-end justify-between gap-4 flex-wrap">
-              <div className="max-w-[640px]">
+              <div className="max-w-[40rem]">
                 <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
                   Shape, <em className="italic text-accent-gold">over time.</em>
                 </h1>
@@ -158,7 +158,7 @@ const BodyPage = () => {
 
               <button
                 onClick={() => setModalOpen(true)}
-                className="font-mono text-[11px] tracking-label uppercase px-5 py-3 border border-accent-red text-accent-red hover:bg-accent-red hover:text-ink transition-colors flex-shrink-0"
+                className="font-mono text-[0.6875rem] tracking-label uppercase px-5 py-3 border border-accent-red text-accent-red hover:bg-accent-red hover:text-ink transition-colors flex-shrink-0"
               >
                 + New entry
               </button>
@@ -169,7 +169,7 @@ const BodyPage = () => {
           {loading && (
             <div className="border-y border-ink/15 py-16 text-center text-taupe">
               <Loader2 className="animate-spin mx-auto mb-3" size={18} />
-              <p className="font-mono text-[10px] tracking-meta uppercase">Loading entries…</p>
+              <p className="font-mono text-[0.625rem] tracking-meta uppercase">Loading entries…</p>
             </div>
           )}
 
@@ -187,10 +187,10 @@ const BodyPage = () => {
               {/* Latest */}
               <section className="border-t border-b border-ink/12 py-6 mb-2">
                 <div className="flex items-baseline justify-between mb-5">
-                  <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+                  <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                     — Latest
                   </div>
-                  <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+                  <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                     {latest.measured_at}
                   </div>
                 </div>
@@ -201,7 +201,7 @@ const BodyPage = () => {
                     const d = computeDelta(latest, prev, m.key);
                     return (
                       <div key={m.key}>
-                        <div className="font-mono text-[10px] text-taupe tracking-label uppercase mb-2">
+                        <div className="font-mono text-[0.625rem] text-taupe tracking-label uppercase mb-2">
                           {m.short}
                         </div>
                         <div className="font-display text-3xl text-ink tabular-nums leading-none">
@@ -213,7 +213,7 @@ const BodyPage = () => {
                           )}
                         </div>
                         {d != null && d !== 0 && (
-                          <div className={`font-mono text-[10px] tracking-meta mt-2 ${deltaCls(d, m.betterLower)}`}>
+                          <div className={`font-mono text-[0.625rem] tracking-meta mt-2 ${deltaCls(d, m.betterLower)}`}>
                             {d > 0 ? '+' : ''}{d}{m.unit} <span className="text-hint normal-case">vs prev</span>
                           </div>
                         )}
@@ -226,13 +226,13 @@ const BodyPage = () => {
               {/* AI 총평 — 직전 측정 대비 변화 평가 (Ollama gemma3:4b) */}
               <section className="border-b border-ink/12 py-6 mb-2">
                 <div className="flex items-baseline justify-between mb-3">
-                  <div className="font-mono text-[11px] text-accent-gold tracking-label uppercase">
+                  <div className="font-mono text-[0.6875rem] text-accent-gold tracking-label uppercase">
                     — AI 총평
                   </div>
                   <button
                     onClick={() => handleRegenerate(latest.id)}
                     disabled={regenId === latest.id}
-                    className="font-mono text-[10px] tracking-meta uppercase text-hint hover:text-ink transition-colors disabled:opacity-50"
+                    className="font-mono text-[0.625rem] tracking-meta uppercase text-hint hover:text-ink transition-colors disabled:opacity-50"
                   >
                     {regenId === latest.id ? '생성 중…' : latest.ai_comment ? '↻ 다시 생성' : '✦ 총평 생성'}
                   </button>
@@ -246,7 +246,7 @@ const BodyPage = () => {
                     </span>
                   </div>
                 ) : latest.ai_comment ? (
-                  <blockquote className="font-display italic text-[15px] text-body leading-relaxed border-l-2 border-accent-gold pl-3 m-0">
+                  <blockquote className="font-display italic text-[0.9375rem] text-body leading-relaxed border-l-2 border-accent-gold pl-3 m-0">
                     "{latest.ai_comment}"
                   </blockquote>
                 ) : (
@@ -259,10 +259,10 @@ const BodyPage = () => {
               {/* Chart 1: Weight / Muscle / Fat (kg) */}
               <section className="py-8">
                 <div className="flex items-baseline justify-between mb-4">
-                  <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+                  <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                     — Mass · Weight · Muscle · Fat
                   </div>
-                  <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+                  <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                     kg
                   </div>
                 </div>
@@ -297,10 +297,10 @@ const BodyPage = () => {
               {/* Chart 2: Body fat % */}
               <section className="py-6 border-t border-ink/12">
                 <div className="flex items-baseline justify-between mb-4">
-                  <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+                  <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                     — Composition · Fat ratio
                   </div>
-                  <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+                  <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                     %
                   </div>
                 </div>
@@ -329,10 +329,10 @@ const BodyPage = () => {
               {/* History */}
               <section className="pt-2">
                 <div className="flex items-baseline justify-between mb-3">
-                  <div className="font-mono text-[11px] text-accent-red tracking-label uppercase">
+                  <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
                     — History
                   </div>
-                  <div className="font-mono text-[10px] text-hint tracking-meta uppercase">
+                  <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
                     {logs.length.toString().padStart(2, '0')} entries
                   </div>
                 </div>
@@ -343,16 +343,16 @@ const BodyPage = () => {
                       key={l.id}
                       className="grid grid-cols-[auto_1fr_auto] gap-4 items-center py-3 border-b border-ink/8 last:border-b-0 group"
                     >
-                      <div className="flex items-baseline gap-2.5 min-w-[120px]">
+                      <div className="flex items-baseline gap-2.5 min-w-[7.5rem]">
                         <span className="font-display italic text-base text-hint tabular-nums">
                           {String(logs.length - idx).padStart(2, '0')}
                         </span>
-                        <span className="font-display text-[15px] text-ink tabular-nums">
+                        <span className="font-display text-[0.9375rem] text-ink tabular-nums">
                           {l.measured_at}
                         </span>
                       </div>
 
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-[11px] tabular-nums">
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-[0.6875rem] tabular-nums">
                         <span className="text-ink">
                           {l.weight}<span className="text-hint">kg</span>
                         </span>
@@ -375,7 +375,7 @@ const BodyPage = () => {
 
                       <button
                         onClick={() => handleDelete(l.id)}
-                        className="font-mono text-[10px] tracking-meta uppercase text-hint hover:text-accent-red transition-colors opacity-60 md:opacity-0 md:group-hover:opacity-100"
+                        className="font-mono text-[0.625rem] tracking-meta uppercase text-hint hover:text-accent-red transition-colors opacity-60 md:opacity-0 md:group-hover:opacity-100"
                         aria-label="삭제"
                       >
                         ✕
@@ -388,7 +388,7 @@ const BodyPage = () => {
           )}
 
           {/* Footer */}
-          <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[11px] text-hint tracking-meta">
+          <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
             <span className="uppercase">— FITCOACH —</span>
             <span className="uppercase text-taupe">Body · {logs.length} entries</span>
           </div>
