@@ -22,12 +22,16 @@ let totalRepl = 0, filesChanged = 0;
 for (const f of files) {
   const txt = readFileSync(f, 'utf8');
   let n = 0;
-  const out = txt.replace(/\[(\d+)px\]/g, (_m, num) => {
-    n++;
-    const rem = Number(num) / 16;
-    const s = rem.toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
-    return `[${s}rem]`;
-  });
+  // className 의 모든 아바트러리 값 [...] 안에 든 <숫자>px 를 rem 으로.
+  // grid-cols-[76px_1fr_auto], min(88vw,1700px), calc(100%-72px) 같은 복합값도 처리.
+  const out = txt.replace(/\[[^\]]*\]/g, (bracket) =>
+    bracket.replace(/(\d+)px/g, (_m, num) => {
+      n++;
+      const rem = Number(num) / 16;
+      const s = rem.toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
+      return `${s}rem`;
+    }),
+  );
   if (n > 0) {
     writeFileSync(f, out);
     filesChanged++;

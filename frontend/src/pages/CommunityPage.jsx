@@ -284,7 +284,7 @@ const PostCard = ({
   const noLabel = String(post.id).padStart(3, "0");
 
   return (
-    <article className="grid grid-cols-[44px_1fr] md:grid-cols-[72px_1fr_auto] gap-4 md:gap-5 py-6 md:py-7 border-t border-ink/10 first:border-t-0 items-start">
+    <article className="grid grid-cols-[2.75rem_1fr] md:grid-cols-[4.5rem_1fr_auto] gap-4 md:gap-5 py-6 md:py-7 border-t border-ink/10 first:border-t-0 items-start">
       {/* Avatar — 설정한 아바타 이미지, 없으면 닉네임 첫 글자 */}
       <div className="w-11 h-11 md:w-[4.5rem] md:h-[4.5rem] rounded-full overflow-hidden bg-paper-soft border border-ink/15 flex items-center justify-center font-display italic text-lg md:text-2xl text-taupe">
         {avatarSrc(post.author.avatar) ? (

@@ -248,7 +248,7 @@ const Landing = () => {
               {SECTIONS.map((s, idx) => (
                 <div
                   key={s.no}
-                  className="landing-row landing-reveal grid grid-cols-[64px_1fr_auto] gap-5 py-5 pl-3 border-b border-ink/8 last:border-b-0 items-baseline"
+                  className="landing-row landing-reveal grid grid-cols-[4rem_1fr_auto] gap-5 py-5 pl-3 border-b border-ink/8 last:border-b-0 items-baseline"
                   style={{ transitionDelay: `${idx * 70}ms` }}
                 >
                   <span className="font-display italic text-2xl leading-none text-hint tabular-nums">

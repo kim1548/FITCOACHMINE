@@ -261,7 +261,7 @@ const FeedbackDetail = ({ result, exerciseName, onReset, onSaveToJournal }) => {
               return (
                 <article key={cat} className="border-b border-ink/8 last:border-b-0">
                   <div
-                    className={`grid grid-cols-1 md:grid-cols-[180px_1fr] gap-3 md:gap-6 py-4 ${
+                    className={`grid grid-cols-1 md:grid-cols-[11.25rem_1fr] gap-3 md:gap-6 py-4 ${
                       hasFrame ? 'cursor-pointer group' : ''
                     }`}
                     onClick={hasFrame ? () => setOpenCat(open ? null : cat) : undefined}

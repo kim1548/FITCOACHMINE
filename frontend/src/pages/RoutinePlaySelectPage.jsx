@@ -148,7 +148,7 @@ const RoutinePlaySelectPage = () => {
               — Featured · {selectedCat}
             </div>
 
-            <div className="grid grid-cols-[96px_1fr] md:grid-cols-[260px_1fr] gap-4 md:gap-8 p-5 md:p-7 border border-accent-gold/30 bg-accent-gold/[0.05]">
+            <div className="grid grid-cols-[6rem_1fr] md:grid-cols-[16.25rem_1fr] gap-4 md:gap-8 p-5 md:p-7 border border-accent-gold/30 bg-accent-gold/[0.05]">
               <ExerciseCover name={featured} size="featured" />
 
               <div className="min-w-0 flex flex-col">
@@ -219,7 +219,7 @@ const RoutinePlaySelectPage = () => {
                     <button
                       key={name}
                       onClick={() => setSelectedEx(name)}
-                      className="grid grid-cols-[76px_1fr_auto] gap-5 py-4 border-b border-ink/8 w-full text-left hover:bg-ink/[0.03] transition-colors items-center"
+                      className="grid grid-cols-[4.75rem_1fr_auto] gap-5 py-4 border-b border-ink/8 w-full text-left hover:bg-ink/[0.03] transition-colors items-center"
                     >
                       <ExerciseCover name={name} size="compact" />
 

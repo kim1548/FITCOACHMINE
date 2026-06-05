@@ -266,7 +266,7 @@ const RoutinePlanPage = ({ theme }) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-[150px_1fr] gap-6 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-[9.375rem_1fr] gap-6 items-start">
               <Poster programId={currentProg.id} size="lg" />
 
               <div>
@@ -350,7 +350,7 @@ const RoutinePlanPage = ({ theme }) => {
             return (
               <button
                 onClick={() => setSelectedId(featuredProgram.id)}
-                className="w-full text-left grid grid-cols-1 md:grid-cols-[142px_1fr] gap-6 p-6 md:p-7 border border-accent-gold/30 bg-accent-gold/[0.05] hover:bg-accent-gold/[0.08] transition-colors mb-8"
+                className="w-full text-left grid grid-cols-1 md:grid-cols-[8.875rem_1fr] gap-6 p-6 md:p-7 border border-accent-gold/30 bg-accent-gold/[0.05] hover:bg-accent-gold/[0.08] transition-colors mb-8"
               >
                 <Poster programId={featuredProgram.id} size="featured" />
                 <div className="min-w-0">
@@ -410,7 +410,7 @@ const RoutinePlanPage = ({ theme }) => {
                 <button
                   key={p.id}
                   onClick={() => setSelectedId(p.id)}
-                  className={`grid grid-cols-[76px_1fr_auto] gap-5 py-4 border-b border-ink/8 w-full text-left transition-colors items-center ${
+                  className={`grid grid-cols-[4.75rem_1fr_auto] gap-5 py-4 border-b border-ink/8 w-full text-left transition-colors items-center ${
                     isCurrent ? 'bg-accent-gold/[0.04]' : 'hover:bg-ink/[0.03]'
                   }`}
                 >

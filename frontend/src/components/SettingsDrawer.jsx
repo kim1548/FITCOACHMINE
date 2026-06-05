@@ -62,7 +62,7 @@ const SettingsDrawer = ({ isOpen, onClose, theme, setTheme }) => {
         </header>
 
         {/* 본문 스크롤 영역 */}
-        <div className="h-[calc(100%-72px)] overflow-y-auto px-6 py-8">
+        <div className="h-[calc(100%-4.5rem)] overflow-y-auto px-6 py-8">
           <Settings theme={theme} setTheme={setTheme} />
         </div>
       </aside>

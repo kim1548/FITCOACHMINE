@@ -452,7 +452,7 @@ const DietAddPage = () => {
 
                 <div className="border-t border-ink/15">
                   {/* Header row */}
-                  <div className="grid grid-cols-[1fr_auto_64px_24px] gap-3 items-baseline py-2 border-b border-ink/8 font-mono text-[0.5625rem] text-hint tracking-meta uppercase">
+                  <div className="grid grid-cols-[1fr_auto_4rem_1.5rem] gap-3 items-baseline py-2 border-b border-ink/8 font-mono text-[0.5625rem] text-hint tracking-meta uppercase">
                     <span>Name</span>
                     <span className="text-right">C / P / F / kcal</span>
                     <span className="text-right">Weight</span>
@@ -464,7 +464,7 @@ const DietAddPage = () => {
                     {foods.map((f, i) => (
                       <div
                         key={f.id}
-                        className="grid grid-cols-[1fr_auto_64px_24px] gap-3 items-center py-3 border-b border-ink/8 group relative"
+                        className="grid grid-cols-[1fr_auto_4rem_1.5rem] gap-3 items-center py-3 border-b border-ink/8 group relative"
                       >
                         <div className="relative">
                           <input

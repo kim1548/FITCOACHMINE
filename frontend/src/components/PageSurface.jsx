@@ -20,7 +20,7 @@ import React from 'react';
 const PageSurface = ({ children, className = '' }) => (
   <div className="pt-[4rem] md:pt-[5.5rem] pb-[5.25rem] md:pb-8">
     <div
-      className={`mx-auto w-full md:w-[min(88vw,1700px)] bg-paper border border-page-border ${className}`}
+      className={`mx-auto w-full md:w-[min(88vw,106.25rem)] bg-paper border border-page-border ${className}`}
       style={{
         borderTopColor: 'var(--color-page-edge)',
         minHeight: 'calc(100vh - 128px)',
