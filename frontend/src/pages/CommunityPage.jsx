@@ -617,12 +617,9 @@ const CommunityPage = ({ theme }) => {
 
         {/* 헤드라인 영역 — 텍스트만 좁게 */}
         <div className="max-w-[40rem] pb-8">
-          <div className="flex items-baseline justify-between mb-3">
+          <div className="mb-3">
             <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
               — Personals
-            </div>
-            <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
-              {activeCount} active
             </div>
           </div>
           <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">

@@ -256,10 +256,10 @@ const JournalPage = ({ theme }) => {
             </div>
 
             {/* Days grid — gap-px 대신 셀 테두리로(모니터 서브픽셀에서 선이 사라지지 않게) */}
-            <div className="grid grid-cols-7 border-t border-l border-ink/20">
+            <div className="grid grid-cols-7 border-t border-l cal-grid-line">
               {cells.map(cell => {
                 if (cell.kind === 'pad') {
-                  return <div key={cell.key} className="bg-paper min-h-[3.125rem] md:min-h-[5rem] border-r border-b border-ink/20" />;
+                  return <div key={cell.key} className="bg-paper min-h-[3.125rem] md:min-h-[5rem] border-r border-b cal-grid-line" />;
                 }
                 const isToday = cell.iso === todayISO;
                 const isFuture = cell.iso > todayISO;
@@ -270,7 +270,7 @@ const JournalPage = ({ theme }) => {
                   <button
                     key={cell.key}
                     onClick={() => setSelectedDate(cell.iso)}
-                    className={`relative min-h-[3.125rem] md:min-h-[5rem] p-2 text-left transition-colors group border-r border-b border-ink/20 ${
+                    className={`relative min-h-[3.125rem] md:min-h-[5rem] p-2 text-left transition-colors group border-r border-b cal-grid-line ${
                       isToday
                         ? 'bg-accent-gold/10 outline outline-1 outline-accent-gold -outline-offset-1'
                         : 'bg-paper hover:bg-ink/5'

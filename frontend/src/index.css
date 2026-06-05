@@ -19,6 +19,28 @@
   html { font-size: clamp(16px, 1.111vw, 24px); }
 }
 
+.cal-grid-line { border-color: rgba(240, 232, 216, 0.20); }
+
+/* 저해상도(1x) 모니터에선 1px 중립 hairline 들이 또렷·진하게(딱딱하게) 보인다.
+   고해상도(노트북)는 손대지 않고, 1x 화면에서만 ink 테두리 농도를 일괄로 ~0.6배 낮춰
+   노트북의 부드러운 느낌에 맞춘다. 강조선(accent)·텍스트는 영향 없음.
+   (Tailwind 유틸리티를 unlayered 규칙으로 덮어쓰므로 우선 적용된다) */
+@media (max-resolution: 1.1dppx) {
+  .cal-grid-line  { border-color: rgba(240, 232, 216, 0.12); }
+  .border-ink\/8  { border-color: rgba(240, 232, 216, 0.05); }
+  .border-ink\/10 { border-color: rgba(240, 232, 216, 0.06); }
+  .border-ink\/12 { border-color: rgba(240, 232, 216, 0.075); }
+  .border-ink\/15 { border-color: rgba(240, 232, 216, 0.09); }
+  .border-ink\/20 { border-color: rgba(240, 232, 216, 0.12); }
+  .border-ink\/25 { border-color: rgba(240, 232, 216, 0.15); }
+  .border-ink\/40 { border-color: rgba(240, 232, 216, 0.26); }
+  .border-ink\/45 { border-color: rgba(240, 232, 216, 0.30); }
+  :root {
+    --color-page-edge: rgba(240, 232, 216, 0.05);
+    --color-page-border: rgba(240, 232, 216, 0.03);
+  }
+}
+
 @theme {
   /* --- Page-on-surface 톤 시스템 -------------------------------------
      surface = 바깥 여백 (가장 어두운 다크 월넛)
