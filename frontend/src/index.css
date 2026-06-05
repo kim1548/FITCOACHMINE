@@ -36,7 +36,11 @@
   .border-ink\/40 { border-color: rgba(240, 232, 216, 0.26); }
   .border-ink\/45 { border-color: rgba(240, 232, 216, 0.30); }
 
+  /* gap-px 격자선·progress 트랙처럼 배경(bg)으로 그린 선/면도 함께 톤다운 */
+  .bg-ink\/10 { background-color: rgba(240, 232, 216, 0.06); }
+
   /* 골드 강조(선택/추천 박스) — 모니터에서 테두리 진하고 안쪽 밝게 보임 → 톤다운 */
+  .outline-accent-gold { outline-color: color-mix(in oklab, var(--color-accent-gold) 60%, transparent); }
   .border-accent-gold\/30 { border-color: color-mix(in oklab, var(--color-accent-gold) 18%, transparent); }
   .border-accent-gold\/40 { border-color: color-mix(in oklab, var(--color-accent-gold) 24%, transparent); }
   .border-accent-gold\/45 { border-color: color-mix(in oklab, var(--color-accent-gold) 28%, transparent); }
