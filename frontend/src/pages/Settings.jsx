@@ -127,6 +127,11 @@ const Settings = ({ theme, setTheme }) => {
     else toast.error("알림을 표시하지 못했습니다.");
   };
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
+  };
+
   const handleDeleteAccount = async () => {
     const ok = await confirm({
       title: "정말 탈퇴하시겠습니까?",
@@ -345,6 +350,17 @@ const Settings = ({ theme, setTheme }) => {
       {/* 3. Account */}
       <section>
         <SectionLabel accent="gold">Account</SectionLabel>
+        <button
+          onClick={handleLogout}
+          className="w-full text-left px-5 py-4 border border-ink/15 hover:border-ink/40 hover:bg-ink/[0.03] transition-colors mb-3"
+        >
+          <p className="font-mono text-[0.6875rem] tracking-label uppercase text-taupe">
+            → Logout
+          </p>
+          <p className="font-display italic text-[0.75rem] text-hint mt-1.5 leading-relaxed">
+            이 기기에서 로그아웃합니다.
+          </p>
+        </button>
         <button
           onClick={handleDeleteAccount}
           disabled={deleting}

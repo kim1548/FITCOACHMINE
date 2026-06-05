@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AuthPromptModal from "./ui/AuthPromptModal";
 import AvatarMenu from "./AvatarMenu";
@@ -37,19 +37,13 @@ const dayOfYear = () => {
 
 const TopNavbar = ({ onOpenSettings }) => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [authPromptOpen, setAuthPromptOpen] = useState(false);
 
   const issueNo = String(dayOfYear()).padStart(3, "0");
   const now = new Date();
   const monthLabel = MONTH_LABELS[now.getMonth()];
   const yearLabel = now.getFullYear();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
 
   // FITCOACH 워드마크 — 로그인 시 /journal, 미로그인 시 유도 모달.
   const handleBrandClick = (e) => {
@@ -82,14 +76,7 @@ const TopNavbar = ({ onOpenSettings }) => {
                 className="text-taupe hover:text-ink transition-colors"
                 aria-label="설정"
               >
-                Set
-              </button>
-              <button
-                onClick={handleLogout}
-                className="text-taupe hover:text-accent-red transition-colors"
-                aria-label="로그아웃"
-              >
-                Logout
+                Settings
               </button>
             </>
           ) : (
