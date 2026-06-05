@@ -1,4 +1,4 @@
-# Cloudflare 임시 터널을 띄우고, 발급된 주소를 frontend/public/app-link.txt 에 자동 기록한다.
+﻿# Cloudflare 임시 터널을 띄우고, 발급된 주소를 frontend/public/app-link.txt 에 자동 기록한다.
 # 앱(SET → Get the app)은 이 파일을 읽으므로, 터널 주소가 바뀌어도 이 스크립트만 실행하면 자동 반영된다.
 #
 # 사용:  powershell -ExecutionPolicy Bypass -File start-tunnel.ps1
