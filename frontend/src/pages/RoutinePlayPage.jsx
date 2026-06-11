@@ -33,6 +33,31 @@ const RoutinePlayPage = () => {
     setMode('choose');
   };
 
+  // 분석 성공 시, 로그인 상태라면 결과를 내 계정의 그날 기록으로 저장한다.
+  // 비로그인이거나 저장 실패해도 화면 분석엔 영향 없음(조용히 무시).
+  const saveFormCheckLog = (data) => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    if (!data || data.analysis_error || typeof data.score !== 'number') return;
+
+    const today = new Date();
+    const localDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+    fetch(`${API_BASE_URL}/exercise/formcheck/log`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({
+        exercise_type: exId,
+        score: data.score,
+        rep_count: data.rep_count ?? null,
+        cat_scores: data.cat_scores ?? null,
+        cat_details: data.cat_details ?? null,
+        overall: data.overall ?? null,
+        date: localDate,
+      }),
+    }).catch(() => { /* 저장 실패는 무시 */ });
+  };
+
   // 업로드/녹화 공통 — 영상 파일을 서버로 보내 분석(진행률 폴링 포함)
   const runAnalyze = async (file) => {
     const jobId = (window.crypto?.randomUUID?.() || String(Date.now()) + Math.random());
@@ -57,6 +82,7 @@ const RoutinePlayPage = () => {
       const data = await res.json();
       setProgress(100);
       setFinalData(data);
+      saveFormCheckLog(data);
     } catch (err) {
       console.error('영상 분석 실패', err);
       setFinalData({

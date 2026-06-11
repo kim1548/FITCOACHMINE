@@ -91,15 +91,21 @@ const Settings = ({ theme, setTheme }) => {
   const [appLink, setAppLink] = useState(typeof window !== "undefined" ? window.location.origin : "");
   useEffect(() => {
     let alive = true;
-    fetch("/app-link.txt", { cache: "no-store" })
-      .then((r) => (r.ok ? r.text() : ""))
-      .then((t) => {
-        const url = (t || "").replace(/^﻿/, "").trim();
-        if (alive && /^https?:\/\/\S+$/.test(url)) setAppLink(url);
-      })
-      .catch(() => {});
+    const load = () => {
+      fetch("/app-link.txt", { cache: "no-store" })
+        .then((r) => (r.ok ? r.text() : ""))
+        .then((t) => {
+          const url = (t || "").replace(/^﻿/, "").trim();
+          if (alive && /^https?:\/\/\S+$/.test(url)) setAppLink(url);
+        })
+        .catch(() => {});
+    };
+    load();
+    // 터널이 재발급돼 app-link.txt 가 바뀌면 새로고침 없이 자동 반영 (30초 간격)
+    const id = setInterval(load, 30000);
     return () => {
       alive = false;
+      clearInterval(id);
     };
   }, []);
 

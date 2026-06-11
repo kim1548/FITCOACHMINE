@@ -17,6 +17,29 @@ const authHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+// 폼체크 5축 카테고리 한글 라벨
+const FORMCHECK_CAT_LABELS = {
+  Stability: '안정성',
+  ROM: '가동범위',
+  'Movement Quality': '동작 품질',
+  Posture: '자세',
+  Core: '코어',
+};
+
+// 90점 미만인 카테고리 = 감점 요인. 그 피드백(cat_details)만 추려서 반환.
+const deductedFeedback = (fc) => {
+  if (!fc.cat_scores) return [];
+  return Object.entries(fc.cat_scores)
+    .filter(([, sc]) => sc != null && sc < 90)
+    .sort((a, b) => a[1] - b[1]) // 많이 깎인 순
+    .map(([cat, sc]) => ({
+      cat,
+      label: FORMCHECK_CAT_LABELS[cat] || cat,
+      lost: Math.round(100 - sc),
+      msg: fc.cat_details?.[cat] || '',
+    }));
+};
+
 // 매거진 issue 번호 — day-of-year (예: 2026-05-27 → 147)
 const dayOfYearOf = (iso) => {
   const d = new Date(iso + 'T00:00:00');
@@ -279,6 +302,44 @@ const JournalDayModal = ({ date, theme, nutrition, onClose, onAfterChange }) => 
                     </div>
                   </div>
                 )}
+
+                {/* Form Check — 교정 피드백이 있는 운동만 노출.
+                    같은 운동을 여러 번 분석해도 운동별로 묶고, 같은 문구는 한 번만. */}
+                {(() => {
+                  const byExercise = new Map();
+                  for (const fc of (data.formcheck || [])) {
+                    const tips = deductedFeedback(fc).filter(d => d.msg);
+                    if (tips.length === 0) continue;
+                    if (!byExercise.has(fc.exercise_type)) byExercise.set(fc.exercise_type, new Set());
+                    const msgs = byExercise.get(fc.exercise_type);
+                    tips.forEach(d => msgs.add(d.msg));
+                  }
+                  if (byExercise.size === 0) return null;
+                  return (
+                    <div className="border-t border-ink/15 py-5">
+                      <div className="font-mono text-[0.625rem] text-taupe tracking-label uppercase mb-3">— Form Check</div>
+                      <div className="space-y-5">
+                        {[...byExercise.entries()].map(([exercise, msgs]) => (
+                          <div key={exercise}>
+                            <div className="font-mono text-[0.6875rem] text-ink tracking-meta uppercase">
+                              {exercise}
+                            </div>
+                            <ul className="mt-2 space-y-2">
+                              {[...msgs].map(m => (
+                                <li
+                                  key={m}
+                                  className="font-display italic text-[0.95rem] text-body leading-relaxed pl-3 border-l-2 border-accent-red/40"
+                                >
+                                  {m}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Coach's note (AI 코멘트) */}
                 {data.body?.ai_comment && (

@@ -10,6 +10,7 @@ from app.models.diet_log import DietLog
 from app.models.exercise_log import WorkoutLog
 from app.models.journal_entry import JournalEntry  # noqa: F401  (테이블 자동 생성용)
 from app.models.inbody_log import InBodyLog  # noqa: F401  (테이블 자동 생성용)
+from app.models.formcheck_log import FormCheckLog  # noqa: F401  (테이블 자동 생성용)
 from app.models.community import (  # noqa: F401  (테이블 자동 생성용)
     CommunityPost, CommunityLike, CommunityComment,
 )
@@ -95,9 +96,24 @@ def _ensure_users_profile_columns():
         conn.commit()
 
 
+def _ensure_formcheck_columns():
+    """create_all 은 기존 테이블에 새 컬럼을 추가하지 않으므로, formcheck_logs 에
+    cat_details 가 빠져있으면 한 번만 ALTER TABLE 로 채워준다."""
+    inspector = inspect(engine)
+    if "formcheck_logs" not in inspector.get_table_names():
+        return
+    cols = {c["name"] for c in inspector.get_columns("formcheck_logs")}
+    if "cat_details" not in cols:
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE formcheck_logs ADD COLUMN cat_details JSON"))
+            conn.commit()
+        print("✅ formcheck_logs.cat_details 컬럼 추가됨")
+
+
 _ensure_users_age_column()
 _ensure_inbody_ai_columns()
 _ensure_users_profile_columns()
+_ensure_formcheck_columns()
 
 # 1. 현재 main.py 파일의 위치를 기준으로 경로 설정
 # main.py가 backend/app/main.py에 있다면:

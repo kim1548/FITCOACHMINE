@@ -291,11 +291,11 @@ const FeedbackDetail = ({ result, exerciseName, onReset, onSaveToJournal }) => {
 
                   {hasFrame && open && (
                     <figure className="m-0 pb-5 md:pl-[12.75rem] animate-in fade-in slide-in-from-top-1 duration-300">
-                      <div className="border border-accent-red/30 bg-black overflow-hidden">
+                      <div className="border border-accent-red/30 bg-black overflow-hidden flex justify-center">
                         <img
                           src={frame.image}
                           alt={`${cat} — 문제 순간`}
-                          className="w-full h-auto object-cover"
+                          className="max-h-[50vh] w-auto max-w-full object-contain"
                         />
                       </div>
                       <figcaption className="font-display italic text-xs text-taupe mt-2 leading-relaxed">

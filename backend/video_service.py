@@ -118,17 +118,8 @@ def _render_error_screenshot(video_path, result, key):
                 draw.ellipse([px - radius, py - radius, px + radius, py + radius],
                              outline=(255, 60, 60, 255), width=5)
 
-    # 상단 중앙 라벨
-    msg = pp.OVERLAY_MESSAGES.get(key, key)
-    font = pp._load_korean_font(max(22, h // 22))
-    bb = draw.textbbox((0, 0), msg, font=font)
-    tw, th = bb[2] - bb[0], bb[3] - bb[1]
-    pad = 12
-    bw, bh = tw + pad * 2, th + pad * 2
-    x0 = max((w - bw) // 2, 8)
-    y0 = 16
-    draw.rectangle([x0, y0, x0 + bw, y0 + bh], fill=(20, 17, 13, 210))
-    draw.text((x0 + pad, y0 + pad - bb[1]), msg, font=font, fill=(255, 220, 80, 255))
+    # (상단 중앙 노란 라벨은 제거 — 문제 부위는 빨간 마커로만 표시하고,
+    #  텍스트 피드백은 프론트 결과 화면의 진단 카드에서 보여준다.)
 
     bgr = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
     ok, buf = cv2.imencode(".jpg", bgr, [cv2.IMWRITE_JPEG_QUALITY, 88])

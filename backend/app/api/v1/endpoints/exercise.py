@@ -1,10 +1,16 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends
 from pydantic import BaseModel
 from typing import List, Dict, Optional
+from datetime import date as date_t
 import numpy as np
 import os
 import tempfile
+from sqlalchemy.orm import Session
 from app.core.constants import EXERCISE_CATEGORIES, CAMERA_GUIDE, FEEDBACK_MESSAGES, GUIDE_IMAGES
+from app.database import get_db
+from app.models.formcheck_log import FormCheckLog
+from app.models.user import User
+from app.api.v1.endpoints.auth import get_current_user
 import httpx
 
 router = APIRouter()
@@ -324,3 +330,44 @@ async def analyze_video_proxy(
             os.remove(path)
         except OSError:
             pass
+
+
+# --- 폼체크 결과 저장 (로그인 유저 계정에 기록) ---
+
+class FormCheckLogCreate(BaseModel):
+    exercise_type: str
+    score: float
+    rep_count: Optional[int] = None
+    cat_scores: Optional[Dict[str, float]] = None
+    cat_details: Optional[Dict[str, str]] = None
+    overall: Optional[str] = None
+    date: Optional[str] = None  # YYYY-MM-DD (클라이언트 로컬 날짜). 없으면 서버 오늘
+
+
+@router.post("/formcheck/log")
+def save_formcheck_log(
+    data: FormCheckLogCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """analyze_video 로 받은 폼체크 결과를 로그인 유저의 그날 기록으로 저장한다.
+    분석 엔드포인트(analyze_video)는 무인증을 유지하고, 저장만 여기서 인증한다."""
+    try:
+        logged = date_t.fromisoformat(data.date) if data.date else date_t.today()
+    except ValueError:
+        logged = date_t.today()
+
+    log = FormCheckLog(
+        user_id=current_user.id,
+        logged_date=logged,
+        exercise_type=data.exercise_type,
+        score=data.score,
+        rep_count=data.rep_count,
+        cat_scores=data.cat_scores,
+        cat_details=data.cat_details,
+        overall=data.overall,
+    )
+    db.add(log)
+    db.commit()
+    db.refresh(log)
+    return {"status": "success", "id": log.id}

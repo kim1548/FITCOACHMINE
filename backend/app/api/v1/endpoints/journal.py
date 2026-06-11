@@ -22,6 +22,7 @@ from app.models.routine_log import RoutineLog
 from app.models.diet_log import DietLog
 from app.models.journal_entry import JournalEntry
 from app.models.inbody_log import InBodyLog
+from app.models.formcheck_log import FormCheckLog
 from app.api.v1.endpoints.auth import get_current_user
 from app.services.journal_ai import generate_and_save_ai_comment
 
@@ -141,6 +142,15 @@ def get_journal_day(
         .order_by(InBodyLog.created_at.desc())
         .first()
     )
+    formchecks = (
+        db.query(FormCheckLog)
+        .filter(
+            FormCheckLog.user_id == current_user.id,
+            FormCheckLog.logged_date == target_date,
+        )
+        .order_by(FormCheckLog.created_at.asc())
+        .all()
+    )
 
     # 운동 응답 정리
     workout_payload = None
@@ -237,11 +247,26 @@ def get_journal_day(
             "ai_generated_at": body_log.ai_generated_at.isoformat() if body_log.ai_generated_at else None,
         }
 
+    formcheck_payload = [
+        {
+            "id": fc.id,
+            "exercise_type": fc.exercise_type,
+            "score": fc.score,
+            "rep_count": fc.rep_count,
+            "cat_scores": fc.cat_scores,
+            "cat_details": fc.cat_details,
+            "overall": fc.overall,
+            "time": fc.created_at.isoformat() if fc.created_at else None,
+        }
+        for fc in formchecks
+    ] or None
+
     return {
         "date": target_date.isoformat(),
         "workout": workout_payload,
         "diet": diet_payload,
         "body": body_payload,
+        "formcheck": formcheck_payload,
         "ai_comment": entry.ai_comment if entry else None,
         "ai_generated_at": entry.ai_generated_at.isoformat() if entry and entry.ai_generated_at else None,
         "user_note": entry.user_note if entry else None,
