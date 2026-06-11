@@ -9,6 +9,7 @@ import DietPage from "./pages/DietPage";
 import JournalPage from "./pages/JournalPage";
 import BodyPage from "./pages/BodyPage";
 import CommunityPage from "./pages/CommunityPage";
+import SupplementPage from "./pages/SupplementPage";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -63,6 +64,7 @@ const AppContent = () => {
                 <Route path="/journal" element={<JournalPage theme={theme} />} />
                 <Route path="/body" element={<BodyPage theme={theme} />} />
                 <Route path="/community" element={<CommunityPage theme={theme} />} />
+                <Route path="/supplement" element={<SupplementPage theme={theme} />} />
               </Routes>
             </main>
             <BottomNav />

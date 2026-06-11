@@ -14,6 +14,13 @@ from app.models.formcheck_log import FormCheckLog  # noqa: F401  (테이블 자�
 from app.models.community import (  # noqa: F401  (테이블 자동 생성용)
     CommunityPost, CommunityLike, CommunityComment,
 )
+from app.models.supplement import (  # noqa: F401  (테이블 자동 생성용)
+    NutrientRDA, Supplement, SupplementIngredient, InteractionRule,
+)
+from app.models.supplement_user import (  # noqa: F401  (테이블 자동 생성용)
+    UserHealthProfile, SupplementRecommendation,
+    SupplementIntakeLog, SupplementReminder, UserSupplement,
+)
 # 기존 라우터들
 from app.api.v1.endpoints import exercise, diet, auth
 
@@ -23,6 +30,7 @@ from fastapi.staticfiles import StaticFiles
 from app.api.v1.endpoints import (
     routine, journal, user as user_endpoint, body as body_endpoint,
     community as community_endpoint, report as report_endpoint,
+    supplement as supplement_endpoint,
 )
 from sqlalchemy import inspect, text
 
@@ -110,10 +118,41 @@ def _ensure_formcheck_columns():
         print("✅ formcheck_logs.cat_details 컬럼 추가됨")
 
 
+def _ensure_supplement_columns():
+    """create_all 후에도 기존 supplements 테이블엔 price/buy_url/rating 이 없을 수
+    있어 한 번만 ALTER TABLE 로 채워준다(실제 브랜드 제품 시드용)."""
+    inspector = inspect(engine)
+    if "supplements" not in inspector.get_table_names():
+        return
+    cols = {c["name"] for c in inspector.get_columns("supplements")}
+    adds = {"price": "FLOAT", "buy_url": "VARCHAR", "rating": "FLOAT"}
+    with engine.connect() as conn:
+        for name, ddl in adds.items():
+            if name not in cols:
+                conn.execute(text(f"ALTER TABLE supplements ADD COLUMN {name} {ddl}"))
+                print(f"✅ supplements.{name} 컬럼 추가됨")
+        conn.commit()
+
+
+def _ensure_health_profile_columns():
+    """기존 user_health_profiles 테이블에 concerns(건강 고민) 컬럼이 없으면 보강."""
+    inspector = inspect(engine)
+    if "user_health_profiles" not in inspector.get_table_names():
+        return
+    cols = {c["name"] for c in inspector.get_columns("user_health_profiles")}
+    if "concerns" not in cols:
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE user_health_profiles ADD COLUMN concerns JSON"))
+            conn.commit()
+        print("✅ user_health_profiles.concerns 컬럼 추가됨")
+
+
 _ensure_users_age_column()
 _ensure_inbody_ai_columns()
 _ensure_users_profile_columns()
 _ensure_formcheck_columns()
+_ensure_supplement_columns()
+_ensure_health_profile_columns()
 
 # 1. 현재 main.py 파일의 위치를 기준으로 경로 설정
 # main.py가 backend/app/main.py에 있다면:
@@ -167,6 +206,7 @@ app.include_router(user_endpoint.router, prefix="/api/v1/user", tags=["user"])
 app.include_router(body_endpoint.router, prefix="/api/v1/body", tags=["body"])
 app.include_router(community_endpoint.router, prefix="/api/v1/community", tags=["community"])
 app.include_router(report_endpoint.router, prefix="/api/v1/report", tags=["report"])
+app.include_router(supplement_endpoint.router, prefix="/api/v1/supplement", tags=["supplement"])
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 

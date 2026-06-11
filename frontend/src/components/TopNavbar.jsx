@@ -20,6 +20,7 @@ const TABS = [
   { label: "PROGRAM",    to: "/program",   match: (p) => p.startsWith("/program") },
   { label: "Form Check", to: "/formcheck", match: (p) => p.startsWith("/formcheck") },
   { label: "MEALS",      to: "/meals",     match: (p) => p.startsWith("/meals") },
+  { label: "Supplements", to: "/supplement", match: (p) => p.startsWith("/supplement") },
   { label: "BODY",       to: "/body",      match: (p) => p.startsWith("/body") },
   { label: "Journal",    to: "/journal",   match: (p) => p.startsWith("/journal") },
 ];

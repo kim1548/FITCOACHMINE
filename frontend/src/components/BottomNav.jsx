@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Users, Dumbbell, Video, Utensils, Activity, BookOpen } from "lucide-react";
+import { Users, Dumbbell, Video, Utensils, Activity, BookOpen, Pill } from "lucide-react";
 
 /**
  * 모바일 전용 하단 탭바 (md 미만에서만 노출).
@@ -12,6 +12,7 @@ const TABS = [
   { label: "Program",   to: "/program",   Icon: Dumbbell, match: (p) => p.startsWith("/program") },
   { label: "Form",      to: "/formcheck", Icon: Video,    match: (p) => p.startsWith("/formcheck") },
   { label: "Meals",     to: "/meals",     Icon: Utensils, match: (p) => p.startsWith("/meals") },
+  { label: "Supp",      to: "/supplement", Icon: Pill,    match: (p) => p.startsWith("/supplement") },
   { label: "Body",      to: "/body",      Icon: Activity, match: (p) => p.startsWith("/body") },
   { label: "Journal",   to: "/journal",   Icon: BookOpen, match: (p) => p.startsWith("/journal") },
 ];
