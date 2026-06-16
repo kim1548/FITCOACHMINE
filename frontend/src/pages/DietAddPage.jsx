@@ -80,7 +80,11 @@ const DietAddPage = () => {
           }
 
           if (targetItems.length > 0) {
-            if (targetItems[0].image_url) setPreview(targetItems[0].image_url);
+            // 불러온 기존 이미지 경로에도 백엔드 도메인을 붙여서 preview에 세팅합니다.
+            if (targetItems[0].image_url) {
+              setPreview(getFullImageUrl(targetItems[0].image_url));
+            }
+            
             setFoods(targetItems.map((item) => ({
               id: generateId(),
               food_name: item.food_name,
@@ -117,20 +121,68 @@ const DietAddPage = () => {
     }
   }, [foods, saveError]);
 
+  // 백엔드가 준 상대경로(/static/...)를 절대경로(http://localhost:8001/static/...)로 만들어주는 함수
+  // const getFullImageUrl = (url) => {
+  //   if (!url) return null;
+  //   // 이미 완벽한 주소(http://... 나 blob:...) 형태라면 그대로 리턴
+  //   if (url.startsWith('http') || url.startsWith('blob:')) return url;
+    
+  //   // API_BASE_URL이 'http://localhost:8001/api' 라면 'http://localhost:8001'만 쏙 발라냅니다.
+  //   const origin = new URL(API_BASE_URL).origin; 
+  //   return `${origin}${url.startsWith('/') ? '' : '/'}${url}`;
+  // };
+  const getFullImageUrl = (url) => {
+    if (!url) return null;
+    
+    // 1. 이미 http:// 나 blob: 으로 시작하는 완성형 주소면 그대로 통과
+    if (url.startsWith('http') || url.startsWith('blob:')) return url;
+    
+    // 2. 백엔드 포트 주소를 수동으로 안전하게 결합 (가장 확실한 방법)
+    // 현재 백엔드가 8001 포트를 쓰고 계시므로, 프로토콜과 호스트를 조합합니다.
+    const backendPort = '8001'; 
+    const hostname = window.location.hostname; // localhost 혹은 실제 IP
+    const protocol = window.location.protocol; // http: 혹은 https:
+    
+    // 만약 url이 '/static/...' 이 아니라 'static/...' 일 수 있으니 슬래시 체크
+    const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+    
+    return `${protocol}//${hostname}:${backendPort}${cleanUrl}`;
+  };
+
   const handleUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     if (preview && preview.startsWith('blob:')) URL.revokeObjectURL(preview);
+    
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
     setLoading(true);
+    
     try {
       const formData = new FormData();
       formData.append('file', file);
+      
       const res = await axios.post(`${API_BASE_URL}/diet/analyze`, formData, { headers: authHeaders() });
-      const mapped = res.data.map((item, i) => ({ ...item, id: generateId() + i, weight: 100 }));
+      
+      // 백엔드 도메인(http://localhost:8001)을 붙여서 preview 상태에 넣기!
+      if (res.data && res.data.main_image_url) {
+        const fullUrl = getFullImageUrl(res.data.main_image_url);
+        setPreview(fullUrl); 
+        console.log("변환된 메인 이미지 주소:", fullUrl); // 잘 바뀌었는지 콘솔로 확인해보세요!
+      }
+      
+      const targetItems = res.data.items || [];
+      const mapped = targetItems.map((item, i) => ({ 
+        ...item, 
+        id: generateId() + i, 
+        weight: item.weight || 100 
+      }));
+      
       setFoods((prev) => [...prev.filter((f) => f.food_name !== ''), ...mapped]);
+      toast.success('사진 분석이 완료되었습니다.');
+      
     } catch (err) {
+      console.error(err);
       toast.error('사진 분석에 실패했습니다.');
     } finally {
       setLoading(false);
@@ -215,8 +267,15 @@ const DietAddPage = () => {
       destructive: true,
     });
     if (!ok) return;
+    
     setFoods(selectedSet.items.map((item) => ({ ...item, id: generateId() })));
-    setPreview(selectedSet.image_url);
+    
+    // 🎯 [수정] 즐겨찾기 이미지 주소에도 백엔드 도메인을 안전하게 바인딩!
+    if (selectedSet.image_url) {
+      setPreview(getFullImageUrl(selectedSet.image_url));
+    } else {
+      setPreview(null);
+    }
   };
 
   const handleSave = async () => {
@@ -588,9 +647,11 @@ const DietAddPage = () => {
                   >
                     <div className="aspect-square photo-frame border border-ink/15 bg-paper-soft">
                       <img
-                        src={set.image_url || '/default_food.png'}
+                        // 🎯 [수정] 목록에 뿌려질 때도 백엔드 도메인 주소를 붙여서 가져옵니다.
+                        src={getFullImageUrl(set.image_url) || '/default_food.png'}
                         alt="favorite"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        onError={(e) => { e.target.src = '/default_food.png'; }}
                       />
                     </div>
                     <p className="font-display italic text-[0.8125rem] text-body mt-2 leading-snug line-clamp-2 group-hover:text-ink transition-colors">
