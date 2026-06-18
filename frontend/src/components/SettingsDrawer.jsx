@@ -61,8 +61,11 @@ const SettingsDrawer = ({ isOpen, onClose, theme, setTheme }) => {
           </button>
         </header>
 
-        {/* 본문 스크롤 영역 */}
-        <div className="h-[calc(100%-4.5rem)] overflow-y-auto px-6 py-8">
+        {/* 본문 스크롤 영역 — 다른 스크롤 영역과 동일하게 스크롤바 숨김 (밝은 기본 바 튐 방지) */}
+        <div
+          className="h-[calc(100%-4.5rem)] overflow-y-auto px-6 py-8 [&::-webkit-scrollbar]:hidden"
+          style={{ scrollbarWidth: 'none' }}
+        >
           <Settings theme={theme} setTheme={setTheme} />
         </div>
       </aside>

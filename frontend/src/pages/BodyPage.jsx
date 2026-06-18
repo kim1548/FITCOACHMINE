@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { Loader2 } from 'lucide-react';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip, Legend,
+  LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip,
 } from 'recharts';
 import { API_BASE_URL } from '../api/config';
 import BodyEntryModal from '../components/BodyEntryModal';
@@ -22,11 +22,12 @@ const authHeaders = () => {
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
+// Editorial palette 로 지표별 stroke 매핑 (small-multiples 차트가 각자 한 선씩 사용).
 const METRICS = [
-  { label: '체중',     short: 'Weight',      key: 'weight',            unit: 'kg', betterLower: false },
-  { label: '골격근',   short: 'Muscle',      key: 'skeletal_muscle',   unit: 'kg', betterLower: false },
-  { label: '체지방',   short: 'Fat mass',    key: 'body_fat_mass',     unit: 'kg', betterLower: true  },
-  { label: '체지방률', short: 'Body fat %',  key: 'body_fat_percent',  unit: '%',  betterLower: true  },
+  { label: '체중',     short: 'Weight',      key: 'weight',            chartKey: '체중',     color: '#f0e8d8', unit: 'kg', betterLower: false },
+  { label: '골격근',   short: 'Muscle',      key: 'skeletal_muscle',   chartKey: '골격근',   color: '#d9a64a', unit: 'kg', betterLower: false },
+  { label: '체지방',   short: 'Fat mass',    key: 'body_fat_mass',     chartKey: '체지방',   color: '#c43c2f', unit: 'kg', betterLower: true  },
+  { label: '체지방률', short: 'Body fat %',  key: 'body_fat_percent',  chartKey: '체지방률', color: '#aaa098', unit: '%',  betterLower: true  },
 ];
 
 const computeDelta = (latest, prev, key) => {
@@ -43,14 +44,6 @@ const deltaCls = (d, betterLower) => {
   return improving ? 'text-accent-gold' : 'text-accent-red';
 };
 
-// Editorial palette 로 차트 stroke 매핑.
-const STROKE = {
-  weight:     '#f0e8d8', // ink (parchment)
-  muscle:     '#d9a64a', // accent-gold
-  fat:        '#c43c2f', // accent-red
-  pct:        '#aaa098', // body grey
-};
-
 const tooltipStyle = {
   background: '#14110d',
   border: '1px solid rgba(240, 232, 216, 0.18)',
@@ -59,6 +52,70 @@ const tooltipStyle = {
   fontFamily: 'JetBrains Mono, monospace',
   color: '#f0e8d8',
   padding: '8px 12px',
+};
+
+/**
+ * 지표 하나만 그리는 작은 추이 차트 (small multiple).
+ * 범례 대신 선 오른쪽 끝에 최신값을 직접 라벨링해 시선 왕복을 없앤다.
+ */
+const MiniTrend = ({ metric, data }) => {
+  const { chartKey, color, unit, short, betterLower } = metric;
+  const lastIndex = data.length - 1;
+  // 시작(가장 오래된) → 현재(최신) 누적 변화. data 는 시간순(과거→최신).
+  const startVal = data[0]?.[chartKey];
+  const endVal = data[lastIndex]?.[chartKey];
+  const d = (startVal != null && endVal != null) ? +(endVal - startVal).toFixed(1) : null;
+
+  // 마지막 데이터 포인트에만 값 라벨을 그린다 (그 외 인덱스는 null 반환).
+  const renderEndLabel = ({ x, y, value, index }) => {
+    if (index !== lastIndex || value == null) return null;
+    return (
+      <text
+        x={x + 6} y={y} dy={4} textAnchor="start"
+        fill={color} fontSize={11} fontFamily="JetBrains Mono, monospace"
+      >
+        {value}{unit}
+      </text>
+    );
+  };
+
+  return (
+    <div className="py-4 border-b border-ink/8">
+      <div className="flex items-baseline justify-between mb-1">
+        <span className="font-mono text-[0.625rem] text-taupe tracking-label uppercase">{short}</span>
+        {d != null && d !== 0 && (
+          <span className={`font-mono text-[0.625rem] tracking-meta ${deltaCls(d, betterLower)}`}>
+            {d > 0 ? '+' : ''}{d}{unit} <span className="text-hint normal-case">vs start</span>
+          </span>
+        )}
+      </div>
+      <div className="h-36">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={{ top: 10, right: 52, left: -20, bottom: 0 }}>
+            <CartesianGrid stroke="rgba(240, 232, 216, 0.06)" strokeDasharray="2 4" />
+            <XAxis
+              dataKey="date"
+              interval="preserveStartEnd"
+              tick={{ fontSize: 9, fill: '#8a8275', fontFamily: 'JetBrains Mono, monospace' }}
+              axisLine={{ stroke: 'rgba(240, 232, 216, 0.12)' }}
+              tickLine={false}
+            />
+            <YAxis hide domain={['auto', 'auto']} />
+            <Tooltip contentStyle={tooltipStyle} cursor={{ stroke: 'rgba(240, 232, 216, 0.2)' }} />
+            <Line
+              type="monotone"
+              dataKey={chartKey}
+              stroke={color}
+              strokeWidth={1.5}
+              dot={{ r: 2, fill: color }}
+              activeDot={{ r: 4 }}
+              label={renderEndLabel}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
 };
 
 const BodyPage = () => {
@@ -253,73 +310,20 @@ const BodyPage = () => {
                 )}
               </section>
 
-              {/* Chart 1: Weight / Muscle / Fat (kg) */}
+              {/* Trends — 지표별 small multiples (각자 스케일 + 끝 라벨) */}
               <section className="py-8">
                 <div className="flex items-baseline justify-between mb-4">
                   <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
-                    — Mass · Weight · Muscle · Fat
+                    — Trends · By metric
                   </div>
                   <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
-                    kg
+                    {chartData.length} measurements
                   </div>
                 </div>
-                <div className="h-64 border-t border-ink/12 pt-4">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={chartData} margin={{ top: 10, right: 16, left: -16, bottom: 0 }}>
-                      <CartesianGrid stroke="rgba(240, 232, 216, 0.08)" strokeDasharray="2 4" />
-                      <XAxis
-                        dataKey="date"
-                        tick={{ fontSize: 10, fill: '#8a8275', fontFamily: 'JetBrains Mono, monospace' }}
-                        axisLine={{ stroke: 'rgba(240, 232, 216, 0.15)' }}
-                        tickLine={false}
-                      />
-                      <YAxis
-                        tick={{ fontSize: 10, fill: '#8a8275', fontFamily: 'JetBrains Mono, monospace' }}
-                        axisLine={{ stroke: 'rgba(240, 232, 216, 0.15)' }}
-                        tickLine={false}
-                      />
-                      <Tooltip contentStyle={tooltipStyle} cursor={{ stroke: 'rgba(240, 232, 216, 0.2)' }} />
-                      <Legend
-                        wrapperStyle={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#8a8275' }}
-                        iconType="plainline"
-                      />
-                      <Line type="monotone" dataKey="체중"   stroke={STROKE.weight} strokeWidth={1.5} dot={{ r: 2.5, fill: STROKE.weight }} activeDot={{ r: 4 }} />
-                      <Line type="monotone" dataKey="골격근" stroke={STROKE.muscle} strokeWidth={1.5} dot={{ r: 2.5, fill: STROKE.muscle }} activeDot={{ r: 4 }} />
-                      <Line type="monotone" dataKey="체지방" stroke={STROKE.fat}    strokeWidth={1.5} dot={{ r: 2.5, fill: STROKE.fat }}    activeDot={{ r: 4 }} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </section>
-
-              {/* Chart 2: Body fat % */}
-              <section className="py-6 border-t border-ink/12">
-                <div className="flex items-baseline justify-between mb-4">
-                  <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
-                    — Composition · Fat ratio
-                  </div>
-                  <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
-                    %
-                  </div>
-                </div>
-                <div className="h-48 border-t border-ink/12 pt-4">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={chartData} margin={{ top: 10, right: 16, left: -16, bottom: 0 }}>
-                      <CartesianGrid stroke="rgba(240, 232, 216, 0.08)" strokeDasharray="2 4" />
-                      <XAxis
-                        dataKey="date"
-                        tick={{ fontSize: 10, fill: '#8a8275', fontFamily: 'JetBrains Mono, monospace' }}
-                        axisLine={{ stroke: 'rgba(240, 232, 216, 0.15)' }}
-                        tickLine={false}
-                      />
-                      <YAxis
-                        tick={{ fontSize: 10, fill: '#8a8275', fontFamily: 'JetBrains Mono, monospace' }}
-                        axisLine={{ stroke: 'rgba(240, 232, 216, 0.15)' }}
-                        tickLine={false}
-                      />
-                      <Tooltip contentStyle={tooltipStyle} cursor={{ stroke: 'rgba(240, 232, 216, 0.2)' }} />
-                      <Line type="monotone" dataKey="체지방률" stroke={STROKE.pct} strokeWidth={1.5} dot={{ r: 2.5, fill: STROKE.pct }} activeDot={{ r: 4 }} />
-                    </LineChart>
-                  </ResponsiveContainer>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 border-t border-ink/12">
+                  {METRICS.map((m) => (
+                    <MiniTrend key={m.key} metric={m} data={chartData} />
+                  ))}
                 </div>
               </section>
 
