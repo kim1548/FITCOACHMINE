@@ -7,9 +7,9 @@ import React from 'react';
  * > 110% : accent-red (과잉·경고)
  */
 export const barColor = (pct) => {
-  if (pct < 80) return 'bg-taupe';
-  if (pct <= 110) return 'bg-accent-gold';
-  return 'bg-accent-red';
+  if (pct < 80) return 'bg-gradient-to-r from-lilac to-lilac-deep';
+  if (pct <= 110) return 'bg-gradient-to-r from-lilac to-lilac-deep';
+  return 'bg-[#c43c2f]';
 };
 
 const NutritionProgressRow = ({ label, consumed, target, unit }) => {
@@ -19,16 +19,16 @@ const NutritionProgressRow = ({ label, consumed, target, unit }) => {
   return (
     <div className="space-y-1.5">
       <div className="flex items-baseline justify-between">
-        <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
+        <span className="font-sans text-[0.625rem] text-taupe tracking-meta uppercase">
           {label}
         </span>
-        <span className="font-mono text-[0.6875rem] tabular-nums text-ink">
+        <span className="font-sans text-[0.6875rem] tabular-nums text-ink">
           {Math.round(consumed || 0)}
           <span className="text-hint"> / {target}{unit}</span>
           <span className="ml-2 text-hint">{pct}%</span>
         </span>
       </div>
-      <div className="h-0.5 bg-ink/10 overflow-hidden">
+      <div className="h-0.5 bg-ink/10 rounded-full overflow-hidden">
         <div
           className={`h-full transition-all duration-300 ${barColor(pct)}`}
           style={{ width: `${Math.min(100, pct)}%` }}

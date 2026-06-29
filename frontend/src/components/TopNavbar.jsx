@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AuthPromptModal from "./ui/AuthPromptModal";
@@ -40,11 +40,23 @@ const TopNavbar = ({ onOpenSettings }) => {
   const location = useLocation();
   const { user } = useAuth();
   const [authPromptOpen, setAuthPromptOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // 제품 페이지는 fixed 셸 안에서 내부 스크롤이라, 캡처 단계로 어떤 스크롤러든
+  // 감지해 네비를 살짝 띄운다(소프트 그림자). 랜딩의 알약 모핑 대신 가벼운 elevation.
+  useEffect(() => {
+    const onScroll = (e) => {
+      const t = e.target;
+      const top = t && typeof t.scrollTop === "number" ? t.scrollTop : 0;
+      setScrolled(top > 12);
+    };
+    document.addEventListener("scroll", onScroll, true);
+    return () => document.removeEventListener("scroll", onScroll, true);
+  }, []);
 
   const issueNo = String(dayOfYear()).padStart(3, "0");
   const now = new Date();
   const monthLabel = MONTH_LABELS[now.getMonth()];
-  const yearLabel = now.getFullYear();
 
   // FITCOACH 워드마크 — 로그인 시 /journal, 미로그인 시 유도 모달.
   const handleBrandClick = (e) => {
@@ -55,19 +67,31 @@ const TopNavbar = ({ onOpenSettings }) => {
   };
 
   return (
-    <nav className="w-full bg-paper border-b border-ink/15 z-[100] flex-shrink-0">
+    <nav
+      className={`w-full z-[100] flex-shrink-0 font-sans transition-all duration-300 ${
+        scrolled
+          ? "bg-paper/85 backdrop-blur-md shadow-[0_6px_22px_-12px_rgba(26,20,16,0.22)]"
+          : "bg-transparent"
+      }`}
+    >
       {/* Line 1 — Masthead: brand + issue + auth actions */}
-      <div className="flex items-baseline justify-between px-6 py-3 border-b border-ink/12">
+      <div className="flex items-center justify-between px-8 py-3.5">
         <Link
           to="/journal"
           onClick={handleBrandClick}
-          className="font-display italic text-lg text-ink hover:text-accent-gold transition-colors tracking-tight"
+          className="flex items-center gap-2 group"
         >
-          FITCOACH
+          <span
+            className="w-[22px] h-[22px] rounded-full flex-shrink-0"
+            style={{ background: "radial-gradient(circle at 50% 38%, var(--color-lilac), var(--color-lilac-deep))" }}
+          />
+          <span className="font-semibold text-[1.05rem] tracking-tight text-ink group-hover:opacity-80 transition-opacity">
+            FitCoach
+          </span>
         </Link>
-        <div className="flex items-baseline gap-5 font-mono text-[0.6875rem] tracking-meta uppercase">
-          <span className="text-taupe hidden sm:inline">
-            No. {issueNo} — {monthLabel} {yearLabel}
+        <div className="flex items-center gap-4 text-[0.8125rem] font-medium">
+          <span className="text-hint hidden sm:inline">
+            No. {issueNo} · {monthLabel}
           </span>
           {user ? (
             <>
@@ -75,7 +99,7 @@ const TopNavbar = ({ onOpenSettings }) => {
               <button
                 onClick={onOpenSettings}
                 className="text-taupe hover:text-ink transition-colors"
-                aria-label="설정"
+                aria-label="Settings"
               >
                 Settings
               </button>
@@ -83,10 +107,13 @@ const TopNavbar = ({ onOpenSettings }) => {
           ) : (
             <>
               <Link to="/login" className="text-taupe hover:text-ink transition-colors">
-                → Sign in
+                로그인
               </Link>
-              <Link to="/signup" className="text-accent-red hover:text-ink transition-colors">
-                → Register
+              <Link
+                to="/signup"
+                className="bg-ink text-paper rounded-[10px] px-4 py-2 hover:opacity-90 transition-opacity"
+              >
+                무료로 시작
               </Link>
             </>
           )}
@@ -94,17 +121,17 @@ const TopNavbar = ({ onOpenSettings }) => {
       </div>
 
       {/* Line 2 — Section tabs (데스크탑 전용 · 모바일은 하단 탭바 BottomNav 가 대체) */}
-      <div className="hidden md:flex gap-6 px-6 py-2 font-mono text-[0.6875rem] tracking-meta uppercase overflow-x-auto [&::-webkit-scrollbar]:hidden">
+      <div className="hidden md:flex gap-7 px-8 pb-3 text-[0.8125rem] font-medium overflow-x-auto [&::-webkit-scrollbar]:hidden">
         {TABS.map((tab) => {
           const active = tab.match(location.pathname);
           return (
             <Link
               key={tab.label}
               to={tab.to}
-              className={`flex-shrink-0 transition-colors ${
+              className={`flex-shrink-0 pb-1 transition-colors ${
                 active
-                  ? "text-ink border-b border-accent-red pb-1"
-                  : "text-taupe hover:text-ink pb-1"
+                  ? "text-ink border-b-2 border-lilac"
+                  : "text-taupe hover:text-ink"
               }`}
             >
               {tab.label}

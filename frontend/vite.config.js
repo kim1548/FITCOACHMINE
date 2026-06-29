@@ -39,6 +39,8 @@ export default defineConfig({
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api/],
         cleanupOutdatedCaches: true,
+        // 알림 클릭 시 앱 열기 핸들러를 생성된 서비스워커에 주입
+        importScripts: ['/sw-custom.js'],
       },
     }),
   ],
@@ -54,6 +56,14 @@ export default defineConfig({
     },
   },
   server: {
+    host: true,
+    allowedHosts: ['.trycloudflare.com'],
+    proxy: {
+      '/api': 'http://localhost:8001',
+    },
+  },
+  // 프로덕션 빌드 미리보기(폰 PWA 데모용) — dev 와 동일하게 터널 허용 + API 프록시
+  preview: {
     host: true,
     allowedHosts: ['.trycloudflare.com'],
     proxy: {

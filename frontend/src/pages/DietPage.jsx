@@ -8,6 +8,7 @@ import PageSurface from '../components/PageSurface';
 import { useToast } from '../components/ui/Toast';
 import { useConfirm } from '../components/ui/ConfirmProvider';
 import usePageTitle from '../hooks/usePageTitle';
+import Reveal from '../components/Reveal';
 
 /**
  * /meals — Daily meals magazine (Editorial Magazine 톤).
@@ -42,22 +43,22 @@ const MealRow = ({ no, label, sublabel, items, onEdit, onReset, onDeleteItem }) 
   return (
     <article className="py-5 border-b border-ink/8 last:border-b-0">
       <div className="flex items-baseline gap-3 flex-wrap mb-2">
-        <span className="font-display italic text-2xl leading-none text-hint tabular-nums">
+        <span className="font-sans text-2xl leading-none text-hint tabular-nums">
           {no}
         </span>
         <span className="font-display text-2xl text-ink leading-tight">
           {label}
         </span>
-        <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
+        <span className="font-sans text-[0.72rem] text-taupe tracking-meta uppercase">
           · {sublabel}
         </span>
-        <span className="ml-auto font-mono text-[0.625rem] text-hint tracking-meta uppercase">
+        <span className="ml-auto font-sans text-[0.72rem] text-hint tracking-meta uppercase">
           {hasData ? `${items.length} item${items.length > 1 ? 's' : ''}` : 'Empty'}
         </span>
         {hasData && onReset && (
           <button
             onClick={onReset}
-            className="font-mono text-[0.625rem] tracking-meta uppercase text-taupe hover:text-accent-red transition-colors"
+            className="font-sans text-[0.72rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
             aria-label="초기화"
           >
             ↻ Reset
@@ -77,7 +78,7 @@ const MealRow = ({ no, label, sublabel, items, onEdit, onReset, onDeleteItem }) 
               </span>
               <button
                 onClick={() => onDeleteItem(m.id)}
-                className="font-mono text-[0.6875rem] text-hint hover:text-accent-red transition-colors opacity-60 md:opacity-0 md:group-hover:opacity-100"
+                className="font-sans text-[0.78rem] text-hint hover:text-ink transition-colors opacity-60 md:opacity-0 md:group-hover:opacity-100"
                 aria-label="삭제"
               >
                 ✕
@@ -86,14 +87,14 @@ const MealRow = ({ no, label, sublabel, items, onEdit, onReset, onDeleteItem }) 
           ))}
         </ul>
       ) : (
-        <p className="font-display italic text-sm text-hint mb-3 mt-2">
+        <p className="font-sans text-sm text-hint mb-3 mt-2">
           No data recorded.
         </p>
       )}
 
       <button
         onClick={onEdit}
-        className="font-mono text-[0.6875rem] tracking-label uppercase text-accent-red hover:text-ink transition-colors"
+        className="font-sans text-[0.78rem] tracking-label uppercase text-ink hover:text-ink transition-colors"
       >
         {hasData ? '→ Edit entry' : '→ Record entry'}
       </button>
@@ -226,35 +227,36 @@ const DietPage = () => {
 
   return (
     <div
-      className="fixed inset-0 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
+      className="fixed inset-0 lg:left-[var(--sb-w,15rem)] transition-[left] duration-300 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
       style={{ scrollbarWidth: 'none' }}
     >
       <PageSurface maxWidth={1100}>
         <div className="w-full px-6 md:px-12 py-8">
 
           {/* Headline */}
-          <div className="max-w-[40rem] pb-6">
-            <div className="flex items-baseline justify-between mb-3">
-              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
-                — Meals · Today
-              </div>
+          <Reveal className="max-w-[40rem] pb-8">
+            <div className="mb-3">
+              <span className="inline-block bg-lilac/60 rounded-[10px] px-3 py-1 font-sans text-[0.78rem] font-medium tracking-wide text-ink">
+                Meals · Today
+              </span>
             </div>
-            <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
-              Macros, <em className="italic text-accent-gold">accounted for.</em>
+            <h1 className="font-display text-5xl md:text-6xl leading-[1.0] tracking-tight font-normal">
+              Macros, <em className="italic text-lilac-deep">accounted for.</em>
             </h1>
-            <p className="font-display italic text-sm text-taupe mt-3 leading-relaxed">
+            <p className="font-sans text-sm text-taupe mt-3 leading-relaxed">
               한 끼씩 기록해 두면 일주일 뒤의 자신이 더 정확히 보입니다.
             </p>
-          </div>
+          </Reveal>
 
           {/* Daily target */}
-          <section className="border-t border-b border-ink/12 py-6 mb-2">
+          <Reveal delay={80}>
+          <section className="rounded-[28px] bg-gradient-to-br from-lilac/45 to-paper border border-ink/10 shadow-[0_10px_28px_-10px_rgba(120,80,160,0.2)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_38px_-12px_rgba(120,80,160,0.28)] p-6 mb-2">
             <div className="flex items-baseline justify-between mb-5">
-              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
-                — Daily target
-              </div>
+              <span className="inline-block bg-bone border border-ink/10 rounded-[10px] px-2.5 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-ink">
+                Daily target
+              </span>
               {me?.goal && (
-                <span className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
+                <span className="font-sans text-[0.72rem] text-hint tracking-meta uppercase">
                   Goal · {me.goal}
                 </span>
               )}
@@ -262,12 +264,14 @@ const DietPage = () => {
 
             {me?.nutrition ? (
               <div className="space-y-4">
-                <NutritionProgressRow
-                  label="Calories"
-                  consumed={summary?.total?.kcal || 0}
-                  target={me.nutrition.target_kcal}
-                  unit=" kcal"
-                />
+                <div className="bg-sky rounded-[20px] p-5 shadow-[0_10px_24px_-10px_rgba(60,140,190,0.5)]">
+                  <NutritionProgressRow
+                    label="Calories"
+                    consumed={summary?.total?.kcal || 0}
+                    target={me.nutrition.target_kcal}
+                    unit=" kcal"
+                  />
+                </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-3 border-t border-ink/10">
                   <NutritionProgressRow
                     label="Carbs"
@@ -288,29 +292,31 @@ const DietPage = () => {
                     unit="g"
                   />
                 </div>
-                <p className="font-mono text-[0.5625rem] text-hint tracking-meta uppercase pt-2">
+                <p className="font-sans text-[0.66rem] text-hint tracking-meta uppercase pt-2">
                   BMR {me.nutrition.bmr} · TDEE {me.nutrition.tdee} kcal
                 </p>
               </div>
             ) : me ? (
-              <p className="font-display italic text-sm text-body leading-relaxed">
-                프로필에 <span className="not-italic text-accent-gold font-mono text-[0.6875rem] tracking-meta uppercase">나이</span>가
+              <p className="font-sans text-sm text-body leading-relaxed">
+                프로필에 <span className="not-italic text-lilac-deep font-sans text-[0.78rem] tracking-meta uppercase">나이</span>가
                 비어있어 목표 계산이 안 돼요. 회원가입 시 나이를 입력하면 자동 계산됩니다.
               </p>
             ) : (
-              <p className="font-display italic text-sm text-hint">
+              <p className="font-sans text-sm text-hint">
                 로그인 후 영양 목표가 표시됩니다.
               </p>
             )}
           </section>
+          </Reveal>
 
           {/* Entries timeline */}
+          <Reveal delay={160}>
           <section className="pt-8">
             <div className="flex items-baseline justify-between mb-3">
-              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
-                — Entries
-              </div>
-              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
+              <span className="inline-block bg-bone border border-ink/10 rounded-[10px] px-2.5 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-ink">
+                Entries
+              </span>
+              <div className="font-sans text-[0.72rem] text-hint tracking-meta uppercase">
                 {todayMeta()}
               </div>
             </div>
@@ -332,9 +338,9 @@ const DietPage = () => {
 
             {/* Snacks subsection */}
             <div className="flex items-baseline justify-between mt-10 mb-3">
-              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
-                — Snacks
-              </div>
+              <span className="inline-block bg-bone border border-ink/10 rounded-[10px] px-2.5 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-ink">
+                Snacks
+              </span>
             </div>
 
             <div className="border-t border-ink/15">
@@ -356,30 +362,32 @@ const DietPage = () => {
                 className="w-full flex items-center justify-between py-5 border-b border-ink/8 last:border-b-0 hover:bg-ink/[0.03] transition-colors text-left"
               >
                 <div className="flex items-baseline gap-3">
-                  <span className="font-display italic text-2xl leading-none text-hint">
+                  <span className="font-sans text-2xl leading-none text-hint">
                     +
                   </span>
                   <span className="font-display text-xl text-taupe leading-tight">
                     Add new snack
                   </span>
                 </div>
-                <span className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
+                <span className="font-sans text-[0.72rem] text-hint tracking-meta uppercase">
                   → New entry
                 </span>
               </button>
             </div>
           </section>
+          </Reveal>
 
           {/* Coach's note (AI feedback) */}
-          <section className="-mx-6 md:-mx-12 px-6 md:px-12 py-6 mt-10 border-y border-ink/15 bg-accent-red/[0.04]">
+          <Reveal delay={80}>
+          <section className="-mx-6 md:-mx-12 px-6 md:px-12 py-6 mt-10 border-y border-ink/15 bg-lilac/[0.04]">
             <div className="flex items-baseline justify-between mb-3 flex-wrap gap-2">
-              <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase">
-                — Coach's note · Today's macros
-              </div>
+              <span className="inline-block bg-bone border border-ink/10 rounded-[10px] px-2.5 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-ink">
+                Coach's note · Today's macros
+              </span>
               <button
                 onClick={getAiFeedback}
                 disabled={aiLoading}
-                className="font-mono text-[0.625rem] tracking-label uppercase text-taupe hover:text-ink disabled:opacity-40 transition-colors flex items-center gap-1.5"
+                className="font-sans text-[0.72rem] tracking-label uppercase text-taupe hover:text-ink disabled:opacity-40 transition-colors flex items-center gap-1.5"
               >
                 {aiLoading && <Loader2 size={10} className="animate-spin" />}
                 {aiLoading ? 'Analyzing…' : '↻ Refresh'}
@@ -387,22 +395,23 @@ const DietPage = () => {
             </div>
 
             {aiFeedback ? (
-              <blockquote className="font-display italic text-lg text-ink leading-relaxed m-0 max-w-[92%]">
+              <blockquote className="font-sans text-lg text-ink leading-relaxed m-0 max-w-[92%]">
                 "{aiFeedback}"
               </blockquote>
             ) : aiLoading ? (
-              <p className="font-display italic text-sm text-taupe">
+              <p className="font-sans text-sm text-taupe">
                 Gemma-3 이 오늘의 식단을 분석 중…
               </p>
             ) : (
-              <p className="font-display italic text-sm text-hint">
+              <p className="font-sans text-sm text-hint">
                 기록된 식단이 있으면 자동으로 코멘트가 생성됩니다.
               </p>
             )}
           </section>
+          </Reveal>
 
           {/* Footer */}
-          <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
+          <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-sans text-[0.78rem] text-hint tracking-meta">
             <span className="uppercase">— FITCOACH —</span>
             <span className="uppercase text-taupe">Daily · {todayMeta()}</span>
           </div>

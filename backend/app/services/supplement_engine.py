@@ -21,7 +21,7 @@ from sqlalchemy.orm import Session
 from app.models.user import User
 from app.models.diet_log import DietLog
 from app.models.supplement import NutrientRDA, Supplement, SupplementIngredient, InteractionRule
-from app.models.supplement_user import UserHealthProfile, SupplementRecommendation
+from app.models.supplement_user import UserHealthProfile, SupplementRecommendation, UserSupplement
 from app.services.supplement_rules import (
     NUTRIENT_NAMES, CORE_NUTRIENTS, CONCERN_RULES,
     DEFICIENCY_THRESHOLD, FALLBACK_TOP_N, PROTEIN_COEF, PROTEIN_COEF_DEFAULT,
@@ -129,6 +129,54 @@ def _lookup_rda(db: Session, code: str, sex: Optional[str], age: Optional[int]) 
     matched = [r for r in rows if ok(r)]
     target = matched[0] if matched else rows[0]
     return target.rda
+
+
+# ── 내 영양제 충족률 (보유 영양제 기준) ─────────────────────
+def compute_my_coverage(db: Session, user: User) -> list:
+    """내가 보유한 영양제 성분이 권장량(RDA)을 얼마나 채우는지.
+    - 추천이 아니라 '내 영양제' 기준 → 추천/고민이 바뀌어도 안 흔들림.
+    - 선택한 고민은 관련 영양소의 목표량을 상향(먹어야 할 양↑)하고, 새 영양소를 추가한다.
+    표시 대상 = 보유 성분 ∪ 고민 관련 영양소.
+    """
+    sex, age = user.gender, user.age
+    prof = db.query(UserHealthProfile).filter(UserHealthProfile.user_id == user.id).first()
+    concerns = (prof.concerns or []) if prof else []
+
+    # 고민 가중치(영양소별 합) → 목표량 상향에 사용
+    cw = {}
+    for c in concerns:
+        for code, w in CONCERN_RULES.get(c, []):
+            cw[code] = cw.get(code, 0) + w
+
+    # 보유 영양제 성분 합산
+    owned_ids = [r.supplement_id for r in
+                 db.query(UserSupplement).filter(UserSupplement.user_id == user.id).all()]
+    owned = {}
+    if owned_ids:
+        for ing in db.query(SupplementIngredient).filter(
+                SupplementIngredient.supplement_id.in_(owned_ids)).all():
+            owned[ing.nutrient_code] = owned.get(ing.nutrient_code, 0.0) + (ing.amount or 0)
+
+    codes = set(owned.keys()) | set(cw.keys())
+    bars = []
+    for code in codes:
+        rda = _lookup_rda(db, code, sex, age)
+        if not rda or rda <= 0:
+            continue
+        target = rda * (1 + 0.15 * cw.get(code, 0))      # 고민이 목표량 상향(완만)
+        target = min(target, rda * 2.0)                  # 과도한 상향 방지
+        have = owned.get(code, 0.0)
+        coverage = max(0, min(100, round(have / target * 100)))
+        bars.append({
+            "code": code,
+            "name": NUTRIENT_NAMES.get(code, code),
+            "coverage": coverage,
+            "have": round(have, 1),
+            "target": round(target, 1),
+            "boosted": cw.get(code, 0) > 0,   # 고민으로 목표 상향된 항목
+        })
+    bars.sort(key=lambda b: (b["coverage"], b["name"]))  # 충족 낮은 순(부족분 먼저)
+    return bars
 
 
 # ── ③ 매칭 + ⑤ 점수화 ───────────────────────────────────────

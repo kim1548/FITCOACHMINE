@@ -45,52 +45,52 @@ const AuthPromptModal = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md bg-paper text-ink border border-ink/20 shadow-2xl animate-in zoom-in-95 duration-150"
+        className="w-full max-w-md bg-paper text-ink rounded-[24px] shadow-[0_24px_60px_-20px_rgba(26,20,16,0.45)] overflow-hidden animate-in zoom-in-95 duration-150"
       >
         {/* Header */}
-        <header className="flex items-baseline justify-between px-6 pt-5 pb-2 border-b border-ink/12">
-          <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase">
-            — Welcome
-          </div>
+        <header className="flex items-center justify-between px-6 pt-5 pb-1">
+          <span className="inline-block bg-lilac/60 rounded-[10px] px-3 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-ink">
+            Welcome
+          </span>
           <button
             onClick={onClose}
-            className="font-mono text-[0.6875rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
+            className="font-sans text-[0.8rem] text-taupe hover:text-ink transition-colors"
             aria-label="닫기"
           >
-            Close ×
+            닫기 ×
           </button>
         </header>
 
         {/* Body */}
-        <div className="px-6 py-6">
+        <div className="px-6 py-5">
           <h3 className="font-display text-2xl md:text-3xl text-ink leading-[1.05] tracking-tight m-0 mb-3 font-normal">
             {title.split('FITCOACH').length > 1 ? (
               <>
-                <em className="italic text-accent-gold">FITCOACH</em>
+                <em className="italic text-lilac-deep">FitCoach</em>
                 {title.split('FITCOACH')[1]}
               </>
             ) : (
               title
             )}
           </h3>
-          <p className="font-display italic text-sm text-taupe leading-relaxed m-0">
+          <p className="font-sans text-sm text-taupe leading-relaxed m-0">
             {message}
           </p>
         </div>
 
         {/* Actions */}
-        <footer className="flex flex-col sm:flex-row gap-px bg-ink/10 border-t border-ink/12">
+        <footer className="flex flex-col sm:flex-row gap-3 px-6 pb-6">
           <button
             onClick={() => go('/login')}
-            className="flex-1 py-4 font-mono text-[0.6875rem] tracking-label uppercase bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
+            className="flex-1 py-3 rounded-[12px] font-sans text-[0.85rem] font-medium text-taupe hover:text-ink hover:bg-ink/[0.04] transition-colors"
           >
-            → Sign in
+            로그인
           </button>
           <button
             onClick={() => go('/signup')}
-            className="flex-1 py-4 font-mono text-[0.6875rem] tracking-label uppercase bg-paper text-taupe hover:text-ink transition-colors"
+            className="flex-1 py-3 rounded-[12px] font-sans text-[0.85rem] font-medium bg-lilac text-ink hover:opacity-90 transition-opacity"
           >
-            → Register
+            무료로 시작
           </button>
         </footer>
       </div>

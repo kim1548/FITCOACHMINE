@@ -7,6 +7,7 @@ import PageSurface from '../components/PageSurface';
 import { useToast } from '../components/ui/Toast';
 import { useConfirm } from '../components/ui/ConfirmProvider';
 import FieldError from '../components/ui/FieldError';
+import Reveal from '../components/Reveal';
 import usePageTitle from '../hooks/usePageTitle';
 
 /**
@@ -321,7 +322,7 @@ const DietAddPage = () => {
 
   return (
     <div
-      className="fixed inset-0 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
+      className="fixed inset-0 lg:left-[var(--sb-w,15rem)] transition-[left] duration-300 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
       style={{ scrollbarWidth: 'none' }}
     >
       <PageSurface maxWidth={1200}>
@@ -330,34 +331,39 @@ const DietAddPage = () => {
           {/* Back link */}
           <button
             onClick={() => navigate(-1)}
-            className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
+            className="font-sans text-[0.78rem] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
           >
             ← Back to meals
           </button>
 
           {/* Headline */}
-          <header className="pb-6">
+          <Reveal className="pb-8">
             <div className="flex items-baseline justify-between mb-3 flex-wrap gap-2">
-              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
-                — Entry · Recording {mealType}
+              <div className="mb-0">
+                <span className="inline-block bg-lilac/60 rounded-[10px] px-3 py-1 font-sans text-[0.78rem] font-medium tracking-wide text-ink">
+                  Entry · Recording {mealType}
+                </span>
               </div>
-              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
+              <div className="font-sans text-[0.72rem] text-hint tracking-meta uppercase">
                 {filledCount.toString().padStart(2, '0')} item{filledCount !== 1 ? 's' : ''}
               </div>
             </div>
 
-            <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
-              {mealType}, <em className="italic text-accent-gold">{MEAL_SUBLABEL[mealType] || 'on record'}.</em>
+            <h1 className="font-display text-5xl md:text-6xl leading-[1.0] tracking-tight font-normal">
+              {mealType}, <em className="italic text-lilac-deep">{MEAL_SUBLABEL[mealType] || 'on record'}.</em>
             </h1>
-            <p className="font-display italic text-sm text-taupe mt-3 leading-relaxed">
+            <p className="font-sans text-sm text-taupe mt-3 leading-relaxed">
               사진을 올리거나 이름으로 검색해서 한 끼 매크로를 정리합니다.
             </p>
-          </header>
+          </Reveal>
 
           {/* Top search */}
-          <section className="border-t border-ink/15 pt-5 mb-8 relative">
-            <div className="font-mono text-[0.625rem] text-taupe tracking-label uppercase mb-2">
-              — Search by name
+          <Reveal delay={80} className="mb-8 relative z-30">
+          <section className="relative rounded-[28px] bg-paper border border-ink/10 shadow-[0_10px_28px_-10px_rgba(26,20,16,0.12)] transition-all duration-300 hover:shadow-[0_18px_38px_-12px_rgba(26,20,16,0.2)] p-6">
+            <div className="mb-3">
+              <span className="inline-block bg-bone rounded-[10px] px-3 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-taupe uppercase">
+                Search by name
+              </span>
             </div>
             <div className="relative">
               <input
@@ -365,12 +371,12 @@ const DietAddPage = () => {
                 value={topQuery}
                 onChange={(e) => setTopQuery(e.target.value)}
                 placeholder="예: 닭가슴살, 현미밥…"
-                className="w-full px-3 py-2.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display italic text-base text-ink placeholder:text-hint transition-colors"
+                className="w-full px-3 py-2.5 rounded-[10px] bg-paper border border-ink/15 focus:border-lilac-deep outline-none font-sans text-base text-ink placeholder:text-hint transition-colors"
               />
               {topQuery && (
                 <button
                   onClick={() => { setTopQuery(''); setTopResults([]); }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 font-mono text-[0.6875rem] text-taupe hover:text-accent-red tracking-meta uppercase"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 font-sans text-[0.78rem] text-taupe hover:text-ink tracking-meta uppercase"
                   aria-label="검색어 지우기"
                 >
                   Clear ×
@@ -379,17 +385,18 @@ const DietAddPage = () => {
             </div>
 
             {topResults.length > 0 && (
-              <div className="absolute left-0 right-0 top-full z-[120] bg-paper border border-ink/20 mt-1 shadow-2xl max-h-80 overflow-y-auto [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none' }}>
+              <div className="absolute left-0 right-0 top-full z-[120] bg-paper border border-ink/10 rounded-[18px] mt-2 shadow-[0_16px_44px_-12px_rgba(26,20,16,0.22)] max-h-[26rem] overflow-y-auto py-1.5 [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none', backgroundColor: '#ffffff' }}>
                 {topResults.map((item, idx) => (
                   <button
                     key={`top-${idx}`}
                     onClick={() => addFoodFromSearch(item)}
-                    className="w-full text-left px-4 py-3 border-b border-ink/8 last:border-b-0 hover:bg-accent-red/[0.06] transition-colors"
+                    className="w-full text-left mx-1.5 px-3 py-2.5 rounded-[12px] hover:bg-lilac/[0.08] transition-colors"
+                    style={{ width: 'calc(100% - 0.75rem)' }}
                   >
                     <div className="font-display text-[0.9375rem] text-ink leading-snug">
                       {item.food_name}
                     </div>
-                    <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mt-1 tabular-nums">
+                    <div className="font-sans text-[0.72rem] text-taupe tracking-meta uppercase mt-1 tabular-nums">
                       {Math.round(item.kcal)} kcal · 100 g · C {Math.round(item.carbs)} · P {Math.round(item.protein)} · F {Math.round(item.fat)}
                     </div>
                   </button>
@@ -397,8 +404,10 @@ const DietAddPage = () => {
               </div>
             )}
           </section>
+          </Reveal>
 
           {/* Main 2-col */}
+          <Reveal delay={160} className="relative z-0">
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] gap-8 items-start">
 
             {/* Left: Image + Totals */}
@@ -406,18 +415,20 @@ const DietAddPage = () => {
               {/* Image plate */}
               <div>
                 <div className="flex items-baseline justify-between mb-2">
-                  <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase">
-                    — Plate
+                  <div className="mb-0">
+                    <span className="inline-block bg-bone rounded-[10px] px-3 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-taupe uppercase">
+                      Plate
+                    </span>
                   </div>
                   {loading && (
-                    <span className="font-mono text-[0.625rem] text-accent-gold tracking-meta uppercase flex items-center gap-1.5">
+                    <span className="font-sans text-[0.72rem] text-lilac-deep tracking-meta uppercase flex items-center gap-1.5">
                       <Loader2 size={10} className="animate-spin" />
                       Analyzing…
                     </span>
                   )}
                 </div>
 
-                <div className="relative aspect-square bg-paper-soft border border-ink/15 overflow-hidden">
+                <div className="relative aspect-square rounded-[28px] bg-gradient-to-br from-lilac/40 to-paper border border-ink/10 overflow-hidden shadow-[0_10px_28px_-10px_rgba(26,20,16,0.12)] transition-all duration-300 hover:shadow-[0_18px_38px_-12px_rgba(26,20,16,0.2)]">
                   {preview ? (
                     <img
                       src={preview}
@@ -428,14 +439,14 @@ const DietAddPage = () => {
                   ) : (
                     <div className="h-full flex flex-col items-center justify-center text-hint gap-2">
                       <span className="font-poster text-3xl tracking-tight uppercase">No image</span>
-                      <span className="font-mono text-[0.625rem] tracking-meta uppercase">Capture or upload</span>
+                      <span className="font-sans text-[0.72rem] tracking-meta uppercase">Capture or upload</span>
                     </div>
                   )}
 
                   {loading && (
                     <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center z-20">
-                      <Loader2 className="animate-spin text-accent-red mb-3" size={22} />
-                      <p className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase">
+                      <Loader2 className="animate-spin text-ink mb-3" size={22} />
+                      <p className="font-sans text-[0.72rem] text-ink tracking-label uppercase">
                         Analyzing image
                       </p>
                     </div>
@@ -443,15 +454,15 @@ const DietAddPage = () => {
                 </div>
 
                 <div className="flex gap-3 mt-3">
-                  <label className="font-mono text-[0.6875rem] tracking-label uppercase px-4 py-2.5 border border-accent-red text-accent-red hover:bg-accent-red hover:text-ink transition-colors cursor-pointer">
+                  <label className="font-sans text-[0.78rem] tracking-label uppercase px-4 py-2.5 border border-lilac-deep text-ink hover:bg-lilac hover:text-ink transition-colors cursor-pointer">
                     → Upload photo
                     <input type="file" className="hidden" accept="image/*" onChange={handleUpload} />
                   </label>
                   <button
                     onClick={() => setIsFavSet(!isFavSet)}
-                    className={`font-mono text-[0.6875rem] tracking-label uppercase px-4 py-2.5 border transition-colors ${
+                    className={`font-sans text-[0.78rem] tracking-label uppercase px-4 py-2.5 border transition-colors ${
                       isFavSet
-                        ? 'bg-accent-gold/20 border-accent-gold text-accent-gold'
+                        ? 'bg-lilac/20 border-lilac-deep text-lilac-deep'
                         : 'border-ink/20 text-taupe hover:text-ink hover:border-ink/40'
                     }`}
                   >
@@ -462,15 +473,19 @@ const DietAddPage = () => {
 
               {/* Totals */}
               <div className="border-t border-ink/15 pt-5">
-                <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-3">
-                  — Total
+                <div className="mb-3">
+                  <span className="inline-block bg-bone rounded-[10px] px-3 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-taupe uppercase">
+                    Total
+                  </span>
                 </div>
 
-                <div className="flex items-baseline gap-2 mb-1">
-                  <span className="font-display text-6xl text-ink tabular-nums leading-none">
-                    {Math.round(totals.kcal).toLocaleString()}
-                  </span>
-                  <span className="font-display italic text-base text-taupe">kcal</span>
+                <div className="bg-sky rounded-[20px] p-5 shadow-[0_10px_24px_-10px_rgba(60,140,190,0.5)] mb-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="font-display text-6xl text-ink tabular-nums leading-none">
+                      {Math.round(totals.kcal).toLocaleString()}
+                    </span>
+                    <span className="font-sans text-base text-ink/65">kcal</span>
+                  </div>
                 </div>
 
                 <div className="border-t border-ink/10 mt-5 pt-1">
@@ -485,11 +500,11 @@ const DietAddPage = () => {
                         i < arr.length - 1 ? 'border-b border-ink/8' : ''
                       }`}
                     >
-                      <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
+                      <span className="font-sans text-[0.72rem] text-taupe tracking-meta uppercase">
                         {row.label}
                       </span>
-                      <span className="font-display italic text-base tabular-nums text-ink">
-                        {Math.round(row.value)}<span className="text-hint not-italic font-mono text-xs ml-1">g</span>
+                      <span className="font-sans text-base tabular-nums text-ink">
+                        {Math.round(row.value)}<span className="text-hint not-italic font-sans text-xs ml-1">g</span>
                       </span>
                     </div>
                   ))}
@@ -499,19 +514,21 @@ const DietAddPage = () => {
 
             {/* Right: Food list + Save */}
             <div className="space-y-6">
-              <div>
+              <div className="rounded-[28px] bg-paper border border-ink/10 shadow-[0_10px_28px_-10px_rgba(26,20,16,0.12)] transition-all duration-300 hover:shadow-[0_18px_38px_-12px_rgba(26,20,16,0.2)] p-6">
                 <div className="flex items-baseline justify-between mb-3">
-                  <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase">
-                    — Items
+                  <div className="mb-0">
+                    <span className="inline-block bg-bone rounded-[10px] px-3 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-taupe uppercase">
+                      Items
+                    </span>
                   </div>
-                  <div className="font-mono text-[0.5625rem] text-hint tracking-meta uppercase">
+                  <div className="font-sans text-[0.66rem] text-hint tracking-meta uppercase">
                     C · P · F · kcal per 100g × weight
                   </div>
                 </div>
 
                 <div className="border-t border-ink/15">
                   {/* Header row */}
-                  <div className="grid grid-cols-[1fr_auto_4rem_1.5rem] gap-3 items-baseline py-2 border-b border-ink/8 font-mono text-[0.5625rem] text-hint tracking-meta uppercase">
+                  <div className="grid grid-cols-[1fr_auto_4rem_1.5rem] gap-3 items-baseline py-2 border-b border-ink/8 font-sans text-[0.66rem] text-hint tracking-meta uppercase">
                     <span>Name</span>
                     <span className="text-right">C / P / F / kcal</span>
                     <span className="text-right">Weight</span>
@@ -527,7 +544,7 @@ const DietAddPage = () => {
                       >
                         <div className="relative">
                           <input
-                            className="w-full bg-transparent font-display text-[0.9375rem] text-ink placeholder:text-hint outline-none border-b border-transparent focus:border-accent-red/40 transition-colors py-0.5"
+                            className="w-full bg-transparent font-display text-[0.9375rem] text-ink placeholder:text-hint outline-none border-b border-transparent focus:border-lilac-deep/40 transition-colors py-0.5"
                             value={f.food_name}
                             onChange={(e) => {
                               const n = [...foods];
@@ -538,18 +555,19 @@ const DietAddPage = () => {
                             placeholder="음식 이름…"
                           />
                           {dropdownList.index === i && dropdownList.results.length > 0 && (
-                            <div className="absolute left-0 right-0 top-full z-[150] bg-paper border border-ink/20 mt-1 shadow-2xl max-h-72 overflow-y-auto [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none' }}>
+                            <div className="absolute left-0 right-0 top-full z-[150] bg-paper border border-ink/10 rounded-[16px] mt-2 shadow-[0_16px_44px_-12px_rgba(26,20,16,0.22)] max-h-80 overflow-y-auto py-1.5 [&::-webkit-scrollbar]:hidden" style={{ scrollbarWidth: 'none', backgroundColor: '#ffffff' }}>
                               {dropdownList.results.map((item, idx) => (
                                 <button
                                   key={`drop-${idx}`}
                                   type="button"
-                                  className="w-full text-left px-4 py-3 border-b border-ink/8 last:border-b-0 hover:bg-accent-red/[0.06] transition-colors"
+                                  className="w-full text-left mx-1.5 px-3 py-2.5 rounded-[12px] hover:bg-lilac/[0.08] transition-colors"
+                                  style={{ width: 'calc(100% - 0.75rem)' }}
                                   onClick={() => selectFood(i, item)}
                                 >
                                   <div className="font-display text-[0.875rem] text-ink">
                                     {item.food_name}
                                   </div>
-                                  <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mt-0.5 tabular-nums">
+                                  <div className="font-sans text-[0.72rem] text-taupe tracking-meta uppercase mt-0.5 tabular-nums">
                                     {Math.round(item.kcal)} kcal · 100 g
                                   </div>
                                 </button>
@@ -558,21 +576,21 @@ const DietAddPage = () => {
                           )}
                         </div>
 
-                        <div className="flex items-baseline gap-2 font-mono text-[0.6875rem] tabular-nums whitespace-nowrap">
+                        <div className="flex items-baseline gap-2 font-sans text-[0.78rem] tabular-nums whitespace-nowrap">
                           <span className="text-taupe">{Math.round((f.carbs * f.weight) / 100)}</span>
                           <span className="text-hint">·</span>
                           <span className="text-taupe">{Math.round((f.protein * f.weight) / 100)}</span>
                           <span className="text-hint">·</span>
                           <span className="text-taupe">{Math.round((f.fat * f.weight) / 100)}</span>
                           <span className="text-hint">·</span>
-                          <span className="text-accent-red font-display italic text-[0.8125rem]">
+                          <span className="text-ink font-sans text-[0.8125rem]">
                             {Math.round((f.calories * f.weight) / 100)}
                           </span>
                         </div>
 
                         <input
                           type="number"
-                          className="w-16 bg-transparent text-right font-mono text-[0.75rem] tabular-nums text-ink border-b border-ink/15 focus:border-accent-red outline-none py-0.5 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                          className="w-16 bg-transparent text-right font-sans text-[0.75rem] tabular-nums text-ink border-b border-ink/15 focus:border-lilac-deep outline-none py-0.5 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                           style={{ MozAppearance: 'textfield' }}
                           value={f.weight}
                           onChange={(e) => {
@@ -584,7 +602,7 @@ const DietAddPage = () => {
 
                         <button
                           onClick={() => setFoods(foods.filter((it) => it.id !== f.id))}
-                          className="font-mono text-[0.75rem] text-hint hover:text-accent-red transition-colors opacity-60 md:opacity-0 md:group-hover:opacity-100"
+                          className="font-sans text-[0.75rem] text-hint hover:text-ink transition-colors opacity-60 md:opacity-0 md:group-hover:opacity-100"
                           aria-label="삭제"
                         >
                           ✕
@@ -601,7 +619,7 @@ const DietAddPage = () => {
                   onClick={handleSave}
                   aria-invalid={!!saveError}
                   aria-describedby={saveError ? 'save-error' : undefined}
-                  className="w-full font-mono text-[0.6875rem] tracking-label uppercase py-4 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
+                  className="w-full bg-lilac text-ink rounded-[12px] px-5 py-4 font-sans text-[0.78rem] font-medium tracking-label uppercase hover:opacity-90 transition-opacity"
                 >
                   → Complete recording
                 </button>
@@ -609,14 +627,17 @@ const DietAddPage = () => {
               </div>
             </div>
           </div>
+          </Reveal>
 
           {/* Favorites */}
           <section className="border-t border-ink/15 pt-8 mt-10">
             <div className="flex items-baseline justify-between mb-4 flex-wrap gap-2">
-              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
-                — Saved sets
+              <div className="mb-0">
+                <span className="inline-block bg-bone rounded-[10px] px-3 py-1 font-sans text-[0.78rem] font-medium tracking-wide text-taupe uppercase">
+                  Saved sets
+                </span>
               </div>
-              <div className="flex gap-5">
+              <div className="flex gap-3">
                 {[
                   { id: 'meal', label: 'Meal sets' },
                   { id: 'snack', label: 'Snack sets' },
@@ -626,8 +647,10 @@ const DietAddPage = () => {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`font-mono text-[0.6875rem] tracking-meta uppercase transition-colors ${
-                        active ? 'text-accent-red' : 'text-taupe hover:text-ink'
+                      className={`font-sans text-[0.78rem] tracking-meta uppercase transition-colors ${
+                        active
+                          ? 'bg-lilac text-ink rounded-[10px] px-3 py-1.5'
+                          : 'text-taupe hover:text-ink px-3 py-1.5'
                       }`}
                     >
                       {tab.label}
@@ -654,7 +677,7 @@ const DietAddPage = () => {
                         onError={(e) => { e.target.src = '/default_food.png'; }}
                       />
                     </div>
-                    <p className="font-display italic text-[0.8125rem] text-body mt-2 leading-snug line-clamp-2 group-hover:text-ink transition-colors">
+                    <p className="font-sans text-[0.8125rem] text-body mt-2 leading-snug line-clamp-2 group-hover:text-ink transition-colors">
                       {set.items.map((it) => it.food_name).join(', ')}
                     </p>
                   </button>
@@ -662,10 +685,10 @@ const DietAddPage = () => {
               </div>
             ) : (
               <div className="border border-dashed border-ink/15 py-12 text-center">
-                <p className="font-display italic text-sm text-hint">
+                <p className="font-sans text-sm text-hint">
                   저장된 세트가 없습니다.
                 </p>
-                <p className="font-mono text-[0.625rem] text-hint tracking-meta uppercase mt-2">
+                <p className="font-sans text-[0.72rem] text-hint tracking-meta uppercase mt-2">
                   · Save current as set 로 만들기
                 </p>
               </div>
@@ -673,7 +696,7 @@ const DietAddPage = () => {
           </section>
 
           {/* Footer */}
-          <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
+          <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-sans text-[0.78rem] text-hint tracking-meta">
             <span className="uppercase">— FITCOACH —</span>
             <span className="uppercase text-taupe">Entry · {mealType}</span>
           </div>

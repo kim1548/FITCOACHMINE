@@ -22,7 +22,7 @@ const BottomNav = () => {
 
   return (
     <nav
-      className="md:hidden fixed bottom-0 inset-x-0 z-[100] bg-paper border-t border-ink/15 flex justify-around items-stretch"
+      className="md:hidden fixed bottom-0 inset-x-0 z-[100] bg-paper border-t border-ink/10 flex justify-around items-stretch"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       {TABS.map(({ label, to, Icon, match }) => {
@@ -33,12 +33,15 @@ const BottomNav = () => {
             to={to}
             aria-label={label}
             aria-current={active ? "page" : undefined}
-            className={`flex-1 flex flex-col items-center justify-center gap-1 py-2 transition-colors ${
-              active ? "text-accent-red" : "text-taupe hover:text-ink"
+            className={`relative flex-1 flex flex-col items-center justify-center gap-1 py-2 transition-colors ${
+              active ? "text-lilac-deep" : "text-taupe hover:text-ink"
             }`}
           >
+            {active && (
+              <span className="absolute top-0 inset-x-0 mx-auto h-[2px] w-8 bg-lilac-deep" />
+            )}
             <Icon size={20} strokeWidth={active ? 2.2 : 1.7} />
-            <span className="font-mono text-[0.5625rem] tracking-tight leading-none">{label}</span>
+            <span className="font-sans text-[0.5625rem] tracking-tight leading-none">{label}</span>
           </Link>
         );
       })}

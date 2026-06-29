@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { API_BASE_URL } from '../api/config';
+import { API_BASE_URL, PROGRAM_LS_KEY, pushProgramState } from '../api/config';
 import {
   LIFT_NAMES_KO, getProgram, resolveSession, resolveExercises,
   computeSetWeight, computeProgression, initialAnchor,
 } from '../programs';
 import PageSurface from '../components/PageSurface';
+import Reveal from '../components/Reveal';
 import usePageTitle from '../hooks/usePageTitle';
 
 /**
@@ -67,7 +68,8 @@ const ProgramPlayPage = ({ theme }) => {
     setProgramState(state);
     setSessionStartedAt(Date.now());
     if (fromNav) {
-      localStorage.setItem('fiteating.program', JSON.stringify(state));
+      localStorage.setItem(PROGRAM_LS_KEY, JSON.stringify(state));
+      pushProgramState(state);
     }
   }, []);
 
@@ -132,26 +134,26 @@ const ProgramPlayPage = ({ theme }) => {
   if (!program) {
     return (
       <div
-        className="fixed inset-0 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
+        className="fixed inset-0 lg:left-[var(--sb-w,15rem)] transition-[left] duration-300 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
         style={{ scrollbarWidth: 'none' }}
       >
         <PageSurface maxWidth={1200}>
           <div className="w-full px-6 md:px-12 py-8">
             <button
               onClick={() => navigate('/program')}
-              className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase mb-8 transition-colors"
+              className="font-sans text-[0.78rem] text-taupe hover:text-ink tracking-meta uppercase mb-8 transition-colors"
             >
               ← Program library
             </button>
 
             <div className="border-y border-ink/15 py-12 text-center">
-              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
+              <div className="font-sans text-[0.78rem] text-ink tracking-label uppercase mb-3">
                 {programState.selectedId}
               </div>
               <h1 className="font-display text-3xl md:text-4xl text-ink mb-2 tracking-tight">
                 Session not yet authored.
               </h1>
-              <p className="font-display italic text-sm text-taupe">
+              <p className="font-sans text-sm text-taupe">
                 선택한 프로그램은 아직 세션 정의가 없습니다. 라이브러리에서 다른 프로그램을 골라주세요.
               </p>
             </div>
@@ -302,7 +304,8 @@ const ProgramPlayPage = ({ theme }) => {
       stages: newStages,
       lastCompletedWorkout: session.id,
     };
-    localStorage.setItem('fiteating.program', JSON.stringify(updated));
+    localStorage.setItem(PROGRAM_LS_KEY, JSON.stringify(updated));
+    pushProgramState(updated);
 
     navigate('/program/summary', {
       state: {
@@ -317,7 +320,7 @@ const ProgramPlayPage = ({ theme }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
+      className="fixed inset-0 lg:left-[var(--sb-w,15rem)] transition-[left] duration-300 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
       style={{ scrollbarWidth: 'none' }}
     >
       <PageSurface maxWidth={1200}>
@@ -326,33 +329,35 @@ const ProgramPlayPage = ({ theme }) => {
         {/* Back link */}
         <button
           onClick={() => navigate('/program')}
-          className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
+          className="font-sans text-[0.78rem] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
         >
           ← Program library
         </button>
 
         {/* Headline */}
-        <header className="pb-6">
-          <div className="flex items-baseline justify-between mb-3">
-            <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
-              — Session · {session.id}
+        <Reveal className="pb-8">
+          <div className="flex items-baseline justify-between mb-3 flex-wrap gap-2">
+            <div className="mb-1">
+              <span className="inline-block bg-lilac/60 rounded-[10px] px-3 py-1 font-sans text-[0.78rem] font-medium tracking-wide text-ink">
+                Session · {session.id}
+              </span>
             </div>
-            <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
+            <div className="font-sans text-[0.72rem] text-hint tracking-meta uppercase">
               {program.label}{program.variantLabel ? ` · ${program.variantLabel}` : ''}
             </div>
           </div>
 
           <div className="flex items-end justify-between gap-4 flex-wrap">
-            <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
+            <h1 className="font-display text-5xl md:text-6xl leading-[1.0] tracking-tight font-normal">
               {session.label}
             </h1>
             <button
               type="button"
               onClick={sessionPausedAt ? resumeSession : pauseSession}
-              className={`font-mono text-base tabular-nums tracking-meta px-3 py-1.5 border transition-colors ${
+              className={`font-sans text-base tabular-nums tracking-meta px-3 py-1.5 border transition-colors ${
                 sessionPausedAt
                   ? 'border-ink/15 text-taupe hover:text-ink'
-                  : 'border-accent-gold/40 text-ink'
+                  : 'border-lilac-deep/40 text-ink'
               }`}
               aria-label={sessionPausedAt ? '운동 재개' : '운동 일시정지'}
             >
@@ -360,40 +365,43 @@ const ProgramPlayPage = ({ theme }) => {
             </button>
           </div>
 
-          <p className="font-display italic text-sm text-taupe mt-3 leading-relaxed">
-            {program.desc} <span className="text-ink not-italic font-mono text-xs tracking-meta uppercase">
+          <p className="font-sans text-sm text-taupe mt-3 leading-relaxed">
+            {program.desc} <span className="text-ink not-italic font-sans text-xs tracking-meta uppercase">
               Next — {nextSession.label}
             </span>
           </p>
-        </header>
+        </Reveal>
 
         {/* Progress */}
-        <div className="border-t border-ink/15 pt-4 pb-2">
+        <Reveal delay={80} className="border-t border-ink/15 pt-4 pb-2">
           <div className="flex items-baseline justify-between mb-2">
-            <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
-              Progress
+            <div className="mb-0">
+              <span className="inline-block bg-bone rounded-[10px] px-3 py-1 font-sans text-[0.72rem] tracking-meta uppercase text-taupe">
+                — Progress
+              </span>
             </div>
             <button
               onClick={completeAllAutoSets}
-              className="font-mono text-[0.6875rem] text-accent-gold hover:text-ink tracking-meta uppercase transition-colors"
+              className="font-sans text-[0.78rem] text-lilac-deep hover:text-ink tracking-meta uppercase transition-colors"
             >
               → Complete autos
             </button>
           </div>
           <div className="h-0.5 w-full bg-ink/10 overflow-hidden">
             <div
-              className="h-full bg-accent-red transition-all duration-300"
+              className="h-full bg-lilac transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
           </div>
-          <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase mt-2 tabular-nums">
+          <div className="font-sans text-[0.72rem] text-hint tracking-meta uppercase mt-2 tabular-nums">
             {doneSets} / {totalSets} sets · {progress}%
           </div>
-        </div>
+        </Reveal>
 
         {/* Exercises */}
-        <section className="mt-6 border-t border-ink/15">
-          {exercises.map(ex => {
+        <Reveal delay={160} className="mt-6 block">
+        <section className="border-t border-ink/15">
+          {exercises.map((ex, exIdx) => {
             const anchor = anchorOf(ex);
             const setWeights = ex.sets.map(spec => computeSetWeight(anchor, spec.pct));
             const topWeight = Math.max(...setWeights);
@@ -403,7 +411,12 @@ const ProgramPlayPage = ({ theme }) => {
               ? `${ex.sets.length} × ${first.reps} · ${topWeight} kg`
               : `${ex.sets.length} sets · max ${topWeight} kg`;
             return (
-              <div key={ex.anchorKey} className="py-6 border-b border-ink/8">
+              <div
+                key={ex.anchorKey}
+                className={`mt-6 p-6 rounded-[28px] border border-ink/10 shadow-[0_10px_28px_-10px_rgba(26,20,16,0.12)] transition-all duration-300 hover:shadow-[0_18px_38px_-12px_rgba(26,20,16,0.2)] ${
+                  exIdx === 0 ? 'bg-gradient-to-br from-lilac/40 to-paper' : 'bg-paper'
+                }`}
+              >
                 {/* Exercise header */}
                 <div className="flex items-baseline justify-between gap-3 mb-4 flex-wrap">
                   <div className="flex items-baseline gap-3 min-w-0">
@@ -411,9 +424,9 @@ const ProgramPlayPage = ({ theme }) => {
                       {LIFT_NAMES_KO[ex.liftId]}
                     </h2>
                     {ex.role && (
-                      <span className={`font-mono text-[0.5625rem] tracking-label uppercase border px-1.5 py-0.5 flex-shrink-0 ${
+                      <span className={`font-sans text-[0.66rem] tracking-label uppercase border px-1.5 py-0.5 flex-shrink-0 ${
                         ex.role === 'T1'
-                          ? 'text-accent-gold border-accent-gold/40'
+                          ? 'text-lilac-deep border-lilac-deep/40'
                           : 'text-taupe border-ink/15'
                       }`}>
                         {ex.role}
@@ -421,7 +434,7 @@ const ProgramPlayPage = ({ theme }) => {
                     )}
                   </div>
                   <div className="flex items-baseline gap-4 flex-shrink-0">
-                    <span className="font-mono text-[0.6875rem] text-taupe tracking-meta uppercase tabular-nums whitespace-nowrap">
+                    <span className="font-sans text-[0.78rem] text-taupe tracking-meta uppercase tabular-nums whitespace-nowrap">
                       {schemeText}
                     </span>
                     <button
@@ -429,7 +442,7 @@ const ProgramPlayPage = ({ theme }) => {
                       onClick={() =>
                         window.open(`/formcheck/${encodeURIComponent(LIFT_NAMES_KO[ex.liftId])}`, '_blank', 'noopener')
                       }
-                      className="font-mono text-[0.625rem] text-accent-gold hover:text-ink tracking-meta uppercase transition-colors"
+                      className="font-sans text-[0.72rem] text-lilac-deep hover:text-ink tracking-meta uppercase transition-colors"
                       title="자세 분석 (새 탭)"
                     >
                       → Form
@@ -438,7 +451,7 @@ const ProgramPlayPage = ({ theme }) => {
                 </div>
 
                 {/* Set rows */}
-                <div className="border border-ink/15">
+                <div className="rounded-[16px] border border-ink/10 overflow-hidden bg-paper/70">
                   {ex.sets.map((spec, i, arr) => {
                     const key = `${ex.anchorKey}-${i}`;
                     const data = setData[key] || { reps: spec.reps, completed: false };
@@ -457,20 +470,20 @@ const ProgramPlayPage = ({ theme }) => {
                     let repsTextCls = 'text-ink';
 
                     if (isDone && isShort) {
-                      rowBg = 'bg-accent-red/[0.06]';
-                      circleCls = 'border-accent-red text-accent-red';
-                      checkBtnCls = 'border-accent-red bg-accent-red text-ink';
-                      repsTextCls = 'text-accent-red';
+                      rowBg = 'bg-lilac/[0.06]';
+                      circleCls = 'border-lilac-deep text-ink';
+                      checkBtnCls = 'border-lilac-deep bg-lilac text-ink';
+                      repsTextCls = 'text-ink';
                     } else if (isHighlight) {
-                      rowBg = 'bg-accent-gold/[0.06]';
-                      circleCls = 'border-accent-gold text-accent-gold';
-                      checkBtnCls = 'border-accent-gold bg-accent-gold text-paper';
-                      repsTextCls = 'text-accent-gold';
+                      rowBg = 'bg-lilac/[0.06]';
+                      circleCls = 'border-lilac-deep text-lilac-deep';
+                      checkBtnCls = 'border-lilac-deep bg-lilac text-paper';
+                      repsTextCls = 'text-lilac-deep';
                     } else if (isDone) {
-                      rowBg = 'bg-accent-red/[0.04]';
-                      circleCls = 'border-accent-red text-accent-red';
-                      checkBtnCls = 'border-accent-red bg-accent-red text-ink';
-                      repsTextCls = 'text-accent-red';
+                      rowBg = 'bg-lilac/[0.04]';
+                      circleCls = 'border-lilac-deep text-ink';
+                      checkBtnCls = 'border-lilac-deep bg-lilac text-ink';
+                      repsTextCls = 'text-ink';
                     }
 
                     return (
@@ -481,15 +494,15 @@ const ProgramPlayPage = ({ theme }) => {
                         } transition-colors`}
                       >
                         {/* Set number */}
-                        <span className={`w-6 h-6 flex items-center justify-center border font-mono text-[0.625rem] tabular-nums flex-shrink-0 ${circleCls}`}>
+                        <span className={`w-6 h-6 flex items-center justify-center border font-sans text-[0.72rem] tabular-nums flex-shrink-0 ${circleCls}`}>
                           {i + 1}
                         </span>
 
                         {/* Weight × Reps */}
                         <div className="flex-1 flex items-baseline gap-2 text-sm min-w-0 flex-wrap">
                           <span className="font-display text-lg text-ink tabular-nums">{w}</span>
-                          <span className="font-mono text-[0.625rem] text-taupe tracking-meta">kg</span>
-                          <span className="font-mono text-[0.6875rem] text-hint mx-1">×</span>
+                          <span className="font-sans text-[0.72rem] text-taupe tracking-meta">kg</span>
+                          <span className="font-sans text-[0.78rem] text-hint mx-1">×</span>
                           <input
                             type="number"
                             min="0"
@@ -500,24 +513,24 @@ const ProgramPlayPage = ({ theme }) => {
                               updateReps(ex.anchorKey, i, parseInt(e.target.value, 10) || 0, spec.reps)
                             }
                             style={{ MozAppearance: 'textfield' }}
-                            className={`w-12 px-1 py-0.5 text-center font-display text-base tabular-nums bg-paper border border-ink/15 focus:border-accent-red outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${repsTextCls}`}
+                            className={`w-12 px-1 py-0.5 text-center font-display text-base tabular-nums bg-paper border border-ink/15 focus:border-lilac-deep outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none ${repsTextCls}`}
                           />
-                          <span className="font-mono text-[0.625rem] text-taupe tracking-meta">reps</span>
+                          <span className="font-sans text-[0.72rem] text-taupe tracking-meta">reps</span>
 
                           {isAmrap && (
-                            <span className="font-mono text-[0.5625rem] text-accent-gold tracking-meta uppercase ml-1">
+                            <span className="font-sans text-[0.66rem] text-lilac-deep tracking-meta uppercase ml-1">
                               · AMRAP
                             </span>
                           )}
                           {isTop && (
-                            <span className="font-mono text-[0.5625rem] text-accent-gold tracking-meta uppercase ml-1">
+                            <span className="font-sans text-[0.66rem] text-lilac-deep tracking-meta uppercase ml-1">
                               · PR
                             </span>
                           )}
                         </div>
 
                         {/* Target */}
-                        <span className="font-mono text-[0.5625rem] text-hint tracking-meta uppercase whitespace-nowrap">
+                        <span className="font-sans text-[0.66rem] text-hint tracking-meta uppercase whitespace-nowrap">
                           target {spec.reps}{allowsExtra ? '+' : ''}
                         </span>
 
@@ -525,7 +538,7 @@ const ProgramPlayPage = ({ theme }) => {
                         <button
                           onClick={() => toggleSet(ex.anchorKey, i, spec.reps, ex.liftId)}
                           aria-label={isDone ? '완료 취소' : '완료'}
-                          className={`w-7 h-7 flex items-center justify-center border font-mono text-sm flex-shrink-0 transition-colors ${checkBtnCls}`}
+                          className={`w-7 h-7 flex items-center justify-center border font-sans text-sm flex-shrink-0 transition-colors ${checkBtnCls}`}
                         >
                           {isDone ? '✓' : ''}
                         </button>
@@ -537,48 +550,41 @@ const ProgramPlayPage = ({ theme }) => {
             );
           })}
         </section>
+        </Reveal>
 
         {/* Rest timer */}
         {rest && (
-          <div className={`mt-8 py-5 px-5 border-y ${
-            restRemaining > 0
-              ? 'border-accent-gold/30 bg-accent-gold/[0.04]'
-              : 'border-accent-red/40 bg-accent-red/[0.06]'
-          }`}>
+          <div className="mt-8 bg-sky rounded-[20px] p-5 shadow-[0_10px_24px_-10px_rgba(60,140,190,0.5)]">
             <div className="flex items-baseline justify-between mb-4">
-              <div className={`font-mono text-[0.625rem] tracking-label uppercase ${
-                restRemaining > 0 ? 'text-accent-gold' : 'text-accent-red'
-              }`}>
+              <div className="font-sans text-[0.72rem] tracking-label uppercase text-ink/65">
                 — Rest · {LIFT_NAMES_KO[rest.liftId] || rest.liftId}
               </div>
-              <div className={`font-display text-4xl tabular-nums leading-none ${
-                restRemaining <= 0 ? 'text-accent-red' : 'text-ink'
-              }`}>
+              <div className="font-display text-5xl tabular-nums leading-none text-ink">
                 {formatRest(restRemaining)}
               </div>
             </div>
-            <div className="flex gap-5 flex-wrap font-mono text-[0.6875rem] tracking-meta uppercase">
+            <div className="flex gap-5 flex-wrap font-sans text-[0.78rem] tracking-meta uppercase">
               <button
                 onClick={() => adjustRest(-30)}
-                className="text-taupe hover:text-ink transition-colors"
+                className="text-ink/65 hover:text-ink transition-colors"
               >
                 − 30s
               </button>
               <button
                 onClick={() => adjustRest(30)}
-                className="text-taupe hover:text-ink transition-colors"
+                className="text-ink/65 hover:text-ink transition-colors"
               >
                 + 30s
               </button>
               <button
                 onClick={rest.paused ? resumeRest : pauseRest}
-                className="text-ink hover:text-accent-gold transition-colors"
+                className="text-ink hover:opacity-70 transition-opacity"
               >
                 {rest.paused ? '▶ Resume' : '⏸ Pause'}
               </button>
               <button
                 onClick={skipRest}
-                className="ml-auto text-taupe hover:text-accent-red transition-colors"
+                className="ml-auto text-ink/65 hover:text-ink transition-colors"
               >
                 → Skip
               </button>
@@ -589,13 +595,13 @@ const ProgramPlayPage = ({ theme }) => {
         {/* Finish */}
         <button
           onClick={handleFinish}
-          className="w-full mt-8 py-4 bg-accent-red text-ink font-mono text-sm tracking-label uppercase hover:bg-accent-red/90 transition-colors"
+          className="w-full mt-8 bg-lilac text-ink rounded-[12px] px-5 py-4 font-sans text-sm tracking-label uppercase hover:opacity-90 transition-opacity"
         >
           → Complete session
         </button>
 
         {/* Footer */}
-        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
+        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-sans text-[0.78rem] text-hint tracking-meta">
           <span className="uppercase">— FITCOACH —</span>
           <span className="uppercase text-taupe">
             {program.label} · {session.label}

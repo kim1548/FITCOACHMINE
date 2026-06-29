@@ -138,7 +138,7 @@ def recommend(
     current_user: User = Depends(get_current_user),
 ):
     """휴리스틱 엔진으로 추천 산출 → 캐시 저장. 추천 이유(AI)는 비동기로 채운다."""
-    payload = engine.compute_payload(db, current_user)
+    payload = engine.compute_payload(db, current_user, top_n=12)
     engine.persist(db, current_user, payload["recommendations"])
     # 각 추천에 Gemma 코멘트를 비동기 요청 (Ollama 없어도 본 응답은 정상)
     for r in payload["recommendations"]:
@@ -160,8 +160,9 @@ def list_recommendations(
         {"code": c, "name": NUTRIENT_NAMES[c], "score": scores[c], "deficient": c in deficient}
         for c in CORE_NUTRIENTS
     ]
+    my_coverage = engine.compute_my_coverage(db, current_user)
     if not deficient:
-        return {"recommendations": [], "radar": radar}
+        return {"recommendations": [], "radar": radar, "my_coverage": my_coverage}
 
     recos = (
         db.query(SupplementRecommendation)
@@ -202,7 +203,7 @@ def list_recommendations(
             "ai_generated_at": r.ai_generated_at.isoformat() if r.ai_generated_at else None,
         })
 
-    return {"recommendations": items, "radar": radar}
+    return {"recommendations": items, "radar": radar, "my_coverage": my_coverage}
 
 
 @router.post("/recommendations/{reco_id}/regenerate")

@@ -6,6 +6,7 @@ import PageSurface from '../components/PageSurface';
 import { CAMERA_GUIDE } from '../constants/exercise';
 import { API_BASE_URL } from '../api/config';
 import usePageTitle from '../hooks/usePageTitle';
+import Reveal from '../components/Reveal';
 
 /**
  * /formcheck/:exId — AI 자세 분석 세션 (Editorial Magazine 톤).
@@ -111,7 +112,7 @@ const RoutinePlayPage = () => {
 
   return (
     <div
-      className="fixed inset-0 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
+      className="fixed inset-0 lg:left-[var(--sb-w,15rem)] transition-[left] duration-300 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
       style={{ scrollbarWidth: 'none' }}
     >
       <PageSurface maxWidth={1200}>
@@ -120,7 +121,7 @@ const RoutinePlayPage = () => {
           {/* Back link */}
           <button
             onClick={() => navigate('/formcheck')}
-            className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
+            className="font-sans text-[0.78rem] text-taupe hover:text-ink tracking-meta uppercase mb-6 transition-colors"
           >
             ← Form Check library
           </button>
@@ -128,50 +129,58 @@ const RoutinePlayPage = () => {
           {!finalData ? (
             <>
               {/* Header */}
-              <header className="pb-6">
-                <div className="flex items-baseline justify-between mb-3">
-                  <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
-                    — Session · Form Check
+              <Reveal className="pb-8">
+                <header>
+                  <div className="flex items-baseline justify-between mb-3">
+                    <div className="mb-3">
+                      <span className="inline-block bg-lilac/60 rounded-[10px] px-3 py-1 font-sans text-[0.78rem] font-medium tracking-wide text-ink">
+                        Session · Form Check
+                      </span>
+                    </div>
+                    <div className="font-sans text-[0.72rem] text-hint tracking-meta uppercase">
+                      {isAnalyzing ? 'Analyzing…' : 'Awaiting upload'}
+                    </div>
                   </div>
-                  <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
-                    {isAnalyzing ? 'Analyzing…' : 'Awaiting upload'}
-                  </div>
-                </div>
 
-                <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
-                  {exId}, <em className="italic text-accent-gold">analyzed.</em>
-                </h1>
-                {guideText && (
-                  <p className="font-display italic text-sm text-taupe mt-3 leading-relaxed">
-                    {guideText}
-                  </p>
-                )}
-              </header>
+                  <h1 className="font-display text-5xl md:text-6xl leading-[1.0] tracking-tight font-normal">
+                    {exId}, <em className="italic text-lilac-deep">analyzed.</em>
+                  </h1>
+                  {guideText && (
+                    <p className="font-sans text-sm text-taupe mt-3 leading-relaxed">
+                      {guideText}
+                    </p>
+                  )}
+                </header>
+              </Reveal>
 
               {/* Capture frame */}
-              <div className="border-t border-ink/15 pt-4">
-                <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-2">
-                  Capture
+              <Reveal delay={80} className="border-t border-ink/15 pt-4">
+                <div className="mb-2">
+                  <span className="inline-block bg-bone rounded-[10px] px-3 py-1 font-sans text-[0.72rem] tracking-meta uppercase text-taupe">
+                    Capture
+                  </span>
                 </div>
 
                 {isAnalyzing ? (
                   /* Analyzing overlay — 실시간 진행률 % */
-                  <div className="relative w-full aspect-video bg-black border border-ink/15 overflow-hidden flex items-center justify-center">
+                  <div className="relative w-full max-w-[40rem] mx-auto rounded-[24px] bg-bone border border-ink/10 overflow-hidden flex items-center justify-center min-h-[20rem] py-10">
                     <div className="text-center px-6 w-full max-w-[27.5rem]">
-                      <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-5">
-                        — Analyzing form
+                      <div className="mb-5">
+                        <span className="inline-block bg-lilac/60 rounded-[10px] px-3 py-1 font-sans text-[0.72rem] font-medium text-ink tracking-wide uppercase">
+                          Analyzing form
+                        </span>
                       </div>
                       <div className="font-display text-7xl md:text-8xl text-ink tabular-nums leading-none mb-6">
                         {Math.round(progress)}
-                        <span className="font-display italic text-2xl text-taupe align-top ml-1">%</span>
+                        <span className="font-sans text-2xl text-taupe align-top ml-1">%</span>
                       </div>
                       <div className="h-0.5 w-full bg-ink/10 overflow-hidden">
                         <div
-                          className="h-full bg-accent-red transition-all duration-300"
+                          className="h-full bg-lilac transition-all duration-300"
                           style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
                         />
                       </div>
-                      <p className="font-display italic text-sm text-taupe leading-relaxed mt-6">
+                      <p className="font-sans text-sm text-taupe leading-relaxed mt-6">
                         AI가 영상 속 자세를 프레임별로 분석하고 있습니다.<br />
                         분석이 끝나면 진단 리포트로 이동합니다.
                       </p>
@@ -187,15 +196,15 @@ const RoutinePlayPage = () => {
                   />
                 ) : (
                   /* 가이드 촬영 / 영상 올리기 — 대사 제거, 버튼만 */
-                  <div className="relative w-full aspect-video bg-black border border-ink/15 overflow-hidden flex items-center justify-center">
+                  <div className="relative w-full max-w-[40rem] mx-auto rounded-[24px] bg-bone border border-ink/10 overflow-hidden flex items-center justify-center min-h-[20rem] py-10">
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-3 px-6">
                       <button
                         onClick={() => setMode('record')}
-                        className="font-mono text-[0.6875rem] tracking-label uppercase px-6 py-3 border border-accent-red text-ink bg-accent-red hover:bg-accent-red/90 transition-colors"
+                        className="bg-lilac text-ink rounded-[12px] px-5 py-3 font-sans text-[0.78rem] font-medium hover:opacity-90 transition-opacity"
                       >
                         ● 가이드 촬영
                       </button>
-                      <label className="font-mono text-[0.6875rem] tracking-label uppercase px-6 py-3 border border-ink/25 text-taupe hover:text-ink hover:border-ink/45 transition-colors cursor-pointer">
+                      <label className="font-sans text-[0.78rem] font-medium tracking-wide px-6 py-3 rounded-[12px] border border-ink/15 text-taupe hover:text-ink hover:bg-bone transition-colors cursor-pointer">
                         → 영상 올리기
                         <input type="file" className="hidden" accept="video/*" onChange={handleFileSelected} />
                       </label>
@@ -203,20 +212,20 @@ const RoutinePlayPage = () => {
                   </div>
                 )}
 
-                <div className="flex gap-5 mt-3 font-mono text-[0.5625rem] text-hint tracking-meta uppercase">
+                <div className="flex gap-5 mt-3 font-sans text-[0.66rem] text-hint tracking-meta uppercase">
                   <span className="inline-flex items-center gap-1.5">
-                    <span className="w-[0.3125rem] h-[0.3125rem] rounded-full bg-accent-red" />
+                    <span className="w-[0.3125rem] h-[0.3125rem] rounded-full bg-lilac" />
                     Server-side AI analysis
                   </span>
                   <span className="inline-flex items-center gap-1.5">
-                    <span className="w-[0.3125rem] h-[0.3125rem] rounded-full bg-accent-gold" />
+                    <span className="w-[0.3125rem] h-[0.3125rem] rounded-full bg-lilac" />
                     mp4 · mov · avi
                   </span>
                 </div>
-              </div>
+              </Reveal>
 
               {/* Footer */}
-              <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
+              <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-sans text-[0.78rem] text-hint tracking-meta">
                 <span className="uppercase">— FITCOACH —</span>
                 <span className="uppercase text-taupe">Form Check · {exId}</span>
               </div>

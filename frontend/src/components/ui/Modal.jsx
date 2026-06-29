@@ -50,45 +50,43 @@ const Modal = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm bg-paper text-ink border border-ink/20 shadow-2xl animate-in zoom-in-95 duration-150"
+        className="w-full max-w-sm bg-paper text-ink rounded-[24px] shadow-[0_24px_60px_-20px_rgba(26,20,16,0.45)] overflow-hidden animate-in zoom-in-95 duration-150"
       >
         {/* Header */}
-        <header className="px-6 pt-5 pb-4 border-b border-ink/12">
-          <div className={`font-mono text-[0.625rem] tracking-label uppercase mb-2 ${destructive ? 'text-accent-red' : 'text-accent-gold'}`}>
-            — {tone}
+        <header className="px-6 pt-6 pb-2">
+          <div className="font-sans text-[0.7rem] font-medium tracking-wide uppercase text-taupe mb-2">
+            {tone}
           </div>
-          <h3 className="font-display text-xl text-ink leading-snug m-0 font-normal tracking-tight whitespace-pre-line">
+          <h3 className="font-display text-2xl text-ink leading-snug m-0 font-normal tracking-tight whitespace-pre-line">
             {title}
           </h3>
         </header>
 
         {/* Description */}
         {description && (
-          <div className="px-6 py-4 border-b border-ink/12">
-            <p className="font-display italic text-sm text-body leading-relaxed m-0 whitespace-pre-line">
+          <div className="px-6 pb-2">
+            <p className="font-sans text-sm text-body leading-relaxed m-0 whitespace-pre-line">
               {description}
             </p>
           </div>
         )}
 
         {/* Footer */}
-        <footer className="flex">
+        <footer className="flex gap-3 px-6 py-5">
           <button
             onClick={onCancel}
-            className="flex-1 py-3.5 font-mono text-[0.6875rem] tracking-label uppercase text-taupe hover:text-ink hover:bg-ink/5 border-r border-ink/12 transition-colors"
+            className="flex-1 py-3 rounded-[12px] font-sans text-[0.85rem] font-medium text-taupe hover:text-ink hover:bg-ink/[0.04] transition-colors"
           >
-            × {cancelLabel}
+            {cancelLabel}
           </button>
           <button
             onClick={onConfirm}
             autoFocus
-            className={`flex-1 py-3.5 font-mono text-[0.6875rem] tracking-label uppercase transition-colors ${
-              destructive
-                ? 'text-accent-red hover:bg-accent-red hover:text-ink'
-                : 'text-ink hover:bg-ink hover:text-paper'
+            className={`flex-1 py-3 rounded-[12px] font-sans text-[0.85rem] font-medium transition-opacity hover:opacity-90 ${
+              destructive ? 'bg-[#c43c2f] text-paper' : 'bg-lilac text-ink'
             }`}
           >
-            → {confirmLabel}
+            {confirmLabel}
           </button>
         </footer>
       </div>

@@ -9,19 +9,8 @@ import FieldError from '../components/ui/FieldError';
 import usePageTitle from '../hooks/usePageTitle';
 
 /**
- * /login — Editorial Magazine 톤 (standalone, TopNavbar 없음).
+ * /login — Gleap 라이트 톤 (standalone, TopNavbar 없음).
  */
-
-const MONTH_LABELS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
-
-const dayOfYear = () => {
-  const d = new Date();
-  const start = new Date(d.getFullYear(), 0, 0);
-  return Math.floor((d - start) / 86400000);
-};
 
 const Login = () => {
   usePageTitle('Sign in · FitCoach');
@@ -33,10 +22,6 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
-
-  const issueNo = String(dayOfYear()).padStart(3, '0');
-  const now = new Date();
-  const monthLabel = MONTH_LABELS[now.getMonth()];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -68,30 +53,35 @@ const Login = () => {
 
   return (
     <div
-      className="fixed inset-0 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden"
-      style={{ scrollbarWidth: 'none' }}
+      className="fixed inset-0 bg-surface overflow-y-auto [&::-webkit-scrollbar]:hidden flex items-center justify-center p-4"
+      style={{
+        scrollbarWidth: 'none',
+        backgroundImage:
+          'radial-gradient(48rem 38rem at 0% 0%, rgba(241,204,255,0.5), rgba(241,204,255,0) 55%), radial-gradient(44rem 36rem at 100% 100%, rgba(145,224,255,0.45), rgba(145,224,255,0) 55%)',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'scroll',
+      }}
     >
-      <div className="w-full max-w-[30rem] mx-auto min-h-full flex flex-col px-6 md:px-8 py-10">
+      <div className="w-full max-w-[27rem] my-auto bg-paper rounded-[28px] border border-ink/8 shadow-[0_28px_70px_-28px_rgba(26,20,16,0.28)] p-8 md:p-10 font-sans animate-in fade-in zoom-in-95 duration-300">
 
-        {/* Masthead */}
-        <header className="flex items-baseline justify-between border-b border-ink/15 pb-4 mb-10">
-          <Link to="/login" className="font-display italic text-lg text-ink tracking-tight">
-            FITCOACH
-          </Link>
-          <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
-            No. {issueNo} — {monthLabel}
-          </span>
-        </header>
+        {/* Logo */}
+        <Link to="/login" className="flex items-center gap-2 mb-8">
+          <span
+            className="w-[22px] h-[22px] rounded-full"
+            style={{ background: 'radial-gradient(circle at 50% 38%, var(--color-lilac), var(--color-lilac-deep))' }}
+          />
+          <span className="font-semibold text-[1.05rem] tracking-tight text-ink">FitCoach</span>
+        </Link>
 
         {/* Headline */}
         <div className="mb-8">
-          <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
-            — Sign in · Welcome back
-          </div>
+          <span className="inline-block bg-lilac/60 rounded-[10px] px-3 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-ink mb-3">
+            Sign in
+          </span>
           <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
-            Welcome <em className="italic text-accent-gold">back.</em>
+            Welcome <em className="italic text-lilac-deep">back.</em>
           </h1>
-          <p className="font-display italic text-sm text-taupe mt-3 leading-relaxed">
+          <p className="font-sans text-[0.95rem] text-taupe mt-3 leading-relaxed">
             오늘의 기록을 이어가려면 먼저 자리에 앉아주세요.
           </p>
         </div>
@@ -99,7 +89,7 @@ const Login = () => {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5 mb-8">
           <div>
-            <label className="block font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1.5">
+            <label className="block font-sans text-[0.72rem] font-medium text-taupe tracking-wide uppercase mb-1.5">
               Username
             </label>
             <input
@@ -109,12 +99,12 @@ const Login = () => {
               autoComplete="username"
               aria-invalid={!!credError}
               aria-describedby={credError ? 'login-err' : undefined}
-              className="w-full px-3 py-2.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[0.9375rem] text-ink placeholder:text-hint placeholder:italic transition-colors"
+              className="w-full px-4 py-3 bg-bone rounded-[12px] border border-ink/10 focus:border-lilac-deep focus:bg-paper outline-none font-sans text-[0.95rem] text-ink placeholder:text-hint transition-colors"
             />
           </div>
 
           <div>
-            <label className="block font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1.5">
+            <label className="block font-sans text-[0.72rem] font-medium text-taupe tracking-wide uppercase mb-1.5">
               Password
             </label>
             <input
@@ -125,7 +115,7 @@ const Login = () => {
               autoComplete="current-password"
               aria-invalid={!!credError}
               aria-describedby={credError ? 'login-err' : undefined}
-              className="w-full px-3 py-2.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[0.9375rem] text-ink placeholder:text-hint placeholder:italic transition-colors"
+              className="w-full px-4 py-3 bg-bone rounded-[12px] border border-ink/10 focus:border-lilac-deep focus:bg-paper outline-none font-sans text-[0.95rem] text-ink placeholder:text-hint transition-colors"
             />
             <FieldError id="login-err">{credError}</FieldError>
           </div>
@@ -133,30 +123,24 @@ const Login = () => {
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-3.5 mt-2 font-mono text-[0.6875rem] tracking-label uppercase bg-accent-red text-ink hover:bg-accent-red/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+            className="w-full py-3.5 mt-1 rounded-[12px] font-sans text-[0.85rem] font-medium bg-lilac text-ink hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center justify-center gap-2"
           >
-            {submitting && <Loader2 size={12} className="animate-spin" />}
-            {submitting ? 'Signing in…' : '→ Sign in'}
+            {submitting && <Loader2 size={14} className="animate-spin" />}
+            {submitting ? '로그인 중…' : '로그인'}
           </button>
         </form>
 
         {/* Bottom — register */}
-        <div className="border-t border-ink/15 pt-6 text-center">
-          <p className="font-display italic text-sm text-taupe mb-3">
+        <div className="mt-7 pt-6 border-t border-ink/8 text-center">
+          <p className="font-sans text-[0.9rem] text-taupe mb-3">
             아직 계정이 없으신가요?
           </p>
           <Link
             to="/signup"
-            className="inline-block font-mono text-[0.6875rem] tracking-label uppercase px-5 py-3 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
+            className="inline-block rounded-[12px] px-5 py-2.5 font-sans text-[0.85rem] font-medium text-ink border border-ink/15 hover:bg-ink/[0.04] transition-colors"
           >
-            → Register an account
+            회원가입
           </Link>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-auto pt-10 border-t border-ink/15 mt-10 flex justify-between items-center font-mono text-[0.625rem] text-hint tracking-meta uppercase">
-          <span>— FITCOACH —</span>
-          <span className="text-taupe">Sign in</span>
         </div>
       </div>
     </div>

@@ -3,7 +3,9 @@ import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { programInitialState, getProgram, resolveSession } from '../programs';
+import { PROGRAM_LS_KEY, fetchProgramState, pushProgramState } from '../api/config';
 import PageSurface from '../components/PageSurface';
+import Reveal from '../components/Reveal';
 import { useConfirm } from '../components/ui/ConfirmProvider';
 import usePageTitle from '../hooks/usePageTitle';
 
@@ -92,7 +94,7 @@ const Poster = ({ programId, size = 'sm' }) => {
   const { cls, fs } = POSTER_DIMS[size] || POSTER_DIMS.sm;
   const [broken, setBroken] = useState(false);
   return (
-    <div className={`${cls} photo-frame flex-shrink-0 border border-ink/15 bg-paper-soft`}>
+    <div className={`${cls} photo-frame flex-shrink-0 rounded-[14px] bg-paper-soft shadow-[0_10px_24px_-8px_rgba(120,80,160,0.30)] ring-1 ring-lilac-deep/30`}>
       {p?.img && !broken ? (
         <img
           src={p.img}
@@ -105,7 +107,7 @@ const Poster = ({ programId, size = 'sm' }) => {
           <span className="font-poster text-ink uppercase tracking-tight leading-[0.92]" style={{ fontSize: fs }}>
             {p?.name || ''}
           </span>
-          <span className="font-mono text-[0.5rem] text-ink/45 tracking-meta uppercase mt-3">
+          <span className="font-sans text-[0.5rem] text-ink/45 tracking-meta uppercase mt-3">
             Vol. {v?.vol || '—'}
           </span>
         </div>
@@ -128,11 +130,25 @@ const RoutinePlanPage = ({ theme }) => {
   const [programVariant, setProgramVariant] = useState(null);
   const [existingProgram, setExistingProgram] = useState(null);
 
+  // 진입 시 진행 상태 복원. 로그인 상태면 서버를 정본으로 보고 로컬을 맞추고,
+  // 서버에 없고 로컬만 있으면(기존 로컬 전용 사용자) 서버로 1회 승격한다 → 기기 간 이어하기.
   useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('fiteating.program') || 'null');
-      if (saved?.selectedId) setExistingProgram(saved);
-    } catch {}
+    let cancelled = false;
+    let local = null;
+    try { local = JSON.parse(localStorage.getItem(PROGRAM_LS_KEY) || 'null'); } catch {}
+    if (local?.selectedId) setExistingProgram(local);  // 우선 로컬로 즉시 표시
+
+    (async () => {
+      const server = await fetchProgramState();
+      if (cancelled) return;
+      if (server?.selectedId) {
+        localStorage.setItem(PROGRAM_LS_KEY, JSON.stringify(server));
+        setExistingProgram(server);
+      } else if (local?.selectedId) {
+        pushProgramState(local);
+      }
+    })();
+    return () => { cancelled = true; };
   }, []);
 
   const handleResume = () => {
@@ -148,7 +164,8 @@ const RoutinePlanPage = ({ theme }) => {
       destructive: true,
     });
     if (!ok) return;
-    localStorage.removeItem('fiteating.program');
+    localStorage.removeItem(PROGRAM_LS_KEY);
+    pushProgramState({});  // 서버 상태도 비워 다른 기기와 동기화
     setExistingProgram(null);
   };
 
@@ -177,15 +194,29 @@ const RoutinePlanPage = ({ theme }) => {
     }
 
     const init = programInitialState(selectedId, weights);
-    const workingWeights = isSameProgram && existing?.workingWeights
-      ? { ...init.workingWeights, ...existing.workingWeights }
-      : init.workingWeights;
-    const consecutiveFails = isSameProgram && existing?.consecutiveFails
-      ? { ...init.consecutiveFails, ...existing.consecutiveFails }
-      : init.consecutiveFails;
-    const stages = isSameProgram && existing?.stages
-      ? { ...init.stages, ...existing.stages }
-      : init.stages;
+    // 같은 프로그램을 다시 시작할 때, 사용자가 setup 에서 1RM 을 바꾼 운동은
+    // 새 입력값 기준(init)으로 재설정하고, 바꾸지 않은 운동만 이전 진행 상태
+    // (working weight·연속 실패·단계)를 그대로 이어간다.
+    // anchorKey 는 'squat' / 'squat-T1' / 'squat-P' 형태라 '-' 앞이 liftId.
+    let workingWeights = init.workingWeights;
+    let consecutiveFails = init.consecutiveFails;
+    let stages = init.stages;
+    if (isSameProgram && existing?.workingWeights) {
+      const prevWeights = existing.weights || {};
+      const liftChanged = (anchorKey) => {
+        const liftId = anchorKey.split('-')[0];
+        return (weights[liftId] || 0) !== (prevWeights[liftId] || 0);
+      };
+      workingWeights = { ...init.workingWeights };
+      consecutiveFails = { ...init.consecutiveFails };
+      stages = { ...init.stages };
+      Object.keys(init.workingWeights).forEach((k) => {
+        if (liftChanged(k)) return; // 무게를 새로 세팅한 운동 → init 값 유지
+        if (existing.workingWeights[k] !== undefined) workingWeights[k] = existing.workingWeights[k];
+        if (existing.consecutiveFails?.[k] !== undefined) consecutiveFails[k] = existing.consecutiveFails[k];
+        if (existing.stages?.[k] !== undefined) stages[k] = existing.stages[k];
+      });
+    }
 
     const navState = {
       selectedId,
@@ -196,7 +227,8 @@ const RoutinePlanPage = ({ theme }) => {
       stages,
       lastCompletedWorkout: isSameProgram ? existing.lastCompletedWorkout : null,
     };
-    localStorage.setItem('fiteating.program', JSON.stringify(navState));
+    localStorage.setItem(PROGRAM_LS_KEY, JSON.stringify(navState));
+    pushProgramState(navState);
     navigate('/program/play', { state: navState });
   };
 
@@ -246,8 +278,14 @@ const RoutinePlanPage = ({ theme }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
-      style={{ scrollbarWidth: 'none' }}
+      className="fixed inset-0 lg:left-[var(--sb-w,15rem)] transition-[left] duration-300 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
+      style={{
+        scrollbarWidth: 'none',
+        backgroundImage:
+          'radial-gradient(110% 70% at 50% -8%, #ffffff 0%, rgba(255,255,255,0) 55%)',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'scroll',
+      }}
     >
       <PageSurface maxWidth={1200}>
       <div className="w-full px-6 md:px-12 py-8">
@@ -256,12 +294,13 @@ const RoutinePlanPage = ({ theme }) => {
             Currently training
             ==================================================== */}
         {existingProgram && currentProg && (
+          <Reveal delay={80}>
           <section className="pb-8">
             <div className="flex items-baseline justify-between mb-4">
-              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
-                — Currently training
-              </div>
-              <div className="font-mono text-[0.625rem] text-hint tracking-meta uppercase">
+              <span className="inline-block bg-bone border border-ink/10 rounded-[10px] px-2.5 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-ink">
+                Currently training
+              </span>
+              <div className="font-sans text-[0.72rem] text-hint tracking-meta uppercase">
                 Last · {nextLabel}
               </div>
             </div>
@@ -274,26 +313,26 @@ const RoutinePlanPage = ({ theme }) => {
                   // mockup 처럼 헤드라인을 "StrongLifts 5×5" → "StrongLifts" + italic gold "5×5" 로 분리.
                   const m = currentProg.name.match(/^(\S+)\s+(.+)$/);
                   return (
-                    <h1 className="font-display text-3xl md:text-4xl leading-[1.0] tracking-tight font-normal mb-2">
-                      {m ? <>{m[1]} <em className="italic text-accent-gold">{m[2]}</em></> : currentProg.name}
+                    <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal mb-2">
+                      {m ? <>{m[1]} <em className="italic text-lilac-deep">{m[2]}</em></> : currentProg.name}
                     </h1>
                   );
                 })()}
-                <p className="font-display italic text-sm text-taupe mb-5">
+                <p className="font-sans text-sm text-taupe mb-5">
                   Next — {nextLabel}
                 </p>
 
                 {nextLiftRows.length > 0 && (
                   <>
-                    <div className="font-mono text-[0.625rem] text-ink tracking-label uppercase mb-2">
+                    <div className="font-sans text-[0.72rem] text-ink tracking-label uppercase mb-2">
                       ▸ Up next
                     </div>
-                    <div className="font-mono text-[0.8125rem] border-t border-ink/15 pt-2">
+                    <div className="bg-sky rounded-[20px] p-5 shadow-[0_10px_24px_-10px_rgba(60,140,190,0.5)] font-sans text-[0.8125rem]">
                       {nextLiftRows.map(row => (
-                        <div key={row.id} className="flex justify-between py-1 border-b border-ink/8 last:border-b-0">
-                          <span className="text-body">{row.name}</span>
+                        <div key={row.id} className="flex justify-between py-1 border-b border-ink/10 last:border-b-0">
+                          <span className="text-ink">{row.name}</span>
                           <span className="text-ink tabular-nums">
-                            {row.weight}<span className="text-taupe"> kg</span>
+                            {row.weight}<span className="text-ink/65"> kg</span>
                           </span>
                         </div>
                       ))}
@@ -304,13 +343,13 @@ const RoutinePlanPage = ({ theme }) => {
                 <div className="flex gap-3 mt-5">
                   <button
                     onClick={handleReset}
-                    className="font-mono text-[0.6875rem] tracking-label uppercase px-5 py-2.5 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
+                    className="rounded-[12px] px-5 py-3 border border-ink/15 text-taupe hover:text-ink hover:border-ink/30 hover:bg-ink/[0.03] font-sans text-[0.78rem] font-medium transition-colors"
                   >
                     ↻ Reset
                   </button>
                   <button
                     onClick={handleResume}
-                    className="flex-1 font-mono text-[0.6875rem] tracking-label uppercase px-5 py-2.5 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
+                    className="flex-1 bg-lilac text-ink rounded-[12px] px-5 py-3 font-sans text-[0.78rem] font-medium hover:opacity-90 transition-opacity"
                   >
                     Continue session<span className="hidden md:inline"> →</span>
                   </button>
@@ -318,22 +357,24 @@ const RoutinePlanPage = ({ theme }) => {
               </div>
             </div>
           </section>
+          </Reveal>
         )}
 
         {/* ====================================================
             Program library — START HERE (featured) + THE FULL LIBRARY (compact)
             ==================================================== */}
         <section className={existingProgram ? 'pt-2 border-t border-ink/15' : ''}>
+          <Reveal delay={80}>
           <div className="max-w-[40rem] py-8">
-            <div className="flex items-baseline justify-between mb-3">
-              <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase">
-                — Start here
-              </div>
+            <div className="mb-3">
+              <span className="inline-block bg-lilac/60 rounded-[10px] px-3 py-1 font-sans text-[0.78rem] font-medium tracking-wide text-ink">
+                Start here
+              </span>
             </div>
-            <h2 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
-              Choose your <em className="italic text-accent-gold">next chapter.</em>
+            <h2 className="font-display text-5xl md:text-6xl leading-[1.0] tracking-tight font-normal">
+              Choose your <em className="italic text-lilac-deep">next chapter.</em>
             </h2>
-            <p className="font-display italic text-sm text-taupe mt-3 leading-relaxed">
+            <p className="font-sans text-sm text-taupe mt-3 leading-relaxed">
               {existingProgram
                 ? '진행 중인 프로그램을 바꾸거나, 다음에 도전할 시리즈를 선택하세요.'
                 : '반세기 동안 검증된 strength 프로그램 열 가지. 입문이라면 아래 첫 시리즈부터.'}
@@ -347,24 +388,24 @@ const RoutinePlanPage = ({ theme }) => {
             return (
               <button
                 onClick={() => setSelectedId(featuredProgram.id)}
-                className="w-full text-left grid grid-cols-1 md:grid-cols-[8.875rem_1fr] gap-6 p-6 md:p-7 border border-accent-gold/30 bg-accent-gold/[0.05] hover:bg-accent-gold/[0.08] transition-colors mb-8"
+                className="w-full text-left grid grid-cols-1 md:grid-cols-[8.875rem_1fr] gap-6 p-6 md:p-7 rounded-[28px] border border-lilac-deep/30 bg-gradient-to-br from-lilac/45 to-paper transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_38px_-12px_rgba(120,80,160,0.28)] mb-8 shadow-[0_8px_16px_0_rgba(0,0,0,0.04)]"
               >
                 <Poster programId={featuredProgram.id} size="featured" />
                 <div className="min-w-0">
                   <div className="flex items-baseline gap-3 flex-wrap mb-1">
-                    <span className="font-display italic text-3xl leading-none text-hint">
+                    <span className="font-sans text-3xl leading-none text-hint">
                       {v.vol || '—'}
                     </span>
                     <span className="font-display text-3xl md:text-4xl text-ink leading-tight">
                       {featuredProgram.name}
                     </span>
                     {isCurrent && (
-                      <span className="font-mono text-[0.5625rem] tracking-label uppercase text-accent-gold border border-accent-gold px-2 py-1">
+                      <span className="font-sans text-[0.66rem] tracking-label uppercase text-lilac-deep border border-lilac-deep px-2 py-1">
                         In progress
                       </span>
                     )}
                   </div>
-                  <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-3">
+                  <div className="font-sans text-[0.72rem] text-taupe tracking-meta uppercase mb-3">
                     {v.author} · {v.year} · {v.level}
                   </div>
                   {v.tags && (
@@ -372,32 +413,36 @@ const RoutinePlanPage = ({ theme }) => {
                       {v.tags.map(t => (
                         <span
                           key={t}
-                          className="font-mono text-[0.5625rem] text-taupe tracking-meta uppercase border border-ink/15 px-2 py-1"
+                          className="font-sans text-[0.66rem] text-taupe tracking-meta uppercase border border-ink/15 px-2 py-1"
                         >
                           {t}
                         </span>
                       ))}
                     </div>
                   )}
-                  <p className="font-display italic text-[0.9375rem] text-body leading-relaxed mb-3">
+                  <p className="font-sans text-[0.9375rem] text-body leading-relaxed mb-3">
                     {featuredProgram.desc}
                   </p>
                   {v.quote && (
-                    <blockquote className="font-display italic text-base text-ink leading-relaxed border-l-2 border-accent-red pl-3 mb-5 m-0">
+                    <blockquote className="font-sans text-base text-ink leading-relaxed border-l-2 border-lilac-deep pl-3 mb-5 m-0">
                       "{v.quote}"
                     </blockquote>
                   )}
-                  <span className="inline-block font-mono text-[0.6875rem] tracking-label uppercase text-accent-red border border-accent-red px-4 py-2">
+                  <span className="inline-block font-sans text-[0.78rem] font-medium tracking-wide text-ink bg-lilac rounded-[10px] px-4 py-2">
                     → Start {featuredProgram.name}
                   </span>
                 </div>
               </button>
             );
           })()}
+          </Reveal>
 
           {/* THE FULL LIBRARY — compact rows */}
-          <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3 pt-2">
-            — The full library
+          <Reveal delay={160}>
+          <div className="mb-3 pt-2">
+            <span className="inline-block bg-bone border border-ink/10 rounded-[10px] px-2.5 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-ink">
+              The full library
+            </span>
           </div>
           <div className="border-t border-ink/15">
             {restPrograms.map(p => {
@@ -408,45 +453,46 @@ const RoutinePlanPage = ({ theme }) => {
                   key={p.id}
                   onClick={() => setSelectedId(p.id)}
                   className={`grid grid-cols-[4.75rem_1fr_auto] gap-5 py-4 border-b border-ink/8 w-full text-left transition-colors items-center ${
-                    isCurrent ? 'bg-accent-gold/[0.04]' : 'hover:bg-ink/[0.03]'
+                    isCurrent ? 'bg-lilac/[0.04]' : 'hover:bg-ink/[0.03]'
                   }`}
                 >
                   <Poster programId={p.id} size="compact" />
 
                   <div className="min-w-0">
                     <div className="flex items-baseline gap-2.5 flex-wrap mb-1">
-                      <span className="font-display italic text-lg leading-none text-hint">
+                      <span className="font-sans text-lg leading-none text-hint">
                         {v.vol || '—'}
                       </span>
                       <span className="font-display text-lg text-ink leading-tight">
                         {p.name}
                       </span>
-                      <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
+                      <span className="font-sans text-[0.72rem] text-taupe tracking-meta uppercase">
                         · {v.level}
                       </span>
                     </div>
-                    <p className="font-display italic text-[0.8125rem] text-body leading-snug line-clamp-1">
+                    <p className="font-sans text-[0.8125rem] text-body leading-snug line-clamp-1">
                       {p.desc}
                     </p>
                   </div>
 
                   <div className="self-center flex-shrink-0">
                     {isCurrent ? (
-                      <span className="font-mono text-[0.5625rem] tracking-label uppercase text-accent-gold border border-accent-gold px-2 py-1 inline-block">
+                      <span className="font-sans text-[0.66rem] tracking-label uppercase text-lilac-deep border border-lilac-deep px-2 py-1 inline-block">
                         In progress
                       </span>
                     ) : (
-                      <span className="font-mono text-lg text-taupe">›</span>
+                      <span className="font-sans text-lg text-taupe">›</span>
                     )}
                   </div>
                 </button>
               );
             })}
           </div>
+          </Reveal>
         </section>
 
         {/* Footer */}
-        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
+        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-sans text-[0.78rem] text-hint tracking-meta">
           <span className="uppercase">— FITCOACH —</span>
           <span className="uppercase text-taupe">Program library · {PROGRAMS.length}</span>
         </div>
@@ -467,11 +513,11 @@ const RoutinePlanPage = ({ theme }) => {
           >
             <header className="flex-shrink-0 flex items-baseline justify-between px-6 py-4 border-b border-ink/15 bg-paper">
               <div>
-                <div className="font-display italic text-base text-ink leading-none">
+                <div className="font-sans text-base text-ink leading-none">
                   {PROGRAM_META[selectedId].label}
                 </div>
                 {programVariant && (
-                  <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mt-1">
+                  <div className="font-sans text-[0.72rem] text-taupe tracking-meta uppercase mt-1">
                     · {PROGRAM_VARIANTS[selectedId].find(v => v.id === programVariant)?.label}
                   </div>
                 )}
@@ -480,14 +526,14 @@ const RoutinePlanPage = ({ theme }) => {
                 {!needsVariantPick && (
                   <button
                     onClick={() => setShowCalc(true)}
-                    className="font-mono text-[0.625rem] tracking-meta uppercase text-accent-gold hover:text-ink transition-colors"
+                    className="font-sans text-[0.72rem] tracking-meta uppercase text-lilac-deep hover:text-ink transition-colors"
                   >
                     1RM calc
                   </button>
                 )}
                 <button
                   onClick={() => setSelectedId(null)}
-                  className="font-mono text-[0.6875rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
+                  className="font-sans text-[0.78rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
                 >
                   Close ×
                 </button>
@@ -500,7 +546,7 @@ const RoutinePlanPage = ({ theme }) => {
             >
               {needsVariantPick ? (
                 <>
-                  <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-4">
+                  <div className="font-sans text-[0.72rem] text-ink tracking-label uppercase mb-4">
                     — Pick a variant
                   </div>
                   <div className="space-y-3">
@@ -508,15 +554,15 @@ const RoutinePlanPage = ({ theme }) => {
                       <button
                         key={v.id}
                         onClick={() => setProgramVariant(v.id)}
-                        className="w-full text-left border border-ink/15 hover:border-accent-red transition-colors p-5 group"
+                        className="w-full text-left border border-ink/15 hover:border-lilac-deep transition-colors p-5 group"
                       >
                         <div className="flex items-baseline justify-between mb-1">
                           <span className="font-display text-xl text-ink">{v.label}</span>
-                          <span className="font-mono text-[0.625rem] text-accent-gold tracking-meta uppercase">
+                          <span className="font-sans text-[0.72rem] text-lilac-deep tracking-meta uppercase">
                             {v.tag}
                           </span>
                         </div>
-                        <p className="font-display italic text-sm text-taupe leading-relaxed">
+                        <p className="font-sans text-sm text-taupe leading-relaxed">
                           {v.desc}
                         </p>
                       </button>
@@ -525,10 +571,10 @@ const RoutinePlanPage = ({ theme }) => {
                 </>
               ) : (
                 <>
-                  <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-3">
+                  <div className="font-sans text-[0.72rem] text-ink tracking-label uppercase mb-3">
                     — 1RM entry
                   </div>
-                  <p className="font-display italic text-sm text-taupe mb-5 leading-relaxed">
+                  <p className="font-sans text-sm text-taupe mb-5 leading-relaxed">
                     {PROGRAM_META[selectedId].note}
                   </p>
 
@@ -545,7 +591,7 @@ const RoutinePlanPage = ({ theme }) => {
                           <button
                             type="button"
                             onClick={() => adjustWeight(lift.id, -2.5)}
-                            className="w-7 h-7 font-mono text-base text-taupe hover:text-ink hover:bg-ink/5 transition-colors flex items-center justify-center"
+                            className="w-7 h-7 font-sans text-base text-taupe hover:text-ink hover:bg-ink/5 transition-colors flex items-center justify-center"
                             aria-label="감소"
                           >
                             −
@@ -558,17 +604,17 @@ const RoutinePlanPage = ({ theme }) => {
                             value={weights[lift.id]}
                             onChange={(e) => setWeights({ ...weights, [lift.id]: parseFloat(e.target.value) || 0 })}
                             style={{ MozAppearance: 'textfield' }}
-                            className="w-16 px-2 py-1.5 text-center font-display text-accent-red tabular-nums bg-paper border border-ink/15 focus:border-accent-red outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                            className="w-16 px-2 py-1.5 text-center font-display text-ink tabular-nums bg-paper border border-ink/15 focus:border-lilac-deep outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                           />
                           <button
                             type="button"
                             onClick={() => adjustWeight(lift.id, 2.5)}
-                            className="w-7 h-7 font-mono text-base text-taupe hover:text-ink hover:bg-ink/5 transition-colors flex items-center justify-center"
+                            className="w-7 h-7 font-sans text-base text-taupe hover:text-ink hover:bg-ink/5 transition-colors flex items-center justify-center"
                             aria-label="증가"
                           >
                             +
                           </button>
-                          <span className="font-mono text-[0.625rem] text-taupe tracking-meta ml-1">kg</span>
+                          <span className="font-sans text-[0.72rem] text-taupe tracking-meta ml-1">kg</span>
                         </div>
                       </div>
                     ))}
@@ -576,7 +622,7 @@ const RoutinePlanPage = ({ theme }) => {
 
                   <button
                     onClick={handleStartProgram}
-                    className="w-full mt-6 font-mono text-[0.6875rem] tracking-label uppercase py-3.5 bg-accent-red text-ink hover:bg-accent-red/90 transition-colors"
+                    className="w-full mt-6 font-sans text-[0.78rem] tracking-label uppercase py-3.5 bg-lilac text-ink hover:bg-lilac/90 transition-colors"
                   >
                     {existingProgram?.selectedId === selectedId ? 'Continue session →' : 'Start program →'}
                   </button>
@@ -602,14 +648,14 @@ const RoutinePlanPage = ({ theme }) => {
           >
             <header className="flex-shrink-0 flex items-baseline justify-between px-6 py-4 border-b border-ink/15">
               <div>
-                <div className="font-display italic text-base text-ink leading-none">1RM Calculator</div>
-                <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mt-1">
+                <div className="font-sans text-base text-ink leading-none">1RM Calculator</div>
+                <div className="font-sans text-[0.72rem] text-taupe tracking-meta uppercase mt-1">
                   · Epley formula
                 </div>
               </div>
               <button
                 onClick={() => setShowCalc(false)}
-                className="font-mono text-[0.6875rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
+                className="font-sans text-[0.78rem] tracking-meta uppercase text-taupe hover:text-ink transition-colors"
               >
                 Close ×
               </button>
@@ -619,7 +665,7 @@ const RoutinePlanPage = ({ theme }) => {
               className="overflow-y-auto px-6 py-6 [&::-webkit-scrollbar]:hidden"
               style={{ scrollbarWidth: 'none' }}
             >
-              <p className="font-display italic text-sm text-taupe mb-5 leading-relaxed">
+              <p className="font-sans text-sm text-taupe mb-5 leading-relaxed">
                 실제로 들어본 무게와 반복 횟수를 입력하면 추정 1RM 을 계산합니다.
               </p>
 
@@ -630,7 +676,7 @@ const RoutinePlanPage = ({ theme }) => {
                     <button
                       type="button"
                       onClick={() => setCalcWeight(w => Math.max(0, w - 2.5))}
-                      className="w-7 h-7 font-mono text-base text-taupe hover:text-ink hover:bg-ink/5 transition-colors flex items-center justify-center"
+                      className="w-7 h-7 font-sans text-base text-taupe hover:text-ink hover:bg-ink/5 transition-colors flex items-center justify-center"
                       aria-label="감소"
                     >
                       −
@@ -643,17 +689,17 @@ const RoutinePlanPage = ({ theme }) => {
                       value={calcWeight}
                       onChange={(e) => setCalcWeight(parseFloat(e.target.value) || 0)}
                       style={{ MozAppearance: 'textfield' }}
-                      className="w-16 px-2 py-1.5 text-center font-display text-accent-red tabular-nums bg-paper border border-ink/15 focus:border-accent-red outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                      className="w-16 px-2 py-1.5 text-center font-display text-ink tabular-nums bg-paper border border-ink/15 focus:border-lilac-deep outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                     />
                     <button
                       type="button"
                       onClick={() => setCalcWeight(w => Math.min(500, w + 2.5))}
-                      className="w-7 h-7 font-mono text-base text-taupe hover:text-ink hover:bg-ink/5 transition-colors flex items-center justify-center"
+                      className="w-7 h-7 font-sans text-base text-taupe hover:text-ink hover:bg-ink/5 transition-colors flex items-center justify-center"
                       aria-label="증가"
                     >
                       +
                     </button>
-                    <span className="font-mono text-[0.625rem] text-taupe tracking-meta ml-1">kg</span>
+                    <span className="font-sans text-[0.72rem] text-taupe tracking-meta ml-1">kg</span>
                   </div>
                 </div>
 
@@ -663,7 +709,7 @@ const RoutinePlanPage = ({ theme }) => {
                     <button
                       type="button"
                       onClick={() => setCalcReps(r => Math.max(1, r - 1))}
-                      className="w-7 h-7 font-mono text-base text-taupe hover:text-ink hover:bg-ink/5 transition-colors flex items-center justify-center"
+                      className="w-7 h-7 font-sans text-base text-taupe hover:text-ink hover:bg-ink/5 transition-colors flex items-center justify-center"
                       aria-label="감소"
                     >
                       −
@@ -676,42 +722,42 @@ const RoutinePlanPage = ({ theme }) => {
                       value={calcReps}
                       onChange={(e) => setCalcReps(parseInt(e.target.value) || 1)}
                       style={{ MozAppearance: 'textfield' }}
-                      className="w-16 px-2 py-1.5 text-center font-display text-accent-red tabular-nums bg-paper border border-ink/15 focus:border-accent-red outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                      className="w-16 px-2 py-1.5 text-center font-display text-ink tabular-nums bg-paper border border-ink/15 focus:border-lilac-deep outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                     />
                     <button
                       type="button"
                       onClick={() => setCalcReps(r => Math.min(20, r + 1))}
-                      className="w-7 h-7 font-mono text-base text-taupe hover:text-ink hover:bg-ink/5 transition-colors flex items-center justify-center"
+                      className="w-7 h-7 font-sans text-base text-taupe hover:text-ink hover:bg-ink/5 transition-colors flex items-center justify-center"
                       aria-label="증가"
                     >
                       +
                     </button>
-                    <span className="font-mono text-[0.625rem] text-taupe tracking-meta ml-1">reps</span>
+                    <span className="font-sans text-[0.72rem] text-taupe tracking-meta ml-1">reps</span>
                   </div>
                 </div>
               </div>
 
-              <div className="border-y border-accent-gold/40 py-5 my-5 text-center bg-accent-gold/[0.04]">
-                <div className="font-mono text-[0.625rem] text-accent-gold tracking-label uppercase mb-2">
+              <div className="border-y border-lilac-deep/40 py-5 my-5 text-center bg-lilac/[0.04]">
+                <div className="font-sans text-[0.72rem] text-lilac-deep tracking-label uppercase mb-2">
                   — Estimated 1RM
                 </div>
                 <div className="font-display text-5xl text-ink leading-none tabular-nums">
                   {estimated1RM.toFixed(1)}
-                  <span className="font-display italic text-base text-taupe ml-1">kg</span>
+                  <span className="font-sans text-base text-taupe ml-1">kg</span>
                 </div>
-                <p className="font-display italic text-[0.6875rem] text-hint mt-3">
+                <p className="font-sans text-[0.78rem] text-hint mt-3">
                   Weight × (1 + reps / 30)
                 </p>
               </div>
 
-              <div className="font-mono text-[0.625rem] text-taupe tracking-label uppercase mb-2">
+              <div className="font-sans text-[0.72rem] text-taupe tracking-label uppercase mb-2">
                 — Apply to
               </div>
               <div className="flex items-center gap-2">
                 <select
                   value={applyTarget}
                   onChange={(e) => setApplyTarget(e.target.value)}
-                  className="flex-1 px-3 py-2.5 font-display text-sm text-ink bg-paper border border-ink/15 focus:border-accent-red outline-none"
+                  className="flex-1 px-3 py-2.5 font-display text-sm text-ink bg-paper border border-ink/15 focus:border-lilac-deep outline-none"
                 >
                   {(selectedId && PROGRAM_LIFTS[selectedId] ? PROGRAM_LIFTS[selectedId] : []).map(lift => (
                     <option key={lift.id} value={lift.id} className="bg-paper">
@@ -722,12 +768,12 @@ const RoutinePlanPage = ({ theme }) => {
                 <button
                   onClick={applyEstimate}
                   disabled={estimated1RM <= 0}
-                  className="font-mono text-[0.6875rem] tracking-label uppercase px-4 py-2.5 bg-accent-red text-ink hover:bg-accent-red/90 disabled:bg-ink/10 disabled:text-hint transition-colors"
+                  className="font-sans text-[0.78rem] tracking-label uppercase px-4 py-2.5 bg-lilac text-ink hover:bg-lilac/90 disabled:bg-ink/10 disabled:text-hint transition-colors"
                 >
                   Apply
                 </button>
               </div>
-              <p className="font-display italic text-[0.6875rem] text-hint mt-2 leading-relaxed">
+              <p className="font-sans text-[0.78rem] text-hint mt-2 leading-relaxed">
                 적용 시 2.5kg 단위로 반올림되어 1RM 입력란에 반영됩니다.
               </p>
             </div>

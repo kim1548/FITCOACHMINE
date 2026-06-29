@@ -1,8 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- FitCoach 마크 — 옥스블러드 라운드 사각 + 크림 기하학적 'F'.
-       mockup/상단마크.html 의 변형 A(권장)와 동일. 폰트 비의존 벡터. -->
-  <rect width="64" height="64" rx="14" fill="#c43c2f"/>
-  <rect x="23" y="15" width="11" height="34" fill="#f0e8d8"/>
-  <rect x="23" y="15" width="25" height="11" fill="#f0e8d8"/>
-  <rect x="23" y="29" width="18" height="10" fill="#f0e8d8"/>
+  <!-- FitCoach 마크 — Gleap 라일락 원형. 네비/사이드바 로고(radial lilac→lilac-deep)와 동일. -->
+  <defs>
+    <radialGradient id="g" cx="50%" cy="38%" r="65%">
+      <stop offset="0%" stop-color="#f1ccff"/>
+      <stop offset="100%" stop-color="#c89cd9"/>
+    </radialGradient>
+  </defs>
+  <circle cx="32" cy="32" r="26" fill="url(#g)"/>
 </svg>

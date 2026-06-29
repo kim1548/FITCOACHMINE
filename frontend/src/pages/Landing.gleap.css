@@ -1,0 +1,170 @@
+/* ============================================================================
+   Landing.gleap.css — 비로그인 표지(Gleap 라이트 에디토리얼).
+   모든 규칙을 .gleap 스코프로 격리 → 다크 제품 페이지에 영향 없음.
+   ========================================================================== */
+.gleap{
+  --obsidian:#000; --graphite:#333; --slate:#7b7b7b; --mist:#bcbcbc; --silver:#d6d6d6;
+  --bone:#f5f2f0; --paper:#fff; --lilac:#f1ccff; --lilac-deep:#c89cd9; --sky:#91e0ff;
+  --r-btn:10px; --r-card:24px; --r-pill:32px; --r-card-lg:42px;
+  --sh-md:rgba(0,0,0,.04) 0 8px 16px 0; --sh-subtle:rgba(16,24,40,.05) 0 1px 2px 0;
+  --maxw:1200px;
+  --g-serif:'Playfair Display',Georgia,serif;
+  --g-sans:'Inter',ui-sans-serif,system-ui,sans-serif;
+
+  position:fixed; inset:0; overflow-y:auto; overflow-x:hidden;
+  background:var(--paper); color:var(--obsidian);
+  font-family:var(--g-sans); line-height:1.44; -webkit-font-smoothing:antialiased;
+  scrollbar-width:none; -ms-overflow-style:none;   /* 스크롤바 숨김(스크롤은 유지) */
+}
+.gleap::-webkit-scrollbar{ width:0; height:0; display:none; }
+.gleap *{box-sizing:border-box}
+.gleap .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px}
+.gleap .serif{font-family:var(--g-serif);font-weight:400}
+.gleap .pill{display:inline-block;font-size:13px;font-weight:500;background:var(--bone);
+  border:1px solid var(--silver);color:var(--obsidian);border-radius:10px;padding:5px 12px}
+.gleap .pill.lilac{background:var(--lilac);border-color:transparent}
+.gleap .btn{display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:500;
+  border-radius:var(--r-btn);padding:14px 22px;cursor:pointer;border:none;text-decoration:none;transition:.2s}
+.gleap .btn.dark{background:var(--obsidian);color:#fff;box-shadow:var(--sh-subtle)}
+.gleap .btn.lilac{background:var(--lilac);color:var(--obsidian)}
+.gleap .btn.dark:hover,.gleap .btn.lilac:hover{transform:translateY(-1px)}
+.gleap .eyebrow{font-size:14px;font-weight:500;color:var(--graphite)}
+
+.gleap .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease, transform .6s ease}
+.gleap .reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.gleap .reveal{opacity:1;transform:none;transition:none}}
+
+/* NAV */
+.gleap nav{position:fixed;top:0;left:0;right:0;z-index:50;transition:.35s ease}
+.gleap .navinner{max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;
+  justify-content:space-between;padding:18px 32px;transition:.35s ease}
+.gleap .brand{display:flex;align-items:center;gap:9px;font-weight:600;font-size:22px;letter-spacing:-.01em;text-decoration:none;color:var(--obsidian)}
+.gleap .mark{width:26px;height:26px;border-radius:50%;
+  background:radial-gradient(circle at 50% 40%,var(--lilac),var(--lilac-deep));position:relative;flex:none}
+.gleap .mark::after{content:"";position:absolute;left:7px;right:7px;top:13px;height:5px;
+  border-bottom:2.5px solid var(--obsidian);border-radius:0 0 8px 8px}
+.gleap .menu{display:flex;gap:26px;font-size:14px;font-weight:500;color:var(--graphite)}
+.gleap .menu a{color:inherit;text-decoration:none}.gleap .menu a:hover{color:var(--obsidian)}
+.gleap .navright{display:flex;align-items:center;gap:14px;font-size:14px;font-weight:500}
+.gleap .navright a.login{color:var(--graphite);text-decoration:none}
+.gleap .signup{background:var(--obsidian);color:#fff;border-radius:var(--r-btn);padding:10px 20px;text-decoration:none}
+.gleap nav.floating .navinner{max-width:920px;background:var(--obsidian);border-radius:38px;
+  padding:12px 18px;margin-top:14px;box-shadow:var(--sh-md)}
+.gleap nav.floating .brand span.txt{display:none}
+.gleap nav.floating .menu{color:rgba(255,255,255,.78)}
+.gleap nav.floating .menu a:hover{color:#fff}
+.gleap nav.floating .navright a.login{color:rgba(255,255,255,.8)}
+.gleap nav.floating .signup{background:#fff;color:var(--obsidian)}
+
+/* HERO */
+.gleap .hero{padding:150px 0 0;text-align:center;background:radial-gradient(120% 60% at 50% 0%, #faf6f4 0%, #ffffff 60%)}
+.gleap .hero h1{font-family:var(--g-serif);font-size:62px;line-height:1.18;letter-spacing:-.015em;margin:18px auto 0;max-width:880px;font-weight:400}
+.gleap .hero h1 em{font-style:italic}
+.gleap .hero .sub{font-size:18px;color:var(--graphite);max-width:640px;margin:20px auto 0}
+.gleap .cta-row{display:flex;gap:12px;justify-content:center;margin:28px 0 12px;flex-wrap:wrap}
+.gleap .metacap{font-size:14px;color:var(--slate)}
+.gleap .previewWrap{perspective:1600px;margin:50px auto 0;max-width:1040px;padding-bottom:90px}
+.gleap .preview{position:relative;border-radius:var(--r-card-lg);padding:14px;
+  background:linear-gradient(135deg,var(--lilac),var(--lilac-deep));box-shadow:var(--sh-md);
+  transform:rotateX(20deg) scale(.965);transform-origin:50% 100%;transition:transform .1s linear;will-change:transform}
+.gleap .screen{background:var(--paper);border-radius:30px;overflow:hidden;display:grid;
+  grid-template-columns:200px 1fr 230px;min-height:380px;text-align:left}
+.gleap .sb{background:var(--bone);padding:18px;border-right:1px solid var(--silver)}
+.gleap .sb .si{font-size:13px;color:var(--graphite);padding:8px 10px;border-radius:8px;margin-bottom:2px}
+.gleap .sb .si.on{background:#fff;color:var(--obsidian);font-weight:600;box-shadow:var(--sh-subtle)}
+.gleap .center{padding:22px 24px}
+.gleap .kpi{font-family:var(--g-serif);font-size:60px;line-height:1}
+.gleap .axis{margin-top:14px}
+.gleap .axis .row{display:flex;align-items:center;gap:10px;margin:9px 0;font-size:13px;color:var(--graphite)}
+.gleap .axis .bar{flex:1;height:8px;background:var(--bone);border-radius:6px;overflow:hidden}
+.gleap .axis .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--lilac),var(--lilac-deep))}
+.gleap .detail{padding:20px;border-left:1px solid var(--silver)}
+.gleap .detail h4{font-size:13px;color:var(--slate);font-weight:600;margin-bottom:10px;text-transform:uppercase;letter-spacing:.04em}
+.gleap .detail .tag{display:inline-block;font-size:12px;background:var(--bone);border-radius:8px;padding:4px 9px;margin:0 4px 6px 0;color:var(--graphite)}
+.gleap .chat{position:absolute;right:26px;bottom:-26px;width:300px;max-width:80%;
+  background:linear-gradient(135deg,var(--lilac),var(--lilac-deep));border-radius:20px;padding:16px 18px;box-shadow:var(--sh-md);color:var(--obsidian)}
+.gleap .chat b{font-size:14px}.gleap .chat p{font-size:13px;margin-top:6px;color:#2a2030}
+
+/* SECTION shells */
+.gleap section{padding:100px 0}
+.gleap .center-head{text-align:center;max-width:760px;margin:0 auto 56px}
+.gleap .center-head h2{font-family:var(--g-serif);font-size:48px;line-height:1.2;letter-spacing:-.02em;margin-top:14px;font-weight:400}
+.gleap .center-head p{color:var(--slate);font-size:16px;margin-top:14px}
+
+.gleap .two{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.gleap .fcard{border-radius:var(--r-card-lg);padding:38px;box-shadow:var(--sh-md)}
+.gleap .fcard.sky{background:var(--sky)}.gleap .fcard.paper{background:var(--paper);border:1px solid var(--silver)}
+.gleap .fcard h3{font-size:26px;font-weight:600;letter-spacing:-.01em;margin:8px 0 12px}
+.gleap .fcard p{color:var(--graphite);font-size:16px}
+.gleap .fcard .lnk{display:inline-block;margin-top:16px;font-weight:600;font-size:15px;color:var(--obsidian);text-decoration:none}
+.gleap .miniaxis{margin-top:22px;background:rgba(255,255,255,.6);border-radius:16px;padding:16px}
+.gleap .miniaxis .row{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:12px;color:var(--graphite)}
+.gleap .miniaxis .bar{flex:1;height:7px;background:rgba(0,0,0,.07);border-radius:6px;overflow:hidden}
+.gleap .miniaxis .bar i{display:block;height:100%;background:var(--obsidian)}
+.gleap .avatars{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px}
+.gleap .av{display:flex;align-items:center;gap:6px;background:var(--bone);border:1px solid var(--silver);border-radius:14px;padding:6px 10px;font-size:12px;color:var(--graphite)}
+.gleap .av .dot{width:18px;height:18px;border-radius:50%;background:var(--lilac)}
+
+/* comparison */
+.gleap .cmp{border:1px solid var(--silver);border-radius:var(--r-card);overflow:hidden;max-width:980px;margin:0 auto;background:var(--paper)}
+.gleap .cmp .r{display:grid;grid-template-columns:1.4fr 1fr 1fr;border-top:1px solid var(--silver)}
+.gleap .cmp .r:first-child{border-top:none}
+.gleap .cmp .c{padding:16px 22px;font-size:15px;display:flex;align-items:center;gap:8px}
+.gleap .cmp .c.lab{color:var(--graphite)}
+.gleap .cmp .col-hi{background:var(--lilac)}
+.gleap .cmp .head .c{font-weight:600;font-size:16px}
+.gleap .ic{width:22px;height:22px;border-radius:50%;background:var(--obsidian);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:13px;flex:none}
+.gleap .cmp .x{color:var(--slate)}
+
+/* testimonials */
+.gleap .tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.gleap .tcard{background:var(--paper);border:1px solid var(--silver);border-radius:var(--r-card);padding:26px;box-shadow:var(--sh-md)}
+.gleap .tcard p{color:var(--graphite);font-size:16px}
+.gleap .who{display:flex;align-items:center;gap:10px;margin-top:18px}
+.gleap .who .a{width:38px;height:38px;border-radius:50%;background:var(--bone);border:1px solid var(--silver);display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--graphite)}
+.gleap .who b{font-weight:600;font-size:14px}.gleap .who span{display:block;font-size:13px;color:var(--slate)}
+
+/* feature list + dusk */
+.gleap .flist{display:grid;grid-template-columns:1fr 1.1fr;gap:48px;align-items:center}
+.gleap .flist ul{list-style:none}
+.gleap .flist li{padding:14px 16px;border-top:1px solid var(--silver);font-size:17px;color:var(--graphite)}
+.gleap .flist li.on{background:var(--obsidian);color:#fff;border-radius:var(--r-pill);border-top:none;font-weight:600;display:inline-block;padding:10px 20px;margin:6px 0}
+.gleap .flist li[role="link"]{transition:color .15s,background .15s}
+.gleap .flist li[role="link"]:not(.on):hover{color:var(--obsidian);background:var(--bone)}
+.gleap .flist li.on[role="link"]:hover{opacity:.9}
+.gleap .shotDusk{border-radius:var(--r-card-lg);overflow:hidden;position:relative;min-height:340px;padding:24px;
+  background:linear-gradient(180deg,#4a3b56 0%,#7a5a6e 32%,#c98a72 56%,#e8a878 70%,#6b7186 82%,#3f4658 100%)}
+.gleap .shotDusk .card{background:rgba(255,255,255,.95);border-radius:18px;padding:18px;max-width:300px;box-shadow:var(--sh-md)}
+.gleap .shotDusk .card h5{font-size:14px;margin-bottom:8px}
+.gleap .shotDusk .card .b{height:7px;background:var(--bone);border-radius:5px;margin:7px 0;overflow:hidden}
+.gleap .shotDusk .card .b i{display:block;height:100%;background:linear-gradient(90deg,var(--lilac),var(--sky));border-radius:5px}
+
+/* cinematic CTA + footer */
+.gleap .cine{position:relative;margin-top:60px;border-radius:42px 42px 0 0;overflow:hidden;color:#fff;padding:130px 32px 0;
+  background:radial-gradient(circle at 73% 24%, rgba(255,250,240,.9), transparent 3.2%),
+   linear-gradient(180deg,#3f3350 0%,#6f5168 26%,#b07a6a 50%,#e2a172 64%,#8b7a86 76%,#3c4458 100%)}
+.gleap .cine::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(24,18,30,.22),rgba(24,18,30,.5));pointer-events:none}
+.gleap .cine::after{content:"";position:absolute;left:50%;bottom:-26%;width:120%;height:80%;transform:translateX(-50%);
+  background:radial-gradient(ellipse at center,rgba(255,245,235,.32),transparent 60%);pointer-events:none}
+.gleap .cine .inner{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto}
+.gleap .cine .mountains{position:absolute;left:0;right:0;bottom:0;z-index:0;width:100%;display:block}
+.gleap .cine .pill{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.35);color:#fff}
+.gleap .cine h2{font-family:var(--g-serif);font-size:60px;line-height:1.16;letter-spacing:-.015em;max-width:780px;margin:18px auto 0;text-align:center;font-weight:400}
+.gleap .cine .sub{text-align:center;color:rgba(255,255,255,.88);max-width:620px;margin:18px auto 0;font-size:16px}
+.gleap .cine .ctac{text-align:center;margin:30px 0 90px}
+.gleap .foot{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:40px 0 50px;border-top:1px solid rgba(255,255,255,.18);
+  display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:28px;color:rgba(255,255,255,.82)}
+.gleap .foot .brand{color:#fff}.gleap .foot h6{font-size:13px;font-weight:600;color:#fff;margin-bottom:12px}
+.gleap .foot a{display:block;color:rgba(255,255,255,.78);text-decoration:none;font-size:14px;margin:7px 0}
+.gleap .foot .tag{font-size:14px;margin:12px 0;max-width:280px}
+
+.gleap a:focus-visible,.gleap button:focus-visible{outline:2px solid var(--lilac);outline-offset:3px;border-radius:6px}
+
+@media(max-width:900px){
+  .gleap .hero h1,.gleap .cine h2{font-size:40px}
+  .gleap .center-head h2{font-size:34px}
+  .gleap .two,.gleap .tgrid,.gleap .flist,.gleap .foot{grid-template-columns:1fr}
+  .gleap .screen{grid-template-columns:1fr}.gleap .sb,.gleap .detail{display:none}
+  .gleap nav.floating .navinner{max-width:none}.gleap .menu{display:none}
+  .gleap .preview{transform:none!important}
+}

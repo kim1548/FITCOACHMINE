@@ -5,6 +5,7 @@ import { Loader2 } from 'lucide-react';
 import JournalDayModal from '../components/JournalDayModal';
 import PageSurface from '../components/PageSurface';
 import usePageTitle from '../hooks/usePageTitle';
+import Reveal from '../components/Reveal';
 
 const WEEK_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 const MONTH_LABELS = [
@@ -33,6 +34,7 @@ const JournalPage = ({ theme }) => {
   const [weekly, setWeekly] = useState(null);
   const [weeklySummary, setWeeklySummary] = useState(null);
   const [weeklyGenerating, setWeeklyGenerating] = useState(false);
+  const [monthlyStats, setMonthlyStats] = useState(null);
 
   const fetchCalendar = useCallback(() => {
     setLoading(true);
@@ -46,6 +48,16 @@ const JournalPage = ({ theme }) => {
   }, [year, month]);
 
   useEffect(() => { fetchCalendar(); }, [fetchCalendar]);
+
+  // 월간 통계 카드(총 세트·볼륨·이달의 PR) — 보고 있는 달 기준으로 서버 집계.
+  useEffect(() => {
+    axios.get(`${API_BASE_URL}/report/monthly-stats`, {
+      params: { year, month },
+      headers: authHeaders(),
+    })
+      .then(res => setMonthlyStats(res.data))
+      .catch(() => setMonthlyStats(null));
+  }, [year, month]);
 
   // 주간 리포트 통계는 진입 시 즉시 로드 (AI 총평은 버튼으로 별도 생성)
   useEffect(() => {
@@ -110,15 +122,17 @@ const JournalPage = ({ theme }) => {
     const daysSoFar = isCurrentMonth ? today.getDate() : daysInMonth;
     const rest = Math.max(0, daysSoFar - sessions);
 
-    // current streak: 보는 달이 이번 달일 때만 의미. 오늘부터 역순으로 연속 카운트.
+    // current streak: 오늘부터 역순으로 연속 운동일 카운트.
+    // 오늘은 아직 운동 전일 수 있으므로, 오늘 운동이 없어도 끊지 않고 어제까지의 연속을 유지한다.
     let streak = 0;
     if (isCurrentMonth) {
       const sorted = [...days].sort((a, b) => a.date.localeCompare(b.date));
       const cutoff = todayISO;
       for (let i = sorted.length - 1; i >= 0; i--) {
-        if (sorted[i].date > cutoff) continue;       // 미래 스킵
+        if (sorted[i].date > cutoff) continue;            // 미래 스킵
         if (sorted[i].has_workout) streak++;
-        else break;
+        else if (sorted[i].date === cutoff) continue;     // 오늘은 아직 안 했어도 유예(끊지 않음)
+        else break;                                       // 그 외 빈 날에서 연속 종료
       }
     }
 
@@ -127,37 +141,48 @@ const JournalPage = ({ theme }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
-      style={{ scrollbarWidth: 'none' }}
+      className="fixed inset-0 lg:left-[var(--sb-w,15rem)] transition-[left] duration-300 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden animate-in fade-in duration-300"
+      style={{
+        scrollbarWidth: 'none',
+        backgroundImage:
+          'radial-gradient(110% 70% at 50% -8%, #ffffff 0%, rgba(255,255,255,0) 55%)',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'scroll',
+      }}
     >
       <PageSurface maxWidth={1200}>
-      <div className="w-full px-6 md:px-12 py-8">
+      <div className="w-full px-6 md:px-12 py-10">
 
         {/* 텍스트 영역만 좁게 — 가독성 measure */}
-        <div className="max-w-[40rem] pb-6">
-          <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
-            — Log · Calendar
+        <Reveal className="max-w-[40rem] pb-8">
+          <div className="mb-3">
+            <span className="inline-block bg-lilac/60 rounded-[10px] px-3 py-1 font-sans text-[0.78rem] font-medium tracking-wide text-ink">
+              Log · Calendar
+            </span>
           </div>
-          <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
-            Days, <em className="italic text-accent-gold">accumulated.</em>
+          <h1 className="font-display text-5xl md:text-6xl leading-[1.0] tracking-tight font-normal">
+            Days, <em className="italic text-lilac-deep">accumulated.</em>
           </h1>
-          <p className="font-display italic text-sm text-taupe mt-3 leading-relaxed">
+          <p className="font-sans text-sm text-taupe mt-3 leading-relaxed">
             날짜를 누르면 그 날의 entry — 운동, 식단, 체성분, coach's note 가 펼쳐집니다.
           </p>
-        </div>
+        </Reveal>
 
         {/* 이번 주 리포트 카드 */}
         {weekly && (
-          <section className="border border-ink/12 p-5 mb-6">
+          <Reveal delay={80}>
+          <section className="border border-ink/10 rounded-[28px] p-6 mb-6 bg-gradient-to-br from-lilac/45 to-paper shadow-[0_8px_20px_-6px_rgba(120,80,160,0.12)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_16px_34px_-10px_rgba(120,80,160,0.24)]">
             <div className="flex items-baseline justify-between mb-4">
-              <div className="font-mono text-[0.6875rem] text-accent-gold tracking-label uppercase">
-                — 이번 주 리포트{' '}
-                <span className="text-hint normal-case tracking-normal">{weekly.period}</span>
+              <div className="flex items-center gap-2">
+                <span className="inline-block bg-bone border border-ink/10 rounded-[10px] px-2.5 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-ink">
+                  지난주 리포트
+                </span>
+                <span className="font-sans text-[0.72rem] text-hint">{weekly.period}</span>
               </div>
               <button
                 onClick={generateWeekly}
                 disabled={weeklyGenerating}
-                className="font-mono text-[0.625rem] tracking-meta uppercase text-hint hover:text-ink transition-colors disabled:opacity-50"
+                className="font-sans text-[0.72rem] tracking-meta uppercase text-hint hover:text-ink transition-colors disabled:opacity-50"
               >
                 {weeklyGenerating ? '생성 중…' : weeklySummary ? '↻ 다시 생성' : '✦ AI 총평'}
               </button>
@@ -165,32 +190,32 @@ const JournalPage = ({ theme }) => {
 
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1">운동</div>
+                <div className="font-sans text-[0.72rem] text-taupe tracking-meta uppercase mb-1">운동</div>
                 <div className="font-display text-2xl text-ink tabular-nums leading-none">
-                  {weekly.workout_count}<span className="font-display italic text-base text-taupe ml-1">회</span>
+                  {weekly.workout_count}<span className="font-sans text-base text-taupe ml-1">회</span>
                 </div>
               </div>
               <div>
-                <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1">식단 기록</div>
+                <div className="font-sans text-[0.72rem] text-taupe tracking-meta uppercase mb-1">식단 기록</div>
                 <div className="font-display text-2xl text-ink tabular-nums leading-none">
-                  {weekly.diet_days}<span className="font-display italic text-base text-taupe ml-1">일</span>
+                  {weekly.diet_days}<span className="font-sans text-base text-taupe ml-1">일</span>
                 </div>
               </div>
               <div>
-                <div className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1">체중 변화</div>
+                <div className="font-sans text-[0.72rem] text-taupe tracking-meta uppercase mb-1">체중 변화</div>
                 <div className="font-display text-2xl text-ink tabular-nums leading-none">
                   {weekly.weight_change != null
                     ? `${weekly.weight_change > 0 ? '+' : ''}${weekly.weight_change}`
                     : '—'}
                   {weekly.weight_change != null && (
-                    <span className="font-display italic text-base text-taupe ml-1">kg</span>
+                    <span className="font-sans text-base text-taupe ml-1">kg</span>
                   )}
                 </div>
               </div>
             </div>
 
             {weekly.avg_calories ? (
-              <div className="font-mono text-[0.625rem] text-hint tracking-meta mt-3">
+              <div className="font-sans text-[0.72rem] text-hint tracking-meta mt-3">
                 일 평균 {weekly.avg_calories}kcal · 단백질 {weekly.avg_protein}g
                 {weekly.total_volume ? ` · 총 볼륨 ${weekly.total_volume}kg` : ''}
               </div>
@@ -199,27 +224,28 @@ const JournalPage = ({ theme }) => {
             {weeklyGenerating ? (
               <div className="flex items-center gap-2 text-taupe mt-4 pt-4 border-t border-ink/8">
                 <Loader2 className="animate-spin" size={15} />
-                <span className="font-display italic text-sm leading-relaxed">
-                  AI가 이번 주 기록을 요약 중입니다… (수십 초 걸릴 수 있어요)
+                <span className="font-sans text-sm leading-relaxed">
+                  AI가 지난주 기록을 요약 중입니다…
                 </span>
               </div>
             ) : weeklySummary ? (
-              <blockquote className="font-display italic text-[0.875rem] text-body leading-relaxed border-l-2 border-accent-gold pl-3 mt-4 m-0">
+              <blockquote className="font-sans text-[0.875rem] text-body leading-relaxed border-l-2 border-lilac-deep pl-3 mt-4 m-0">
                 "{weeklySummary}"
               </blockquote>
             ) : (
-              <p className="font-display italic text-[0.75rem] text-hint mt-4 leading-relaxed">
-                "✦ AI 총평"을 누르면 이번 주 기록을 바탕으로 코치 코멘트를 생성합니다.
+              <p className="font-sans text-[0.75rem] text-hint mt-4 leading-relaxed">
+                "✦ AI 총평"을 누르면 지난주 기록을 바탕으로 코치 코멘트를 생성합니다.
               </p>
             )}
           </section>
+          </Reveal>
         )}
 
         {/* 월 네비게이션 — 전체 폭 */}
-        <div className="flex items-baseline justify-between border-t border-b border-ink/12 py-3">
+        <div className="flex items-baseline justify-between py-3 mb-3">
           <button
             onClick={goPrevMonth}
-            className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase transition-colors"
+            className="font-sans text-[0.78rem] text-taupe hover:text-ink tracking-meta uppercase transition-colors"
             aria-label="이전 달"
           >
             ← Prev
@@ -229,7 +255,7 @@ const JournalPage = ({ theme }) => {
           </div>
           <button
             onClick={goNextMonth}
-            className="font-mono text-[0.6875rem] text-taupe hover:text-ink tracking-meta uppercase transition-colors"
+            className="font-sans text-[0.78rem] text-taupe hover:text-ink tracking-meta uppercase transition-colors"
             aria-label="다음 달"
           >
             Next →
@@ -237,7 +263,7 @@ const JournalPage = ({ theme }) => {
         </div>
 
         {/* 2단 그리드: 캘린더 (1.7fr) + 사이드바 (1fr) */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr]">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr] rounded-[28px] bg-paper border border-ink/8 shadow-[0_10px_30px_-16px_rgba(26,20,16,0.18)] p-4 md:p-6 transition-all duration-300 hover:shadow-[0_18px_40px_-18px_rgba(26,20,16,0.26)]">
 
           {/* 캘린더 컬럼 */}
           <div className="lg:border-r border-ink/8 lg:pr-6 py-5">
@@ -246,8 +272,8 @@ const JournalPage = ({ theme }) => {
               {WEEK_LABELS.map((w, i) => (
                 <div
                   key={`${w}-${i}`}
-                  className={`text-center font-mono text-[0.5625rem] tracking-meta py-1 ${
-                    i === 0 ? 'text-accent-red' : 'text-taupe'
+                  className={`text-center font-sans text-[0.66rem] tracking-meta py-1 ${
+                    i === 0 ? 'text-ink' : 'text-taupe'
                   }`}
                 >
                   {w}
@@ -272,14 +298,14 @@ const JournalPage = ({ theme }) => {
                     onClick={() => setSelectedDate(cell.iso)}
                     className={`relative min-h-[3.125rem] md:min-h-[5rem] p-2 text-left transition-colors group border-r border-b cal-grid-line ${
                       isToday
-                        ? 'bg-accent-gold/10 outline outline-1 outline-accent-gold -outline-offset-1'
+                        ? 'bg-lilac/40 outline outline-1 outline-lilac-deep -outline-offset-1'
                         : 'bg-paper hover:bg-ink/5'
                     }`}
                   >
                     <span
-                      className={`font-mono text-[0.625rem] tabular-nums ${
+                      className={`font-sans text-[0.72rem] tabular-nums ${
                         isToday
-                          ? 'text-accent-gold'
+                          ? 'text-lilac-deep'
                           : isFuture
                             ? 'text-hint'
                             : 'text-body'
@@ -288,13 +314,13 @@ const JournalPage = ({ theme }) => {
                       {String(cell.day).padStart(2, '0')}
                     </span>
                     {isToday && (
-                      <span className="absolute bottom-1.5 left-2 font-mono text-[0.4375rem] tracking-meta text-accent-gold">
+                      <span className="absolute bottom-1.5 left-2 font-sans text-[0.4375rem] tracking-meta text-lilac-deep">
                         TODAY
                       </span>
                     )}
                     {hasWorkout && !isToday && (
                       <span
-                        className="absolute bottom-1.5 left-2 w-[0.3125rem] h-[0.3125rem] rounded-full bg-accent-red"
+                        className="absolute bottom-1.5 left-2 w-[0.3125rem] h-[0.3125rem] rounded-full bg-lilac-deep"
                         aria-label="Session logged"
                       />
                     )}
@@ -304,9 +330,9 @@ const JournalPage = ({ theme }) => {
             </div>
 
             {/* Legend */}
-            <div className="flex gap-5 mt-3 font-mono text-[0.5625rem] text-hint tracking-meta uppercase">
+            <div className="flex gap-5 mt-3 font-sans text-[0.66rem] text-hint tracking-meta uppercase">
               <span className="inline-flex items-center gap-1.5">
-                <span className="w-[0.3125rem] h-[0.3125rem] rounded-full bg-accent-red" />
+                <span className="w-[0.3125rem] h-[0.3125rem] rounded-full bg-lilac-deep" />
                 Session logged
               </span>
               <span className="inline-flex items-center gap-1.5">
@@ -318,31 +344,38 @@ const JournalPage = ({ theme }) => {
             {loading && (
               <div className="mt-4 flex items-center gap-2 text-taupe">
                 <Loader2 className="animate-spin" size={12} />
-                <span className="font-mono text-[0.625rem] tracking-meta uppercase">Loading…</span>
+                <span className="font-sans text-[0.72rem] tracking-meta uppercase">Loading…</span>
               </div>
             )}
           </div>
 
           {/* 월간 요약 사이드바 */}
           <aside className="border-t lg:border-t-0 border-ink/12 lg:pl-6 py-5">
-            <div className="font-mono text-[0.625rem] text-accent-red tracking-label uppercase mb-4">
-              — This month
-            </div>
-
-            <div className="font-display text-5xl text-ink leading-none tabular-nums">
-              {stats.sessions}
-            </div>
-            <div className="font-display italic text-sm text-taupe mt-1">
-              sessions logged
+            <div className="rounded-[20px] bg-sky p-5 mb-4 shadow-[0_10px_24px_-10px_rgba(60,140,190,0.5)]">
+              <span className="inline-block bg-paper rounded-[10px] px-2.5 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-ink">
+                This month
+              </span>
+              <div className="font-display text-6xl text-ink leading-none tabular-nums mt-3">
+                {stats.sessions}
+              </div>
+              <div className="font-sans text-sm text-ink/65 mt-1">
+                sessions logged
+              </div>
             </div>
 
             {/* 통계 리스트 */}
             <div className="border-t border-ink/12 mt-5 pt-1">
               {[
-                { label: 'Personal records', value: '—', accent: 'text-accent-gold' },
+                { label: 'Personal records', value: monthlyStats?.personal_records ?? '—', accent: 'text-lilac-deep' },
                 { label: 'Rest days', value: stats.rest, accent: 'text-ink' },
-                { label: 'Total sets', value: '—', accent: 'text-ink' },
-                { label: 'Volume lifted', value: '—', accent: 'text-ink' },
+                { label: 'Total sets', value: monthlyStats?.total_sets ?? '—', accent: 'text-ink' },
+                {
+                  label: 'Volume lifted',
+                  value: monthlyStats?.volume_lifted != null
+                    ? Math.round(monthlyStats.volume_lifted).toLocaleString()
+                    : '—',
+                  accent: 'text-ink',
+                },
               ].map((row, i, arr) => (
                 <div
                   key={row.label}
@@ -350,10 +383,10 @@ const JournalPage = ({ theme }) => {
                     i < arr.length - 1 ? 'border-b border-ink/8' : ''
                   }`}
                 >
-                  <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
+                  <span className="font-sans text-[0.72rem] text-taupe tracking-meta uppercase">
                     {row.label}
                   </span>
-                  <span className={`font-display italic text-base tabular-nums ${row.accent}`}>
+                  <span className={`font-sans text-base tabular-nums ${row.accent}`}>
                     {row.value}
                   </span>
                 </div>
@@ -361,29 +394,33 @@ const JournalPage = ({ theme }) => {
             </div>
 
             {/* Current streak */}
-            <div className="border-t border-ink/12 mt-4 pt-4">
-              <div className="font-mono text-[0.625rem] text-accent-gold tracking-label uppercase mb-2">
-                — Current streak
+            <div className="rounded-[20px] bg-gradient-to-br from-lilac/45 to-paper border border-ink/8 p-5 mt-4">
+              <div className="mb-3">
+                <span className="inline-block bg-paper/70 border border-ink/10 rounded-[10px] px-2.5 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-ink">
+                  Current streak
+                </span>
               </div>
               <div className="font-display text-3xl text-ink leading-none tabular-nums">
                 {stats.isCurrentMonth ? stats.streak : '—'}
                 {stats.isCurrentMonth && (
-                  <span className="font-display italic text-sm text-taupe ml-1">days</span>
+                  <span className="font-sans text-sm text-taupe ml-1">days</span>
                 )}
               </div>
-              <p className="font-display italic text-xs text-hint mt-2 leading-relaxed">
+              <p className="font-sans text-xs text-hint mt-2 leading-relaxed">
                 {!stats.isCurrentMonth
                   ? '지난 달 또는 다음 달을 보는 중.'
                   : stats.streak > 0
                     ? '연속으로 운동을 이어가는 중.'
-                    : '이번 달엔 아직 연속 기록이 없어요.'}
+                    : stats.sessions > 0
+                      ? '연속 기록이 끊겼어요 — 오늘 운동으로 다시 이어가세요.'
+                      : '이번 달 운동 기록이 아직 없어요.'}
               </p>
             </div>
           </aside>
         </div>
 
         {/* Footer — page-end mark */}
-        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-mono text-[0.6875rem] text-hint tracking-meta">
+        <div className="flex justify-between items-center pt-6 mt-10 border-t border-ink/15 font-sans text-[0.78rem] text-hint tracking-meta">
           <span className="uppercase">— FITCOACH —</span>
           <span className="uppercase text-taupe">{MONTH_LABELS[month - 1]} {year}</span>
         </div>

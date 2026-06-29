@@ -67,9 +67,9 @@ const ToastContainer = ({ toasts, onDismiss }) => (
 );
 
 const VARIANT_META = {
-  success: { label: '— Done',   ringCls: 'border-accent-gold/45', accentCls: 'text-accent-gold' },
-  error:   { label: '— Failed', ringCls: 'border-accent-red/50',  accentCls: 'text-accent-red'  },
-  info:    { label: '— Note',   ringCls: 'border-ink/20',         accentCls: 'text-ink'         },
+  success: { label: 'Done',   barCls: 'bg-lilac-deep', accentCls: 'text-lilac-deep' },
+  error:   { label: 'Failed', barCls: 'bg-[#c43c2f]',  accentCls: 'text-[#c43c2f]'  },
+  info:    { label: 'Note',   barCls: 'bg-sky',        accentCls: 'text-ink'        },
 };
 
 const ToastItem = ({ toast, onDismiss }) => {
@@ -85,21 +85,22 @@ const ToastItem = ({ toast, onDismiss }) => {
   return (
     <div
       role="status"
-      className={`pointer-events-auto bg-paper border ${meta.ringCls} px-4 py-3 min-w-[16.25rem] shadow-2xl animate-in slide-in-from-right-4 fade-in duration-200`}
+      className="pointer-events-auto relative overflow-hidden bg-paper rounded-[14px] border border-ink/10 pl-5 pr-4 py-3 min-w-[16.25rem] shadow-[0_12px_30px_-12px_rgba(26,20,16,0.3)] animate-in slide-in-from-right-4 fade-in duration-200"
     >
+      <span className={`absolute left-0 top-0 bottom-0 w-1 ${meta.barCls}`} aria-hidden="true" />
       <div className="flex items-baseline justify-between gap-3 mb-1">
-        <div className={`font-mono text-[0.625rem] tracking-label uppercase ${meta.accentCls}`}>
+        <div className={`font-sans text-[0.625rem] tracking-label uppercase ${meta.accentCls}`}>
           {meta.label}
         </div>
         <button
           onClick={() => onDismiss(id)}
-          className="font-mono text-[0.625rem] tracking-meta uppercase text-hint hover:text-ink transition-colors"
+          className="font-sans text-[0.625rem] tracking-meta uppercase text-hint hover:text-ink transition-colors"
           aria-label="닫기"
         >
           ×
         </button>
       </div>
-      <p className="font-display italic text-[0.875rem] text-ink leading-snug m-0 whitespace-pre-line">
+      <p className="font-sans text-[0.875rem] text-ink leading-snug m-0 whitespace-pre-line">
         {msg}
       </p>
     </div>

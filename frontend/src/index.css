@@ -8,7 +8,7 @@
    다크 우선 / 라이트는 추후 .light 클래스로 분기.
 ---------------------------------------------------------------------------- */
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:ital,wght@0,300..800;1,300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:ital,wght@0,300..800;1,300..800&display=swap');
 
 /* 화면폭에 비례하는 루트 글꼴 — 모든 rem 기반 크기(글자·여백·치수)가 함께 비례해서
    "노트북에서 본 비율"이 어느 화면에서도 동일하게 재현된다.
@@ -16,28 +16,28 @@
    - 노트북(≤1440): 16px 유지(하한 고정) → 지금과 동일
    - 그 위 모니터: 1440px=16px 기준으로 비례 확대(최대 24px). */
 @media (min-width: 768px) {
-  html { font-size: clamp(16px, 1.111vw, 24px); }
+  html { font-size: clamp(17px, 1.18vw, 25px); }
 }
 
-.cal-grid-line { border-color: rgba(240, 232, 216, 0.20); }
+.cal-grid-line { border-color: rgba(26, 20, 16, 0.20); }
 
 /* 저해상도(1x) 모니터에선 1px 중립 hairline 들이 또렷·진하게(딱딱하게) 보인다.
    고해상도(노트북)는 손대지 않고, 1x 화면에서만 ink 테두리 농도를 일괄로 ~0.6배 낮춰
    노트북의 부드러운 느낌에 맞춘다. 강조선(accent)·텍스트는 영향 없음.
    (Tailwind 유틸리티를 unlayered 규칙으로 덮어쓰므로 우선 적용된다) */
 @media (max-resolution: 1.1dppx) {
-  .cal-grid-line  { border-color: rgba(240, 232, 216, 0.12); }
-  .border-ink\/8  { border-color: rgba(240, 232, 216, 0.05); }
-  .border-ink\/10 { border-color: rgba(240, 232, 216, 0.06); }
-  .border-ink\/12 { border-color: rgba(240, 232, 216, 0.075); }
-  .border-ink\/15 { border-color: rgba(240, 232, 216, 0.09); }
-  .border-ink\/20 { border-color: rgba(240, 232, 216, 0.12); }
-  .border-ink\/25 { border-color: rgba(240, 232, 216, 0.15); }
-  .border-ink\/40 { border-color: rgba(240, 232, 216, 0.26); }
-  .border-ink\/45 { border-color: rgba(240, 232, 216, 0.30); }
+  .cal-grid-line  { border-color: rgba(26, 20, 16, 0.12); }
+  .border-ink\/8  { border-color: rgba(26, 20, 16, 0.05); }
+  .border-ink\/10 { border-color: rgba(26, 20, 16, 0.06); }
+  .border-ink\/12 { border-color: rgba(26, 20, 16, 0.075); }
+  .border-ink\/15 { border-color: rgba(26, 20, 16, 0.09); }
+  .border-ink\/20 { border-color: rgba(26, 20, 16, 0.12); }
+  .border-ink\/25 { border-color: rgba(26, 20, 16, 0.15); }
+  .border-ink\/40 { border-color: rgba(26, 20, 16, 0.26); }
+  .border-ink\/45 { border-color: rgba(26, 20, 16, 0.30); }
 
   /* gap-px 격자선·progress 트랙처럼 배경(bg)으로 그린 선/면도 함께 톤다운 */
-  .bg-ink\/10 { background-color: rgba(240, 232, 216, 0.06); }
+  .bg-ink\/10 { background-color: rgba(26, 20, 16, 0.06); }
 
   /* 골드 강조(선택/추천 박스) — 모니터에서 테두리 진하고 안쪽 밝게 보임 → 톤다운 */
   .outline-accent-gold { outline-color: color-mix(in oklab, var(--color-accent-gold) 60%, transparent); }
@@ -51,8 +51,8 @@
   .bg-accent-gold\/10 { background-color: color-mix(in oklab, var(--color-accent-gold) 6%, transparent); }
 
   :root {
-    --color-page-edge: rgba(240, 232, 216, 0.05);
-    --color-page-border: rgba(240, 232, 216, 0.03);
+    --color-page-edge: rgba(26, 20, 16, 0.05);
+    --color-page-border: rgba(26, 20, 16, 0.03);
   }
 }
 
@@ -62,23 +62,31 @@
      paper   = 콘텐츠 페이지 (살짝 밝고 따뜻함, 명도 차이 4~5%)
      사용자가 의식하지 못하는 미묘한 단차로 "콘텐츠가 표면 위에 놓임"
   --------------------------------------------------------------- */
-  --color-surface: #100c08;            /* 바깥 여백 — 어두운 다크 월넛 */
-  --color-paper: #14110d;              /* 콘텐츠 페이지 — 살짝 밝고 따뜻함 */
-  --color-paper-soft: #1a1614;         /* 약간 밝은 surface (카드/패널) */
-  --color-paper-light: #f4ede0;        /* cream paper (라이트 모드 추후) */
-  --color-page-edge: rgba(240, 232, 216, 0.09);   /* 페이지 상단 엣지 하이라이트 */
-  --color-page-border: rgba(240, 232, 216, 0.05); /* 페이지 나머지 테두리 */
-  --color-ink: #f0e8d8;                /* parchment (메인 텍스트) */
-  --color-ink-dark: #1a1410;           /* near-black ink (라이트 모드 텍스트) */
-  --color-body: #aaa098;               /* 본문 회색 */
-  --color-taupe: #8a8275;              /* 보조 텍스트 */
-  --color-hint: #5c5648;               /* 힌트/메타 */
+  /* === Gleap 라이트 톤 (2026-06 라이트 전환) =========================
+     surface = 바깥 여백(따뜻한 라이트 엣지) · paper = 화이트 콘텐츠 페이지 */
+  --color-surface: #ffffff;            /* 페이지 배경 — 순백(랜딩과 통일) */
+  --color-paper: #ffffff;              /* 콘텐츠 페이지 — 화이트 */
+  --color-paper-soft: #f5f2f0;         /* 카드/패널 — bone */
+  --color-paper-light: #f4ede0;        /* cream paper */
+  --color-page-edge: rgba(26, 20, 16, 0.06);   /* 페이지 상단 엣지 */
+  --color-page-border: rgba(26, 20, 16, 0.09); /* 페이지 테두리 */
+  --color-ink: #1a1410;                /* near-black 텍스트 (라이트) */
+  --color-ink-dark: #1a1410;           /* (동일) */
+  --color-body: #4a4035;               /* 본문 회색 (다크 그레이) */
+  --color-taupe: #7b7b7b;              /* 보조 텍스트 */
+  --color-hint: #9a9080;               /* 힌트/메타 */
 
   /* --- 액센트 ---------------------------------------------------------- */
   --color-accent-red: #c43c2f;         /* CTA · active · 위험 */
   --color-accent-red-light: #a3281d;   /* 라이트 모드 */
   --color-accent-gold: #d9a64a;        /* italic 강조 · PR · highlight */
   --color-accent-gold-light: #8e6d22;  /* 라이트 모드 */
+
+  /* --- Gleap 라이트 액센트 (제품 페이지 재스킨용) --- */
+  --color-lilac: #f1ccff;              /* 1차 액션 (CTA 채움) */
+  --color-lilac-deep: #c89cd9;         /* 라일락 그라데이션 짝 */
+  --color-sky: #91e0ff;                /* 2차 액센트 */
+  --color-bone: #f5f2f0;               /* 따뜻한 크림 보조 surface */
 
   /* --- 프로그램별 시그니처 컬러 (포스터 하단 스트라이프용) ----------- */
   --color-program-stronglifts: #c43c2f;
@@ -97,6 +105,7 @@
   /* --- 폰트 패밀리 -------------------------------------------------- */
   --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-poster: "Arial Black", "Helvetica Neue", system-ui, sans-serif;
 
   /* --- 트래킹 (letter-spacing) 토큰 ---------------------------------- */
@@ -219,7 +228,7 @@ body {
   pointer-events: none;
 }
 .landing-row:hover {
-  background: rgba(240, 232, 216, 0.03);
+  background: rgba(26, 20, 16, 0.03);
 }
 .landing-row:hover::before {
   transform: scaleY(1);

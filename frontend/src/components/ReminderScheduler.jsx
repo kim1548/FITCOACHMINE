@@ -49,6 +49,36 @@ const ReminderScheduler = () => {
     return () => clearInterval(t);
   }, []);
 
+  // 원격 트리거 폴링(데모용): 서버에 ping 이 들어오면 폰에서 알림을 띄운다.
+  // 첫 호출은 현재 id 를 기준선으로만 잡고(과거 ping 무시), 이후 id 가 늘면 발송.
+  useEffect(() => {
+    let lastId = null;
+    let stopped = false;
+
+    const poll = async () => {
+      try {
+        const since = lastId == null ? 0 : lastId;
+        const res = await fetch(`/api/v1/reminder/poll?since=${since}`, { cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (lastId == null) {
+          lastId = data.id || 0; // 기준선만 설정, 발송 안 함
+          return;
+        }
+        if (data.id && data.id > lastId && data.title) {
+          lastId = data.id;
+          showLocalNotification(data.title, data.body || "");
+        }
+      } catch {
+        /* 네트워크 일시 오류는 무시 */
+      }
+    };
+
+    poll();
+    const t = setInterval(() => { if (!stopped) poll(); }, 4000);
+    return () => { stopped = true; clearInterval(t); };
+  }, []);
+
   return null;
 };
 

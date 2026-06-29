@@ -8,31 +8,21 @@ import FieldError from '../components/ui/FieldError';
 import usePageTitle from '../hooks/usePageTitle';
 
 /**
- * /signup — Editorial Magazine 톤 (standalone, TopNavbar 없음).
+ * /signup — Gleap 라이트 톤 (standalone, TopNavbar 없음).
  */
 
 const GENDER_OPTIONS = ['남', '여'];
 const LIFESTYLE_OPTIONS = ['학생', '사무직', '활동직', '기타'];
 const EXPERIENCE_OPTIONS = ['입문자', '초보', '중급', '고급'];
 const FREQUENCY_OPTIONS = ['주1회', '주2회', '주3회', '주4회 이상'];
-const FITNESS_OPTIONS = ['낮음', '보통', '높음'];
 const GOAL_OPTIONS = ['체중감소', '유지', '벌크업'];
 
-const MONTH_LABELS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
-
-const dayOfYear = () => {
-  const d = new Date();
-  const start = new Date(d.getFullYear(), 0, 0);
-  return Math.floor((d - start) / 86400000);
-};
-
 const inputCls =
-  'w-full px-3 py-2.5 bg-paper border border-ink/15 focus:border-accent-red outline-none font-display text-[0.9375rem] text-ink placeholder:text-hint placeholder:italic tabular-nums transition-colors';
+  'w-full bg-bone rounded-[12px] border border-ink/10 focus:border-lilac-deep focus:bg-paper outline-none font-sans text-[0.95rem] text-ink placeholder:text-hint px-4 py-3 transition-colors';
 const selectCls = inputCls + ' appearance-none cursor-pointer';
-const labelCls = 'block font-mono text-[0.625rem] text-taupe tracking-meta uppercase mb-1.5';
+const labelCls = 'block font-sans text-[0.72rem] font-medium text-taupe tracking-wide uppercase mb-1.5';
+const sectionLabelCls =
+  'inline-block bg-bone border border-ink/10 rounded-[10px] px-2.5 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-ink';
 
 const Signup = () => {
   usePageTitle('Register · FitCoach');
@@ -52,7 +42,6 @@ const Signup = () => {
     lifestyle: LIFESTYLE_OPTIONS[0],
     workout_experience: EXPERIENCE_OPTIONS[0],
     workout_frequency: FREQUENCY_OPTIONS[2],
-    fitness_level: FITNESS_OPTIONS[1],
     goal: GOAL_OPTIONS[0],
   });
 
@@ -85,215 +74,195 @@ const Signup = () => {
     }
   };
 
-  const issueNo = String(dayOfYear()).padStart(3, '0');
-  const now = new Date();
-  const monthLabel = MONTH_LABELS[now.getMonth()];
-
   return (
     <div
-      className="fixed inset-0 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden"
-      style={{ scrollbarWidth: 'none' }}
+      className="fixed inset-0 bg-surface text-ink overflow-y-auto [&::-webkit-scrollbar]:hidden flex items-start justify-center p-4 py-10"
+      style={{
+        scrollbarWidth: 'none',
+        backgroundImage:
+          'radial-gradient(48rem 38rem at 0% 0%, rgba(241,204,255,0.5), rgba(241,204,255,0) 55%), radial-gradient(44rem 36rem at 100% 100%, rgba(145,224,255,0.45), rgba(145,224,255,0) 55%)',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'scroll',
+      }}
     >
-      <div className="w-full max-w-[35rem] mx-auto min-h-full flex flex-col px-6 md:px-8 py-10">
+      <div className="w-full max-w-[56rem] my-auto bg-paper rounded-[28px] border border-ink/8 shadow-[0_28px_70px_-28px_rgba(26,20,16,0.28)] p-8 md:p-12 font-sans animate-in fade-in zoom-in-95 duration-300">
 
-        {/* Masthead */}
-        <header className="flex items-baseline justify-between border-b border-ink/15 pb-4 mb-10">
-          <Link to="/login" className="font-display italic text-lg text-ink tracking-tight">
-            FITCOACH
-          </Link>
-          <span className="font-mono text-[0.625rem] text-taupe tracking-meta uppercase">
-            No. {issueNo} — {monthLabel}
-          </span>
-        </header>
+        {/* Logo */}
+        <Link to="/signup" className="flex items-center gap-2 mb-8">
+          <span
+            className="w-[22px] h-[22px] rounded-full"
+            style={{ background: 'radial-gradient(circle at 50% 38%, var(--color-lilac), var(--color-lilac-deep))' }}
+          />
+          <span className="font-semibold text-[1.05rem] tracking-tight text-ink">FitCoach</span>
+        </Link>
 
         {/* Headline */}
         <div className="mb-8">
-          <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
-            — Register · Begin your journey
-          </div>
+          <span className="inline-block bg-lilac/60 rounded-[10px] px-3 py-1 font-sans text-[0.72rem] font-medium tracking-wide text-ink mb-3">
+            Register
+          </span>
           <h1 className="font-display text-4xl md:text-5xl leading-[1.0] tracking-tight font-normal">
-            Begin, <em className="italic text-accent-gold">on record.</em>
+            Begin, <em className="italic text-lilac-deep">on record.</em>
           </h1>
-          <p className="font-display italic text-sm text-taupe mt-3 leading-relaxed">
+          <p className="font-sans text-[0.95rem] text-taupe mt-3 leading-relaxed">
             한 끼, 한 세트, 한 측정 — 작은 기록이 모이면 한 사람의 변화가 보입니다.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-7">
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-7">
 
-          {/* 1) Credentials */}
-          <section>
-            <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
-              — Account
-            </div>
-            <div className="space-y-3 border-t border-ink/12 pt-4">
-              <div>
-                <label className={labelCls}>Username</label>
-                <input
-                  className={inputCls}
-                  placeholder="아이디"
-                  value={form.username}
-                  onChange={set('username')}
-                  autoComplete="username"
-                  aria-invalid={!!credError}
-                  aria-describedby={credError ? 'cred-error' : undefined}
-                />
-              </div>
-              <div>
-                <label className={labelCls}>Nickname · 닉네임</label>
-                <input
-                  className={inputCls}
-                  placeholder="커뮤니티에 표시될 이름 (선택)"
-                  value={form.nickname}
-                  onChange={set('nickname')}
-                  maxLength={20}
-                />
-              </div>
-              <div>
-                <label className={labelCls}>Password</label>
-                <input
-                  className={inputCls}
-                  type="password"
-                  placeholder="비밀번호"
-                  value={form.password}
-                  onChange={set('password')}
-                  autoComplete="new-password"
-                  aria-invalid={!!credError}
-                  aria-describedby={credError ? 'cred-error' : undefined}
-                />
-                <FieldError id="cred-error">{credError}</FieldError>
-              </div>
-            </div>
-          </section>
+            {/* LEFT — Account + Body */}
+            <div className="space-y-6">
+              <section>
+                <span className={sectionLabelCls}>Account</span>
+                <div className="space-y-3 mt-4">
+                  <div>
+                    <label className={labelCls}>Username</label>
+                    <input
+                      className={inputCls}
+                      placeholder="아이디"
+                      value={form.username}
+                      onChange={set('username')}
+                      autoComplete="username"
+                      aria-invalid={!!credError}
+                      aria-describedby={credError ? 'cred-error' : undefined}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Nickname · 닉네임</label>
+                    <input
+                      className={inputCls}
+                      placeholder="커뮤니티에 표시될 이름 (선택)"
+                      value={form.nickname}
+                      onChange={set('nickname')}
+                      maxLength={20}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Password</label>
+                    <input
+                      className={inputCls}
+                      type="password"
+                      placeholder="비밀번호"
+                      value={form.password}
+                      onChange={set('password')}
+                      autoComplete="new-password"
+                      aria-invalid={!!credError}
+                      aria-describedby={credError ? 'cred-error' : undefined}
+                    />
+                    <FieldError id="cred-error">{credError}</FieldError>
+                  </div>
+                </div>
+              </section>
 
-          {/* 2) Body */}
-          <section>
-            <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
-              — Body
+              <section>
+                <span className={sectionLabelCls}>Body</span>
+                <div className="grid grid-cols-2 gap-3 mt-4">
+                  <div>
+                    <label className={labelCls}>Gender</label>
+                    <select className={selectCls} value={form.gender} onChange={set('gender')}>
+                      {GENDER_OPTIONS.map((v) => <option key={v} value={v}>{v}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className={labelCls}>Age</label>
+                    <input
+                      className={inputCls + ' [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'}
+                      style={{ MozAppearance: 'textfield' }}
+                      type="number" min="10" max="100"
+                      value={form.age} onChange={set('age')}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Height</label>
+                    <input
+                      className={inputCls + ' [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'}
+                      style={{ MozAppearance: 'textfield' }}
+                      type="number" min="100" max="250"
+                      value={form.height} onChange={set('height')}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Weight</label>
+                    <input
+                      className={inputCls + ' [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'}
+                      style={{ MozAppearance: 'textfield' }}
+                      type="number" min="30" max="250"
+                      value={form.weight} onChange={set('weight')}
+                    />
+                  </div>
+                </div>
+                <p className="font-sans text-[0.72rem] text-hint tracking-wide uppercase mt-2">
+                  · age · cm · kg
+                </p>
+              </section>
             </div>
-            <div className="grid grid-cols-4 gap-3 border-t border-ink/12 pt-4">
-              <div>
-                <label className={labelCls}>Gender</label>
-                <select className={selectCls} value={form.gender} onChange={set('gender')}>
-                  {GENDER_OPTIONS.map((v) => <option key={v} value={v}>{v}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className={labelCls}>Age</label>
-                <input
-                  className={inputCls + ' [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'}
-                  style={{ MozAppearance: 'textfield' }}
-                  type="number" min="10" max="100"
-                  value={form.age} onChange={set('age')}
-                />
-              </div>
-              <div>
-                <label className={labelCls}>Height</label>
-                <input
-                  className={inputCls + ' [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'}
-                  style={{ MozAppearance: 'textfield' }}
-                  type="number" min="100" max="250"
-                  value={form.height} onChange={set('height')}
-                />
-              </div>
-              <div>
-                <label className={labelCls}>Weight</label>
-                <input
-                  className={inputCls + ' [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'}
-                  style={{ MozAppearance: 'textfield' }}
-                  type="number" min="30" max="250"
-                  value={form.weight} onChange={set('weight')}
-                />
-              </div>
-            </div>
-            <p className="font-mono text-[0.5625rem] text-hint tracking-meta uppercase mt-2">
-              · age · cm · kg
-            </p>
-          </section>
 
-          {/* 3) Lifestyle */}
-          <section>
-            <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
-              — Lifestyle
-            </div>
-            <div className="border-t border-ink/12 pt-4">
-              <label className={labelCls}>Daily routine</label>
-              <select className={selectCls} value={form.lifestyle} onChange={set('lifestyle')}>
-                {LIFESTYLE_OPTIONS.map((v) => <option key={v} value={v}>{v}</option>)}
-              </select>
-            </div>
-          </section>
-
-          {/* 4) Training */}
-          <section>
-            <div className="font-mono text-[0.6875rem] text-accent-red tracking-label uppercase mb-3">
-              — Training
-            </div>
-            <div className="space-y-3 border-t border-ink/12 pt-4">
-              <div>
-                <label className={labelCls}>Experience · 운동 경력</label>
-                <select className={selectCls} value={form.workout_experience} onChange={set('workout_experience')}>
-                  {EXPERIENCE_OPTIONS.map((v) => <option key={v} value={v}>{v}</option>)}
-                </select>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={labelCls}>Frequency · 빈도</label>
-                  <select className={selectCls} value={form.workout_frequency} onChange={set('workout_frequency')}>
-                    {FREQUENCY_OPTIONS.map((v) => <option key={v} value={v}>{v}</option>)}
+            {/* RIGHT — Lifestyle + Training + Goal */}
+            <div className="space-y-6">
+              <section>
+                <span className={sectionLabelCls}>Lifestyle</span>
+                <div className="mt-4">
+                  <label className={labelCls}>Daily routine</label>
+                  <select className={selectCls} value={form.lifestyle} onChange={set('lifestyle')}>
+                    {LIFESTYLE_OPTIONS.map((v) => <option key={v} value={v}>{v}</option>)}
                   </select>
                 </div>
-                <div>
-                  <label className={labelCls}>Fitness · 체력</label>
-                  <select className={selectCls} value={form.fitness_level} onChange={set('fitness_level')}>
-                    {FITNESS_OPTIONS.map((v) => <option key={v} value={v}>{v}</option>)}
+              </section>
+
+              <section>
+                <span className={sectionLabelCls}>Training</span>
+                <div className="space-y-3 mt-4">
+                  <div>
+                    <label className={labelCls}>Experience · 운동 경력</label>
+                    <select className={selectCls} value={form.workout_experience} onChange={set('workout_experience')}>
+                      {EXPERIENCE_OPTIONS.map((v) => <option key={v} value={v}>{v}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className={labelCls}>Frequency · 빈도</label>
+                    <select className={selectCls} value={form.workout_frequency} onChange={set('workout_frequency')}>
+                      {FREQUENCY_OPTIONS.map((v) => <option key={v} value={v}>{v}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <span className={sectionLabelCls}>Goal</span>
+                <div className="mt-4">
+                  <label className={labelCls}>이번 달의 목표</label>
+                  <select className={selectCls} value={form.goal} onChange={set('goal')}>
+                    {GOAL_OPTIONS.map((v) => <option key={v} value={v}>{v}</option>)}
                   </select>
                 </div>
-              </div>
+              </section>
             </div>
-          </section>
-
-          {/* 5) Goal */}
-          <section>
-            <div className="font-mono text-[0.6875rem] text-accent-gold tracking-label uppercase mb-3">
-              — Goal
-            </div>
-            <div className="border-t border-ink/12 pt-4">
-              <label className={labelCls}>이번 달의 목표</label>
-              <select className={selectCls} value={form.goal} onChange={set('goal')}>
-                {GOAL_OPTIONS.map((v) => <option key={v} value={v}>{v}</option>)}
-              </select>
-            </div>
-          </section>
+          </div>
 
           {/* Submit */}
           <button
             type="submit"
             disabled={submitting}
-            className="w-full py-3.5 mt-2 font-mono text-[0.6875rem] tracking-label uppercase bg-accent-red text-ink hover:bg-accent-red/90 disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+            className="w-full bg-lilac text-ink rounded-[12px] py-3.5 mt-8 font-sans text-[0.85rem] font-medium hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center justify-center gap-2"
           >
-            {submitting && <Loader2 size={12} className="animate-spin" />}
-            {submitting ? 'Creating account…' : '→ Create account'}
+            {submitting && <Loader2 size={14} className="animate-spin" />}
+            {submitting ? '회원가입 중…' : '회원가입'}
           </button>
         </form>
 
         {/* Bottom — login */}
-        <div className="border-t border-ink/15 mt-10 pt-6 text-center">
-          <p className="font-display italic text-sm text-taupe mb-3">
+        <div className="mt-8 pt-6 border-t border-ink/8 text-center">
+          <p className="font-sans text-[0.95rem] text-taupe mb-3">
             이미 계정이 있으신가요?
           </p>
           <Link
             to="/login"
-            className="inline-block font-mono text-[0.6875rem] tracking-label uppercase px-5 py-3 border border-ink/20 text-taupe hover:text-ink hover:border-ink/40 transition-colors"
+            className="inline-block font-sans text-[0.85rem] font-medium rounded-[12px] px-5 py-3 border border-ink/10 text-taupe hover:text-ink hover:bg-bone transition-colors"
           >
-            → Sign in instead
+            로그인하기
           </Link>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-auto pt-10 border-t border-ink/15 mt-10 flex justify-between items-center font-mono text-[0.625rem] text-hint tracking-meta uppercase">
-          <span>— FITCOACH —</span>
-          <span className="text-taupe">Register</span>
         </div>
       </div>
     </div>

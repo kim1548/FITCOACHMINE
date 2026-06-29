@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import TopNavbar from "./components/TopNavbar";
+import Sidebar from "./components/Sidebar";
 import BottomNav from "./components/BottomNav";
 import SettingsDrawer from "./components/SettingsDrawer";
 import ReminderScheduler from "./components/ReminderScheduler";
@@ -31,8 +32,9 @@ const RootRoute = () => {
 };
 
 const AppContent = () => {
-  const [theme, setTheme] = useState("dark");
+  const [theme, setTheme] = useState("light");
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
     <Routes>
@@ -45,9 +47,19 @@ const AppContent = () => {
       <Route
         path="*"
         element={
-          <div className="fixed inset-0 bg-surface text-ink flex flex-col overflow-hidden">
+          <div
+            className="fixed inset-0 bg-surface text-ink flex flex-col overflow-hidden"
+            style={{ "--sb-w": sidebarOpen ? "15rem" : "0rem" }}
+          >
             <ReminderScheduler />
-            <TopNavbar onOpenSettings={() => setSettingsOpen(true)} />
+            <Sidebar
+              open={sidebarOpen}
+              onToggle={() => setSidebarOpen((v) => !v)}
+              onOpenSettings={() => setSettingsOpen(true)}
+            />
+            <div className="lg:hidden">
+              <TopNavbar onOpenSettings={() => setSettingsOpen(true)} />
+            </div>
             <main className="flex-1 relative overflow-hidden flex justify-center">
               <Routes>
                 {/* 루틴 계획 */}

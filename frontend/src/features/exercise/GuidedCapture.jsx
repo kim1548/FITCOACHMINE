@@ -98,7 +98,7 @@ export default function GuidedCapture({ exercise, guide, onRecorded, onCancel })
           className="absolute top-0 left-0 right-0 z-20 px-4 flex justify-center pointer-events-none"
           style={{ paddingTop: 'calc(env(safe-area-inset-top) + 1rem)' }}
         >
-          <div className="font-display italic text-sm text-white leading-relaxed bg-black/55 backdrop-blur-sm px-4 py-2.5 rounded-sm max-w-[90%] text-center">
+          <div className="font-sans text-sm text-white leading-relaxed bg-black/55 backdrop-blur-sm px-4 py-2.5 rounded-[16px] max-w-[90%] text-center">
             {recording
               ? `● REC  ${String(Math.floor(elapsed / 60)).padStart(2, '0')}:${String(elapsed % 60).padStart(2, '0')}`
               : (guide || `${exercise} 자세가 잘 보이게 촬영해 주세요.`)}
@@ -110,10 +110,10 @@ export default function GuidedCapture({ exercise, guide, onRecorded, onCancel })
       {fatal && (
         <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/85 px-6 text-center">
           <div>
-            <p className="font-display italic text-sm text-taupe leading-relaxed mb-5">{fatal}</p>
+            <p className="font-sans text-sm text-taupe leading-relaxed mb-5">{fatal}</p>
             <button
               onClick={onCancel}
-              className="font-mono text-[0.6875rem] tracking-label uppercase px-5 py-3 border border-white/30 text-white hover:bg-white/10 transition-colors"
+              className="font-sans text-[0.78rem] font-medium px-5 py-3 border border-white/30 text-white hover:bg-white/10 transition-colors rounded-[12px]"
             >
               ← 돌아가기
             </button>
@@ -131,13 +131,13 @@ export default function GuidedCapture({ exercise, guide, onRecorded, onCancel })
             <>
               <button
                 onClick={onCancel}
-                className="font-mono text-[0.625rem] tracking-label uppercase px-4 py-2.5 border border-white/40 text-white hover:bg-white/10 transition-colors bg-black/40"
+                className="font-sans text-[0.78rem] font-medium px-4 py-2.5 border border-white/40 text-white hover:bg-white/10 transition-colors bg-black/40 rounded-[12px]"
               >
                 취소
               </button>
               <button
                 onClick={startRec}
-                className="font-mono text-[0.6875rem] tracking-label uppercase px-6 py-3 border border-accent-red text-ink bg-accent-red hover:bg-accent-red/90 transition-colors cursor-pointer"
+                className="bg-lilac text-ink rounded-[12px] px-5 py-3 font-sans text-[0.78rem] font-medium hover:opacity-90 transition-opacity cursor-pointer"
               >
                 ● 촬영 시작
               </button>
@@ -145,7 +145,7 @@ export default function GuidedCapture({ exercise, guide, onRecorded, onCancel })
           ) : (
             <button
               onClick={stopRec}
-              className="font-mono text-[0.6875rem] tracking-label uppercase px-6 py-3 border border-accent-gold text-surface bg-accent-gold hover:bg-accent-gold/90 transition-colors"
+              className="bg-lilac text-ink rounded-[12px] px-5 py-3 font-sans text-[0.78rem] font-medium hover:opacity-90 transition-opacity"
             >
               ■ 촬영 종료 · 분석
             </button>
