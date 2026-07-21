@@ -1,9 +1,14 @@
 # backend/app/core/security.py
+import os
+import secrets
+
 import bcrypt
 from datetime import datetime, timedelta
 from jose import jwt
 
-SECRET_KEY = "your-super-secret-key"  # 나중에 복잡하게 바꿔야 합니다!
+# 운영 환경에서는 FITCOACH_SECRET_KEY 환경변수를 반드시 설정할 것.
+# 미설정 시 실행마다 무작위 키가 생성되므로 서버를 재시작하면 기존 토큰이 전부 무효화된다.
+SECRET_KEY = os.getenv("FITCOACH_SECRET_KEY") or secrets.token_hex(32)
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7  # 1주일
 
