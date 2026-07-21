@@ -2,6 +2,9 @@
 
 운동 프로그램 트래커 · AI 자세 분석(Form Check) · 식단 기록(MEALS) 통합 헬스 코칭 앱.
 
+> **저장소 안내** — 이 저장소(FITCOACHMINE)는 FITCOACH의 **개발·실험 저장소**입니다.
+> 실제 런칭을 목표로 대형 LLM(Claude API)을 통합 중인 런치 준비 버전은 [FITCOACH-LAUNCH](https://github.com/kim1548/FITCOACH-LAUNCH)를 봐주세요.
+
 ## 기술 스택
 - **Backend**: FastAPI · SQLAlchemy · SQLite · PyTorch · YOLOv8 · MediaPipe
 - **Frontend**: React 19 · Vite · TailwindCSS · React Router · Recharts
